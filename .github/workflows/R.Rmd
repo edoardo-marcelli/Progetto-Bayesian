@@ -1,6 +1,6 @@
-#@@@@@@@@@@@@@@@@@@@@#
-#STOCHASTIC VOLATILIY#
-#@@@@@@@@@@@@@@@@@@@@#
+#@@@@@@@@@@@@@@@@@@@@##
+#SEQUENTIAL MONTECARLO#
+#@@@@@@@@@@@@@@@@@@@@##
 library(ggplot2)
 
 #Generate a random walk plus noise
