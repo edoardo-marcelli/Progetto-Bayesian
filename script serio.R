@@ -166,12 +166,21 @@ for (t in 1:n){
 }
 return(list(xs=xs,ws=ws,ess=ess))
 }
+<<<<<<< HEAD
 #again a post estimation command
 SISRplot<-function(data,sisrfun){
   require(ggplot2)
   mx = apply(sisrfun$xs,1,median)
   lx = apply(sisrfun$xs,1,q025)
   ux = apply(sisrfun$xs,1,q975)
+=======
+
+SISplot<-function(data,sisfun){
+  require(ggplot2)
+  mx = apply(sisfun$xs,1,median)
+  lx = apply(sisfun$xs,1,q025)
+  ux = apply(sisfun$xs,1,q975)
+>>>>>>> 4e397b5a7aea53c54e931b655be750af0c60a703
   
   timeframe<-c(1:length(data))
   SIS.df<-data.frame(timeframe,data,mx,lx,ux)
