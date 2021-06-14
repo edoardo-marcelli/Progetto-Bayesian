@@ -10,14 +10,14 @@ library(ggplot2)
 #w = state noise
 #x0 = init state
 
-dlm.sim = function(n,v,w,x0){
+dlm.sim = function(n,sigma,tau,x0){
   x    = rep(0,n)
   y        = rep(0,n)
-  x[1] = rnorm(1,x0,w)
-  y[1] = rnorm(1,x[1],v)
+  x[1] = rnorm(1,x0,tau)
+  y[1] = rnorm(1,x[1],sigma)
   for (t in 2:n){
-    x[t] = rnorm(1,x[t-1],w)
-    y[t] = rnorm(1,x[t],v)
+    x[t] = rnorm(1,x[t-1],tau)
+    y[t] = rnorm(1,x[t],sigma)
   }
   return(list(x=x,y=y))
 }
@@ -26,21 +26,21 @@ dlm.sim = function(n,v,w,x0){
 #---------------------
 #y = observed data
 
-DLM = function(y,v2,w2,m0,C0){
+DLM = function(y,sigma2,tau2,m0,C0){
   n = length(y)
   m = rep(0,n)
   C = rep(0,n)
   for (t in 1:n){
     if (t==1){
       a = m0
-      R = C0 + v2
+      R = C0 + tau2
     }else{
       a = m[t-1]
-      R = C[t-1] + v2
+      R = C[t-1] + tau2
     }
-    A = R/(R+w2)
+    A = R/(R+sigma2)
     m[t] = (1-A)*a + A*y[t]
-    C[t] = A*w2
+    C[t] = A*sigma2
   }
   return(list(m=m,C=C))
 }
@@ -51,13 +51,13 @@ DLM = function(y,v2,w2,m0,C0){
 #Generate a random walk plus noise
 #---------------------------------
 n=500
-v2=1
-w2=1
-v=sqrt(v2)
-w=sqrt(w2)
+tau2=1
+sigma2=1
+sigma=sqrt(sigma2)
+tau=sqrt(tau2)
 x0=0
 
-sim<-dlm.sim(n,v,w,x0)
+sim<-dlm.sim(n,sigma,tau,x0)
 y<-sim$y
 x<-sim$x
 
@@ -65,7 +65,7 @@ x<-sim$x
 #-------------
 m0=0
 C0=100
-filtval<-DLM(y,v2,w2,m0,C0)
+filtval<-DLM(y,sigma2,tau2,m0,C0)
 m<-filtval$m
 C<-filtval$C
 Low = m + qnorm(0.025)*sqrt(C)
@@ -91,38 +91,62 @@ ggplot(DLM.df,aes(x=timeframe))+
 #------------------------------
 #N = number of samples
 N   = 1000
-#matrix of (x,w) 
-wss = array(0,c(1,n,N))
-xss = array(0,c(1,n,N))
-Ess = matrix(0,1,n)
+#matrix of {(x,w)_i} where i=1 to N. For n times
+x<-array(0,c(n,N))
+w<-array(0,c(n,N))
+wnorm<-array(0,c(n,N))
+ESS<-c()
 
-#
-  x   = rnorm(N,m0,sqrt(C0))
-  w   =  rep(1/N,N)
-  ws  = NULL
-  xs  = NULL
-  ess = NULL
-  for (t in 1:n){
-    x    = rnorm(N,x,w)
-    w    = w*dnorm(y[1],x,v)
-    w1   = w/sum(w)
-    ESS  = 1/sum(w1^2)
-    draw = sample(x,size=N,replace=T,prob=w1)
-    xs   = rbind(xs,draw)
-    ws   = rbind(ws,w1)
-    ess  = c(ess,ESS)
+#first sample {(x0,w0)_i}
+  x0   = rnorm(N,m0,sqrt(C0))
+  w0   = rep(1/N,N)
+#second sample{(x1,w1)_i}
+  x[1,] = rnorm(N,x0,tau)         #sample from N(x_{0},tau)
+  w[1,] = w0*dnorm(y[1],x[1,],sigma)  #update weight
+  wnorm[1,]   = w[1,]/sum(w[1,])               #normalized weight
+  ESS[1]  = 1/sum(wnorm[1,]^2)
+#other n-1 samples {(xt,wt)_i}
+for(t in c(2,n)){
+  
+  x[t,]    = rnorm(N,x[t-1,],tau)         #sample from N(x_{0},tau)
+  w[t,]    = w[t-1,]*dnorm(y[t],x[t,],sigma)  #update weight
+  wnorm[t,]   = w[t,]/sum(w[t,])               #normalized weight
+  ESS[t]  = 1/sum(wnorm[t,]^2)            #effective sample size
+  
   }
-  wss[i,,] = ws
-  xss[i,,] = xs
-  Ess[i,] = ess
-}
-mx = matrix(0,n,nsig)
-Lx = matrix(0,n,nsig)
-Ux = matrix(0,n,nsig)
-for (i in 1:nsig){
-  mx[,i] = apply(xss[i,,],1,median)
-  Lx[,i] = apply(xss[i,,],1,q025)
-  Ux[,i] = apply(xss[i,,],1,q975)
-}
+#Nota: il SIS così costruito (Chopin-Papastiliopoluos) non produce ESS
+  
+
+#Sequential Importance Sampling with Resampling
+#----------------------------------------------
+#N = number of samples
+N   = 1000
+#matrix of {(x,w)_i} where i=1 to N. For n times
+x<-array(0,c(n,N))
+w<-array(0,c(n,N))
+wnorm<-array(0,c(n,N))
+ESS<-c()
+  
+  #first sample {(x0,w0)_i}
+  x0   = rnorm(N,m0,sqrt(C0))
+  w0   = rep(1/N,N)
+  #second sample{(x1,w1)_i}
+  x[1,] = rnorm(N,x0,tau)         #sample from N(x_{0},tau)
+  w[1,] = w0*dnorm(y[1],x[1,],sigma)  #update weight
+  wnorm[1,]   = w[1,]/sum(w[1,])               #normalized weight
+  ESS[1]  = 1/sum(wnorm[1,]^2)
+  #other n-1 samples {(xt,wt)_i}
+  for(t in c(2,n)){
+    
+    x[t,]    = rnorm(N,x[t-1,],tau)         #sample from N(x_{0},tau)
+    w[t,]    = w[t-1,]*dnorm(y[t],x[t,],sigma)  #update weight
+    wnorm[t,]   = w[t,]/sum(w[t,])               #normalized weight
+    ESS[t]  = 1/sum(wnorm[t,]^2)            #effective sample size
+    
+  }
+
+  
+  
+ 
 
 
