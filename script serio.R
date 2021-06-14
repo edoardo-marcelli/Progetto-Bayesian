@@ -2,6 +2,9 @@
 #SEQUENTIAL MONTECARLO#
 #@@@@@@@@@@@@@@@@@@@@##
 library(ggplot2)
+q025=function(x){quantile(x,0.025)}
+q975=function(x){quantile(x,0.975)}
+
 
 #Generate a random walk plus noise
 #---------------------------------
@@ -89,33 +92,59 @@ ggplot(DLM.df,aes(x=timeframe))+
 
 #Sequential Importance Sampling
 #------------------------------
-#N = number of samples
-N   = 1000
-#matrix of {(x,w)_i} where i=1 to N. For n times
-x<-array(0,c(n,N))
-w<-array(0,c(n,N))
-wnorm<-array(0,c(n,N))
-ESS<-c()
+#This function produce sequential importance samples
+#for Space state model that have linear gaussian state process
+#y=data
+#N=n°sample produced
+#m0,c0,tau and sigma specified as above
+#It returns xs,ws and ess which are respectively the filtered states
+#the relative weight and the effective sample size for any period.
 
-#first sample {(x0,w0)_i}
-  x0   = rnorm(N,m0,sqrt(C0))
-  w0   = rep(1/N,N)
-#second sample{(x1,w1)_i}
-  x[1,] = rnorm(N,x0,tau)         #sample from N(x_{0},tau)
-  w[1,] = w0*dnorm(y[1],x[1,],sigma)  #update weight
-  wnorm[1,]   = w[1,]/sum(w[1,])               #normalized weight
-  ESS[1]  = 1/sum(wnorm[1,]^2)
-#other n-1 samples {(xt,wt)_i}
-for(t in c(2,n)){
+SISfun<-function(data,N,m0,C0,tau,sigma){
+xs<-NULL
+ws<-NULL
+ess<-NULL
+x  = rnorm(N,m0,sqrt(C0))
+w  = rep(1/N,N)
+for(t in 1:length(data)){
+  x    = rnorm(N,x,tau)                   #sample from N(x_{0},tau)
+  w    = w*dnorm(data[t],x,sigma)               #update weight
+  wnorm= w/sum(w)                         #normalized weight
+  ESS  = 1/sum(wnorm^2)                   #effective sample size
+  draw = sample(x,size=N,replace=T,prob=wnorm)
+  xs = rbind(xs,draw)
+  ws = rbind(ws,wnorm)
+  ess =rbind(ess,ESS)
+}
+return(list(xs=xs,ws=ws,ess=ess))
+}
+#Nota: il SIS così costruito (Chopin-Papastiliopoluos) 
+#ha problemi con i pesi infatti wnorm dopo un po di iteraioni 
+#è un vettore (0,0,...,0,1) dopodichè da errore
+
+#post-estimation command: plot the filtered states
+SISplot<-function(data,sisfun){
+  require(ggplot2)
+  mx = apply(sisfun$xs,1,median)
+  lx = apply(sisfun$xs,1,q025)
+  ux = apply(sisfun$xs,1,q975)
   
-  x[t,]    = rnorm(N,x[t-1,],tau)         #sample from N(x_{0},tau)
-  w[t,]    = w[t-1,]*dnorm(y[t],x[t,],sigma)  #update weight
-  wnorm[t,]   = w[t,]/sum(w[t,])               #normalized weight
-  ESS[t]  = 1/sum(wnorm[t,]^2)            #effective sample size
+  timeframe<-c(1:length(data))
+  SIS.df<-data.frame(timeframe,data,mx,lx,ux)
   
-  }
-#Nota: il SIS così costruito (Chopin-Papastiliopoluos) non produce ESS
-  
+  ggplot(SIS.df,aes(x=timeframe))+
+    geom_line(aes(y=data))+
+    geom_line(aes(y=mx),col="red")+
+    geom_ribbon(aes(ymin = lx, ymax = ux),
+                fill="red",alpha=0.16) +
+    labs(x="Time",
+         y="")+
+    ggtitle("SIS filter")+
+    theme_bw()+
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+
 
 #Sequential Importance Sampling with Resampling
 #----------------------------------------------
@@ -127,9 +156,22 @@ w<-array(0,c(n,N))
 wnorm<-array(0,c(n,N))
 ESS<-c()
   
-  #first sample {(x0,w0)_i}
-  x0   = rnorm(N,m0,sqrt(C0))
-  w0   = rep(1/N,N)
+#first sample {(x0,w0)_i}
+  x   = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+
+for(t in 1:n){
+  x1  <-rnorm(N,x,tau)
+  w   <-dnorm(y[t],x,sigma)
+  w   = w/sum(w)
+  ESS  = 1/sum(w1^2)
+  draw = sample(x1,size=N,replace=T,prob=w)
+}  
+  
+  
+  
+  
+  
   #second sample{(x1,w1)_i}
   x[1,] = rnorm(N,x0,tau)         #sample from N(x_{0},tau)
   w[1,] = w0*dnorm(y[1],x[1,],sigma)  #update weight
