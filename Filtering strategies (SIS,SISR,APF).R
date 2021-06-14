@@ -183,7 +183,7 @@ SISRplot<-function(data,sisrfun){
                 fill="red",alpha=0.16) +
     labs(x="Time",
          y="")+
-    ggtitle("SIS filter")+
+    ggtitle("SISR filter")+
     theme_bw()+
     theme(plot.title = element_text(hjust = 0.5))
 }
