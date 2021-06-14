@@ -9,13 +9,13 @@ q975=function(x){quantile(x,0.975)}
 #Generate a random walk plus noise
 #---------------------------------
 #n = sample dim
-#v = obs noise
-#w = state noise
+#sigma = obs noise variance
+#tau = state noise variance
 #x0 = init state
 
 dlm.sim = function(n,sigma,tau,x0){
-  x    = rep(0,n)
-  y        = rep(0,n)
+  x    = rep(0,n)  #state process
+  y    = rep(0,n)  #obs process
   x[1] = rnorm(1,x0,tau)
   y[1] = rnorm(1,x[1],sigma)
   for (t in 2:n){
@@ -47,9 +47,6 @@ DLM = function(y,sigma2,tau2,m0,C0){
   }
   return(list(m=m,C=C))
 }
-
-
-########################################################
 
 #Generate a random walk plus noise
 #---------------------------------
@@ -123,7 +120,7 @@ return(list(xs=xs,ws=ws,ess=ess))
 #è un vettore (0,0,...,0,1) dopodichè da errore
 
 #post-estimation command: plot the filtered states
-SISplot<-function(data,sisfun){
+SISfilterplot<-function(data,sisfun){
   require(ggplot2)
   mx = apply(sisfun$xs,1,median)
   lx = apply(sisfun$xs,1,q025)
@@ -167,6 +164,51 @@ for (t in 1:n){
 return(list(xs=xs,ws=ws,ess=ess))
 }
 #again a post estimation command
+SISRfilterplot<-function(data,sisrfun){
+  require(ggplot2)
+  mx = apply(sisrfun$xs,1,median)
+  lx = apply(sisrfun$xs,1,q025)
+  ux = apply(sisrfun$xs,1,q975)
+  
+  timeframe<-c(1:length(data))
+  SIS.df<-data.frame(timeframe,data,mx,lx,ux)
+  
+  ggplot(SIS.df,aes(x=timeframe))+
+    geom_line(aes(y=data))+
+    geom_line(aes(y=mx),col="red")+
+    geom_ribbon(aes(ymin = lx, ymax = ux),
+                fill="red",alpha=0.16) +
+    labs(x="Time",
+         y="")+
+    ggtitle("SISR filter")+
+    theme_bw()+
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+#Auxiliary Particle Filter
+#-------------------------
+APFfun<-function(data,N,m0,C0,tau,sigma){
+  ws  = NULL
+  xs  = NULL
+  ess = NULL
+  x   = rnorm(N,m0,sqrt(C0))
+  w   = rep(1/N,N)
+  for (t in 1:n){
+    w0  = dnorm(y[t],x,sigma)
+    k   = sample(1:N,size=N,replace=TRUE,prob=w0)
+    x1  = rnorm(N,x[k],tau)
+    lw  = dnorm(y[t],x1,sigma,log=TRUE)-dnorm(y[t],x[k],sigma,log=TRUE)
+    w   = exp(lw-max(lw))
+    w   = w/sum(w)
+    ESS = 1/sum(w^2)
+    x   = sample(x1,size=N,replace=T,prob=w)
+    xs  = rbind(xs,x)
+    ws  = rbind(ws,w/sum(w))
+    ess = c(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+#again a post estimation command
 SISRplot<-function(data,sisrfun){
   require(ggplot2)
   mx = apply(sisrfun$xs,1,median)
@@ -187,4 +229,25 @@ SISRplot<-function(data,sisrfun){
     theme_bw()+
     theme(plot.title = element_text(hjust = 0.5))
 }
+
+
+
+#Filtervalues is a function that computes the mean
+#and the variance of a SISR already estimated (post estimation command)
+Filtervalues<-function(fun){
+  xhat<-sapply(1:n,function(i)
+    weighted.mean(fun$xs[i,],fun$ws[i,]))
+  sdhat<-sapply(1:n,function(i)
+    sqrt(weighted.mean((fun$xs[i,]-xhat[i])^2,fun$ws[i,])))
+  
+  return(list(mean=xhat,sd=sdhat))
+  
+}
+#Example of Comparison (do in GGPLOT if possible)
+h<-SISRfun(y,N,m0,C0,tau,sigma)
+Var<-Filtervalues(h)$var
+plot(sqrt(C),type="l",ylim=c(0.4,1))
+par(new=T)
+plot(Var,type="l",col="red",ylim=c(0.4,1))
+
 
