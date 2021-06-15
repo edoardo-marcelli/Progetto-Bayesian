@@ -251,9 +251,6 @@ BPFfun<-function(data,N,m0,C0,tau,sigma){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
-b<-BPFfun(y,1000,0,100,1,1)
-Filterplot(y,b,title="")
-
 #Auxiliary Particle Filter
 #-------------------------
 APFfun<-function(data,N,m0,C0,tau,sigma){
@@ -263,10 +260,10 @@ APFfun<-function(data,N,m0,C0,tau,sigma){
   x   = rnorm(N,m0,sqrt(C0))
   w   = rep(1/N,N)
   for (t in 1:n){
-    w0  = dnorm(y[t],x,sigma)
+    w0  = dnorm(data[t],x,sigma)
     k   = sample(1:N,size=N,replace=TRUE,prob=w0)
     x1  = rnorm(N,x[k],tau)
-    lw  = dnorm(y[t],x1,sigma,log=TRUE)-dnorm(y[t],x[k],sigma,log=TRUE)
+    lw  = dnorm(data[t],x1,sigma,log=TRUE)-dnorm(data[t],x[k],sigma,log=TRUE)
     w   = exp(lw-max(lw))
     w   = w/sum(w)
     ESS = 1/sum(w^2)
@@ -277,28 +274,8 @@ APFfun<-function(data,N,m0,C0,tau,sigma){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
-#again a post estimation command
-SISRplot<-function(data,sisrfun){
-  require(ggplot2)
-  mx = apply(sisrfun$xs,1,median)
-  lx = apply(sisrfun$xs,1,q025)
-  ux = apply(sisrfun$xs,1,q975)
-  
-  timeframe<-c(1:length(data))
-  SIS.df<-data.frame(timeframe,data,mx,lx,ux)
-  
-  ggplot(SIS.df,aes(x=timeframe))+
-    geom_line(aes(y=data))+
-    geom_line(aes(y=mx),col="red")+
-    geom_ribbon(aes(ymin = lx, ymax = ux),
-                fill="red",alpha=0.16) +
-    labs(x="Time",
-         y="")+
-    ggtitle("SISR filter")+
-    theme_bw()+
-    theme(plot.title = element_text(hjust = 0.5))
-}
 
+#.................................................
 #Filtervalues is a function that computes the mean
 #and the variance of a SISR already estimated (post estimation command)
 Filtervalues<-function(fun){
