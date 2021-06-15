@@ -29,10 +29,13 @@ dlm.sim = function(n,sigma,tau,x0){
 #---------------------
 #y = observed data
 
-DLM = function(data,sigma2,tau2,m0,C0){
-  n = length(data)
-  m = rep(0,n)
-  C = rep(0,n)
+DLM<-function(data,sig2,tau2,m0,C0){
+  n  = length(data)
+  m  = rep(0,n)
+  C  = rep(0,n)
+  s = rep(0,n)
+  S = rep(0,n)
+  B  = rep(0,n-1)
   for (t in 1:n){
     if (t==1){
       a = m0
@@ -41,12 +44,20 @@ DLM = function(data,sigma2,tau2,m0,C0){
       a = m[t-1]
       R = C[t-1] + tau2
     }
-    A = R/(R+sigma2)
+    A = R/(R+sig2)
     m[t] = (1-A)*a + A*y[t]
-    C[t] = A*sigma2
+    C[t] = A*sig2
+    B[t-1] = C[t]/(C[t]+tau2)
   }
-  return(list(m=m,C=C))
+  s[n] = m[n]
+  S[n] = C[n]
+  for (t in (n-1):1){
+    s[t] = (1-B[t])*m[t]+B[t]*s[t+1]
+    S[t] = (1-B[t])*C[t]+B[t]^2*S[t+1]
+  }
+  return(list(m=m,C=C,s=s,S=S))
 }
+
 
 #Generate a random walk plus noise
 #---------------------------------
@@ -97,23 +108,37 @@ ggplot(DLM.df,aes(x=timeframe))+
 #It returns xs,ws and ess which are respectively the filtered states
 #the relative weight and the effective sample size for any period.
 
-SISfun<-function(data,N,m0,C0,tau,sigma){
-xs<-NULL
-ws<-NULL
-ess<-NULL
-x  = rnorm(N,m0,sqrt(C0))
-w  = rep(1/N,N)
-for(t in 1:length(data)){
-  x    = rnorm(N,x,tau)                   #sample from N(x_{0},tau)
-  w    = w*dnorm(data[t],x,sigma)         #update weight
-  wnorm= w/sum(w)                         #normalized weight
-  ESS  = 1/sum(wnorm^2)                   #effective sample size
-  draw = sample(x,size=N,replace=T,prob=wnorm)
-  xs = rbind(xs,draw)
-  ws = rbind(ws,wnorm)
-  ess =rbind(ess,ESS)
-}
-return(list(xs=xs,ws=ws,ess=ess))
+SISfun<-function(data,N,m0,C0,tau,sigma,smooth){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  for(t in 1:length(data)){
+    x    = rnorm(N,x,tau)                   #sample from N(x_{0},tau)
+    w    = w*dnorm(data[t],x,sigma)         #update weight
+    wnorm= w/sum(w)                         #normalized weight
+    ESS  = 1/sum(wnorm^2)                   #effective sample size
+    draw = sample(x,size=N,replace=T,prob=wnorm)
+    xs = rbind(xs,draw)
+    ws = rbind(ws,wnorm)
+    ess =rbind(ess,ESS)
+  }
+
+  if(smooth){
+    xb = matrix(0,n,N)
+    for (j in 1:N){
+      xb[n,j] = xs[n,j]
+      for (t in (n-1):1){
+        w = dnorm(xb[t+1,j],xs[t,],tau)
+        w = w/sum(w)
+        xb[t,j] = sample(xs[t,],size=1,prob=w)
+      }
+    }
+    return(list(xs=xs,ws=ws,xb=xb))
+  }else{}
+  
+    return(list(xs=xs,ws=ws,ess=ess))
 }
 #Nota: il SIS così costruito (Chopin-Papastiliopoluos) 
 #ha problemi con i pesi infatti wnorm dopo un po di iteraioni 
@@ -141,28 +166,42 @@ SISfilterplot<-function(data,sisfun){
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-
+a<-SISRfun(y,1000,0,100,1,1)
 
 #Sequential Importance Sampling with Resampling
 #----------------------------------------------
-SISRfun<-function(data,N,m0,C0,tau,sigma){
-ws  = NULL
-xs  = NULL
-ess = NULL
-x   = rnorm(N,m0,sqrt(C0))
-w   = rep(1/N,N)
-n   = length(data)
-for (t in 1:n){
-  x1  = rnorm(N,x,tau)
-  w   = dnorm(data[t],x1,sigma)
-  w   = w/sum(w)
-  ESS = 1/sum(w^2)
-  x   = sample(x1,size=N,replace=T,prob=w)
-  xs  = rbind(xs,x)
-  ws  = rbind(ws,w/sum(w))
-  ess = c(ess,ESS)
-}
-return(list(xs=xs,ws=ws,ess=ess))
+SISRfun<-function(data,N,m0,C0,tau,sigma,smooth){
+  if(missing(smooth)){smooth=F}
+  ws  = NULL
+  xs  = NULL
+  ess = NULL
+  x   = rnorm(N,m0,sqrt(C0))
+  w   = rep(1/N,N)
+  n   = length(data)
+  for (t in 1:n){
+    x1  = rnorm(N,x,tau)
+    w   = dnorm(data[t],x1,sigma)
+    w   = w/sum(w)
+    ESS = 1/sum(w^2)
+    x   = sample(x1,size=N,replace=T,prob=w)
+    xs  = rbind(xs,x)
+    ws  = rbind(ws,w/sum(w))
+    ess = c(ess,ESS)
+  }
+  if(smooth){
+    xb = matrix(0,n,N)
+    for (j in 1:N){
+      xb[n,j] = xs[n,j]
+      for (t in (n-1):1){
+        w = dnorm(xb[t+1,j],xs[t,],tau)
+        w = w/sum(w)
+        xb[t,j] = sample(xs[t,],size=1,prob=w)
+      }
+    }
+    return(list(xs=xs,ws=ws,xb=xb))
+  }else{}
+  
+  return(list(xs=xs,ws=ws,ess=ess))
 }
 #again a post estimation command
 SISRfilterplot<-function(data,sisrfun){
@@ -199,8 +238,8 @@ ESSARfun<-function(data,N,m0,C0,tau,sigma){
   wnorm= w/sum(w)
   ESS  = 1/sum(wnorm^2)  
   for(t in 1:length(data)){
-   
-     if(ESS<(N/2)){
+    
+    if(ESS<(N/2)){
       x  =  rnorm(N,draw,tau)
       w   = dnorm(data[t],x,sigma)
       wnorm= w/sum(w)
@@ -240,10 +279,10 @@ BPFfun<-function(data,N,m0,C0,tau,sigma){
       x<-x[index]
       wnorm<-rep(1/N,N)
       
-      }else{}
+    }else{}
     
     draw   = sample(x,size=N,replace=T,prob=wnorm)
-      
+    
     xs = rbind(xs,draw)
     ws = rbind(ws,wnorm)
     ess =rbind(ess,ESS)
@@ -284,7 +323,8 @@ APFfun<-function(data,N,m0,C0,tau,sigma){
 
 #APF no ESS based resampling
 #---------------------------
-APFfun<-function(data,N,m0,C0,tau,sigma){
+NAMEfun<-function(data,N,m0,C0,tau,sigma,smooth){
+  if(missing(smooth)){smooth=F}
   ws  = NULL
   xs  = NULL
   ess = NULL
@@ -303,6 +343,20 @@ APFfun<-function(data,N,m0,C0,tau,sigma){
     ws  = rbind(ws,w/sum(w))
     ess = c(ess,ESS)
   }
+  
+  if(smooth){
+    xb = matrix(0,n,N)
+    for (j in 1:N){
+      xb[n,j] = xs[n,j]
+      for (t in (n-1):1){
+        w = dnorm(xb[t+1,j],xs[t,],tau)
+        w = w/sum(w)
+        xb[t,j] = sample(xs[t,],size=1,prob=w)
+      }
+    }
+    return(list(xs=xs,ws=ws,xb=xb))
+  }else{}
+  
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
@@ -347,3 +401,27 @@ Filterplot<-function(data,fun,title){
     theme_bw()+
     theme(plot.title = element_text(hjust = 0.5))
 }
+
+Smoothplot<-function(data,fun,title){
+    require(ggplot2)
+    mx = apply(fun$xb,1,median)
+    lx = apply(fun$xb,1,q025)
+    ux = apply(fun$xb,1,q975)
+    
+    timeframe<-c(1:length(data))
+    df<-data.frame(timeframe,data,mx,lx,ux)
+    
+    ggplot(df,aes(x=timeframe))+
+      geom_line(aes(y=data))+
+      geom_line(aes(y=mx),col="blue")+
+      geom_ribbon(aes(ymin = lx, ymax = ux),
+                  fill="red",alpha=0.16) +
+      labs(x="Time",
+           y="")+
+      ggtitle(title)+
+      theme_bw()+
+      theme(plot.title = element_text(hjust = 0.5))
+  
+}
+
+
