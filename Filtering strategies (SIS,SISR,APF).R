@@ -188,6 +188,8 @@ SISRfilterplot<-function(data,sisrfun){
 
 #ESS-based Adaptive Resampling
 #-----------------------------
+g<-ESSARfun(y,1000,0,100,1,1)
+s<-SISRfun(y,1000,0,100,1,1)
 ESSARfun<-function(data,N,m0,C0,tau,sigma){
   xs<-NULL
   ws<-NULL
@@ -195,15 +197,14 @@ ESSARfun<-function(data,N,m0,C0,tau,sigma){
   x  = rnorm(N,m0,sqrt(C0))
   w  = rep(1/N,N)
   wnorm= w/sum(w)
+  ESS  = 1/sum(wnorm^2)  
   for(t in 1:length(data)){
-   
-    ESS  = 1/sum(wnorm^2)  
    
      if(ESS<(N/2)){
       x  =  rnorm(N,draw,tau)
       w   = dnorm(data[t],x,sigma)
       wnorm= w/sum(w)
-      draw   = sample(x,size=N,replace=T,prob=w)
+      draw   = sample(x,size=N,replace=T,prob=wnorm)
       xs = rbind(xs,draw)
     }else{
       x    = rnorm(N,x,tau) 
@@ -212,12 +213,46 @@ ESSARfun<-function(data,N,m0,C0,tau,sigma){
       draw = sample(x,size=N,replace=T,prob=wnorm)
       xs = rbind(xs,draw)}
     
+    ESS  = 1/sum(wnorm^2)  
     ws = rbind(ws,wnorm)
     ess =rbind(ess,ESS)
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
+#ESS-based adaptive resampling specificato da libro Petris
+#---------------------------------------------------------
+BPFfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  for(t in 1:length(data)){
+    
+    x    = rnorm(N,x,tau) 
+    w    = w*dnorm(data[t],x,sigma)
+    wnorm= w/sum(w)
+    ESS  = 1/sum(wnorm^2)  
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=wnorm)
+      x<-x[index]
+      w<-rep(1/N,N)
+      wnorm= w/sum(w)
+    }else{}
+    
+    draw   = sample(x,size=N,replace=T,prob=wnorm)
+      
+    xs = rbind(xs,draw)
+    ws = rbind(ws,wnorm)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+b<-BPFfun(y,1000,0,100,1,1)
+Filterplot(y,b,title="")
 
 #Auxiliary Particle Filter
 #-------------------------
