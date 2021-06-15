@@ -151,6 +151,7 @@ xs  = NULL
 ess = NULL
 x   = rnorm(N,m0,sqrt(C0))
 w   = rep(1/N,N)
+n   = length(data)
 for (t in 1:n){
   x1  = rnorm(N,x,tau)
   w   = dnorm(data[t],x1,sigma)
@@ -184,6 +185,39 @@ SISRfilterplot<-function(data,sisrfun){
     theme_bw()+
     theme(plot.title = element_text(hjust = 0.5))
 }
+
+#ESS-based Adaptive Resampling
+#-----------------------------
+ESSARfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  wnorm= w/sum(w)
+  for(t in 1:length(data)){
+   
+    ESS  = 1/sum(wnorm^2)  
+   
+     if(ESS<(N/2)){
+      x  =  rnorm(N,draw,tau)
+      w   = dnorm(data[t],x,sigma)
+      wnorm= w/sum(w)
+      draw   = sample(x,size=N,replace=T,prob=w)
+      xs = rbind(xs,draw)
+    }else{
+      x    = rnorm(N,x,tau) 
+      w    = w*dnorm(data[t],x,sigma)
+      wnorm= w/sum(w)
+      draw = sample(x,size=N,replace=T,prob=wnorm)
+      xs = rbind(xs,draw)}
+    
+    ws = rbind(ws,wnorm)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
 
 #Auxiliary Particle Filter
 #-------------------------
@@ -230,8 +264,6 @@ SISRplot<-function(data,sisrfun){
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-
-
 #Filtervalues is a function that computes the mean
 #and the variance of a SISR already estimated (post estimation command)
 Filtervalues<-function(fun){
@@ -250,4 +282,25 @@ plot(sqrt(C),type="l",ylim=c(0.4,1))
 par(new=T)
 plot(Var,type="l",col="red",ylim=c(0.4,1))
 
-
+#Filterplot is a function similar to Filtervalues 
+#returning plots of median and quantiles
+Filterplot<-function(data,fun,title){
+  require(ggplot2)
+  mx = apply(fun$xs,1,median)
+  lx = apply(fun$xs,1,q025)
+  ux = apply(fun$xs,1,q975)
+  
+  timeframe<-c(1:length(data))
+  df<-data.frame(timeframe,data,mx,lx,ux)
+  
+  ggplot(df,aes(x=timeframe))+
+    geom_line(aes(y=data))+
+    geom_line(aes(y=mx),col="red")+
+    geom_ribbon(aes(ymin = lx, ymax = ux),
+                fill="red",alpha=0.16) +
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(plot.title = element_text(hjust = 0.5))
+}
