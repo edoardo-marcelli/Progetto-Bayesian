@@ -238,9 +238,9 @@ BPFfun<-function(data,N,m0,C0,tau,sigma){
     if(ESS<(N/2)){
       index<-sample(N,size=N,replace=T,prob=wnorm)
       x<-x[index]
-      w<-rep(1/N,N)
-      wnorm= w/sum(w)
-    }else{}
+      wnorm<-rep(1/N,N)
+      
+      }else{}
     
     draw   = sample(x,size=N,replace=T,prob=wnorm)
       
@@ -251,8 +251,8 @@ BPFfun<-function(data,N,m0,C0,tau,sigma){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
-#Auxiliary Particle Filter
-#-------------------------
+#Auxiliary Particle Filter (ESS-based resampli)
+#----------------------------------------------
 APFfun<-function(data,N,m0,C0,tau,sigma){
   ws  = NULL
   xs  = NULL
@@ -260,7 +260,38 @@ APFfun<-function(data,N,m0,C0,tau,sigma){
   x   = rnorm(N,m0,sqrt(C0))
   w   = rep(1/N,N)
   for (t in 1:n){
-    w0  = dnorm(data[t],x,sigma)
+    w0  = w*dnorm(data[t],x,sigma)
+    k   = sample(1:N,size=N,replace=TRUE,prob=w0)
+    x1  = rnorm(N,x[k],tau)
+    lw  = dnorm(data[t],x1,sigma,log=TRUE)-dnorm(data[t],x[k],sigma,log=TRUE)
+    w   = exp(lw-max(lw))
+    w   = w/sum(w)
+    ESS = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x1<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    x   = sample(x1,size=N,replace=T,prob=w)
+    xs  = rbind(xs,x)
+    ws  = rbind(ws,w)
+    ess = c(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#APF no ESS based resampling
+#-------------
+APFfun<-function(data,N,m0,C0,tau,sigma){
+  ws  = NULL
+  xs  = NULL
+  ess = NULL
+  x   = rnorm(N,m0,sqrt(C0))
+  w   = rep(1/N,N)
+  for (t in 1:n){
+    w0  = w*dnorm(data[t],x,sigma)
     k   = sample(1:N,size=N,replace=TRUE,prob=w0)
     x1  = rnorm(N,x[k],tau)
     lw  = dnorm(data[t],x1,sigma,log=TRUE)-dnorm(data[t],x[k],sigma,log=TRUE)
@@ -274,6 +305,9 @@ APFfun<-function(data,N,m0,C0,tau,sigma){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
+
+
+
 
 #.................................................
 #Filtervalues is a function that computes the mean
