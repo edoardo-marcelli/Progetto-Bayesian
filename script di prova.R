@@ -2,6 +2,11 @@ library(usethis)
 
 use_git_config(user.name = "edoardo-marcelli", 
                user.email = "edoardomarcelli2@gmail.com")
+use_git_config(user.name = "michelebolla", 
+               user.email = "michele.bolla@studbocconi.it")
+
+
+
 #@@@@@@@@@@@@@@@@@@@@##
 #SEQUENTIAL MONTECARLO#
 #@@@@@@@@@@@@@@@@@@@@##
