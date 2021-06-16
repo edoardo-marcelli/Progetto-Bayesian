@@ -135,7 +135,7 @@ SISfun<-function(data,N,m0,C0,tau,sigma,smooth){
         xb[t,j] = sample(xs[t,],size=1,prob=w)
       }
     }
-    return(list(xs=xs,ws=ws,xb=xb))
+    return(list(xs=xs,ws=ws,ess=ess,xb=xb))
   }else{}
   
     return(list(xs=xs,ws=ws,ess=ess))
@@ -143,30 +143,6 @@ SISfun<-function(data,N,m0,C0,tau,sigma,smooth){
 #Nota: il SIS così costruito (Chopin-Papastiliopoluos) 
 #ha problemi con i pesi infatti wnorm dopo un po di iteraioni 
 #è un vettore (0,0,...,0,1) dopodichè da errore
-
-#post-estimation command: plot the filtered states
-SISfilterplot<-function(data,sisfun){
-  require(ggplot2)
-  mx = apply(sisfun$xs,1,median)
-  lx = apply(sisfun$xs,1,q025)
-  ux = apply(sisfun$xs,1,q975)
-  
-  timeframe<-c(1:length(data))
-  SIS.df<-data.frame(timeframe,data,mx,lx,ux)
-  
-  ggplot(SIS.df,aes(x=timeframe))+
-    geom_line(aes(y=data))+
-    geom_line(aes(y=mx),col="red")+
-    geom_ribbon(aes(ymin = lx, ymax = ux),
-                fill="red",alpha=0.16) +
-    labs(x="Time",
-         y="")+
-    ggtitle("SIS filter")+
-    theme_bw()+
-    theme(plot.title = element_text(hjust = 0.5))
-}
-
-a<-SISRfun(y,1000,0,100,1,1)
 
 #Sequential Importance Sampling with Resampling
 #----------------------------------------------
@@ -198,31 +174,10 @@ SISRfun<-function(data,N,m0,C0,tau,sigma,smooth){
         xb[t,j] = sample(xs[t,],size=1,prob=w)
       }
     }
-    return(list(xs=xs,ws=ws,xb=xb))
+    return(list(xs=xs,ws=ws,ess=ess,xb=xb))
   }else{}
   
   return(list(xs=xs,ws=ws,ess=ess))
-}
-#again a post estimation command
-SISRfilterplot<-function(data,sisrfun){
-  require(ggplot2)
-  mx = apply(sisrfun$xs,1,median)
-  lx = apply(sisrfun$xs,1,q025)
-  ux = apply(sisrfun$xs,1,q975)
-  
-  timeframe<-c(1:length(data))
-  SIS.df<-data.frame(timeframe,data,mx,lx,ux)
-  
-  ggplot(SIS.df,aes(x=timeframe))+
-    geom_line(aes(y=data))+
-    geom_line(aes(y=mx),col="red")+
-    geom_ribbon(aes(ymin = lx, ymax = ux),
-                fill="red",alpha=0.16) +
-    labs(x="Time",
-         y="")+
-    ggtitle("SISR filter")+
-    theme_bw()+
-    theme(plot.title = element_text(hjust = 0.5))
 }
 
 #ESS-based Adaptive Resampling
@@ -354,7 +309,7 @@ NAMEfun<-function(data,N,m0,C0,tau,sigma,smooth){
         xb[t,j] = sample(xs[t,],size=1,prob=w)
       }
     }
-    return(list(xs=xs,ws=ws,xb=xb))
+    return(list(xs=xs,ws=ws,ess=ess,xb=xb))
   }else{}
   
   return(list(xs=xs,ws=ws,ess=ess))
