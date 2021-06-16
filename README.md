@@ -11,6 +11,9 @@ a Roberto e Gabriele).
 Lo script "Filtering+Smothing" riprende quello appena descritto aggiungendo un piccolo ciclo in alcune funzioni che permette di ottenere gli smoothing parameters,
 la fonte è https://arxiv.org/pdf/1011.1098.pdf .
 
+Gli altri file sono un pò inutili.
+
+
 
 
 
