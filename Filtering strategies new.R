@@ -288,6 +288,74 @@ NAMEfun<-function(data,N,m0,C0,tau,sigma,smooth){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
+# Liu and West filter
+# -------------------
+set.seed(8642)
+N      = 10
+
+LWfun<-function(data,N,m0,C0,v0,V0,w0,W0,delta){
+  
+  xs     = rnorm(N,m0,sqrt(C0))
+  pars   = cbind(rgamma(N,v0,V0),rgamma(N,w0,W0))
+  #pars   = cbind(runif(N,0,10),runif(N,0,10))
+  a      = (3*delta-1)/(2*delta)
+  h2     = 1-a^2
+  parss  = array(0,c(N,2,n))
+  xss    = NULL
+  ws     = NULL
+  ESS    = NULL
+  w      = rep(1/N,N)
+  for (t in 1:length(data)){
+    meanV = weighted.mean(pars[,1],w)
+    varV  = weighted.mean((pars[,1]-meanV)^2,w)
+    meanW = weighted.mean(pars[,2],w)
+    varW  = weighted.mean((pars[,2]-meanW)^2,w)
+    
+    muV = a*pars[,1]+(1-a)*meanV
+    sigma2V = (1-a^2)*varV
+    alphaV = muV^2/sigma2V
+    betaV = muV/sigma2V
+    
+    muW = a*pars[,1]+(1-a)*meanW
+    sigma2W = (1-a^2)*varW
+    alphaW = muW^2/sigma2W
+    betaW = muW/sigma2W
+    
+    weight      = w*dnorm(data[t],xs,sqrt(muV))
+    k           = sample(1:N,size=N,replace=T,prob=weight)
+    
+    pars[,1]<-rgamma(N,shape=alphaV[k],rate=betaV[k])
+    pars[,2]<-rgamma(N,shape=alphaW[k],rate=betaW[k])
+    
+    xsprevious<-xs[k]
+    xs = rnorm(N,xs[k],sqrt(pars[,2]))
+    
+    w           = exp(dnorm( data[t],xs,sqrt(pars[,1]),log=T)-
+                        dnorm( data[t],xsprevious,sqrt(muV[k]),log=T))
+    w           = w/sum(w)
+    ESS         = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      xs<-xs[index]
+      pars<-pars[index,]
+      w<-rep(1/N,N)
+    }else{
+      xs<-xs
+      pars<-pars
+    }
+    
+    
+    xss         = rbind(xss,xs)
+    parss[,,t]  = pars 
+    ws          = rbind(ws,w)
+  }
+  return(list(xss=xss,parss=parss,ws=ws))
+}
+
+
+
+
 #.................................................
 #Filtervalues is a function that computes the mean
 #and the variance of a SISR already estimated (post estimation command)
