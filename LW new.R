@@ -42,20 +42,20 @@ C0      = 0.1
 sC0     = sqrt(C0)
 ealpha  = alpha
 valpha  = 0.01
-ephi    = beta
-vphi    = 0.01
+ebeta    = beta
+vbeta    = 0.01
 nu      = 3
 lambda  = tau2
 
 # Liu and West filter
 # -------------------
 set.seed(8642)
-N      = 5000
+N      = 50000
 
-LWfun<-function(data,N,m0,C0,)
+LWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 
 xs     = rnorm(N,m0,sqrt(C0))
-pars   = cbind(rnorm(N,ealpha,sqrt(valpha)),rnorm(N,ephi,sqrt(vphi)),
+pars   = cbind(rnorm(N,ealpha,sqrt(valpha)),rnorm(N,ebeta,sqrt(vbeta)),
                log(1/rgamma(N,nu/2,nu*lambda/2)))
 delta  = 0.75
 a      = (3*delta-1)/(2*delta)
@@ -65,12 +65,12 @@ xss    = NULL
 ws     = NULL
 ESS    = NULL
 w      = rep(1/N,N)
-for (t in 1:n){
+for (t in 1:length(data)){
   mpar        = apply(pars,2,mean)
   vpar        = var(pars)
   ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
   mus         = pars[,1]+pars[,2]*xs 
-  weight      = w*dnorm(y[1],0,exp(mus/2))
+  weight      = w*dnorm(data[t],0,exp(mus/2))
   k           = sample(1:N,size=N,replace=T,prob=weight)
   ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
   xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
@@ -82,7 +82,7 @@ for (t in 1:n){
   if(ESS<(N/2)){
     index<-sample(N,size=N,replace=T,prob=w)
     xs<-xt[index]
-    pars<-ms1[index]
+    pars<-ms1[index,]
     w<-rep(1/N,N)
   }else{
     xs<-xt
@@ -93,3 +93,7 @@ for (t in 1:n){
   parss[,,t]  = pars 
   ws          = rbind(ws,w)
 }
+return(list(xss=xss,parss=parss,ws=ws))
+}
+
+l<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
