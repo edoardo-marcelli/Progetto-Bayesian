@@ -71,7 +71,7 @@ C<-filtval$C
 Low = m + qnorm(0.025)*sqrt(C)
 Up = m + qnorm(0.975)*sqrt(C)
 
-#Put everything in a data frate (for ggplot)
+#Put everything in a data frame (for ggplot)
 timeframe<-c(1:length(y))
 DLM.df<-data.frame(timeframe,y,x,m,C,Low,Up)
 
