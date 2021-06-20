@@ -156,12 +156,15 @@ SISRfun<-function(data,N,m0,C0,tau,sigma,smooth){
   n   = length(data)
   for (t in 1:n){
     x1  = rnorm(N,x,tau)
-    w   = dnorm(data[t],x1,sigma)
-    w   = w/sum(w)
-    ESS = 1/sum(w^2)
-    x   = sample(x1,size=N,replace=T,prob=w)
+    w1   = w*dnorm(data[t],x1,sigma)
+    x   = sample(x1,size=N,replace=T,prob=w1)
+    w   = rep(1/N,N)
+    
     xs  = rbind(xs,x)
-    ws  = rbind(ws,w/sum(w))
+    ws  = rbind(ws,w)
+    
+    wnorm   = w/sum(w)
+    ESS = 1/sum(wnorm^2)
     ess = c(ess,ESS)
   }
   if(smooth){
@@ -184,6 +187,7 @@ SISRfun<-function(data,N,m0,C0,tau,sigma,smooth){
 #-----------------------------
 g<-ESSARfun(y,1000,0,100,1,1)
 s<-SISRfun(y,1000,0,100,1,1)
+
 ESSARfun<-function(data,N,m0,C0,tau,sigma){
   xs<-NULL
   ws<-NULL
@@ -194,15 +198,24 @@ ESSARfun<-function(data,N,m0,C0,tau,sigma){
   ESS  = 1/sum(wnorm^2)  
   for(t in 1:length(data)){
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     if(ESS<(N/2)){
-      x  =  rnorm(N,draw,tau)
-      w   = dnorm(data[t],x,sigma)
-      wnorm= w/sum(w)
+      x   =  rnorm(N,draw,tau)
+      w   = wnorm*dnorm(data[t],x,sigma)
+      wnorm = w/sum(w)
       draw   = sample(x,size=N,replace=T,prob=wnorm)
       xs = rbind(xs,draw)
     }else{
       x    = rnorm(N,x,tau) 
-      w    = w*dnorm(data[t],x,sigma)
+      w    = wnorm*dnorm(data[t],x,sigma)
       wnorm= w/sum(w)
       draw = sample(x,size=N,replace=T,prob=wnorm)
       xs = rbind(xs,draw)}
@@ -258,7 +271,7 @@ APFfun<-function(data,N,m0,C0,tau,sigma){
     k   = sample(1:N,size=N,replace=TRUE,prob=w0)
     x1  = rnorm(N,x[k],tau)
     lw  = dnorm(data[t],x1,sigma,log=TRUE)-dnorm(data[t],x[k],sigma,log=TRUE)
-    w   = exp(lw-max(lw))
+    w   = exp(lw)
     w   = w/sum(w)
     ESS = 1/sum(w^2)
     
@@ -328,6 +341,7 @@ Filtervalues<-function(fun){
   
 }
 #Example of Comparison (do in GGPLOT if possible)
+N<-1000
 h<-SISRfun(y,N,m0,C0,tau,sigma)
 Var<-Filtervalues(h)$var
 plot(sqrt(C),type="l",ylim=c(0.4,1))

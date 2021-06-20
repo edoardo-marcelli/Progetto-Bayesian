@@ -1,0 +1,79 @@
+---
+title: "Comparison"
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+library(ggpubr)
+library(kableExtra)
+Kalmanvarplot<-ggplot(DLM.df,aes(x=timeframe))+
+  geom_line(aes(y=C))+
+  labs(x="Time",
+       y="")+
+  ggtitle("Kalman Filter")+
+  theme_bw()
+
+
+Varplot<-function(dataframe,fun,title){
+
+Filt<-Filtervalues(fun)
+mean<-Filt$mean
+sd<-Filt$sd
+dataframe<-data.frame(dataframe,mean,sd)
+
+ggplot(dataframe,aes(x=timeframe))+
+geom_line(aes(y=sd))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()
+
+}
+
+
+Varsisplot<-Varplot(dt,sis,"SIS")
+Varpfplot<-Varplot(dt,pf,"PF")
+Varapfplot<-Varplot(dt,pf,"APF")
+Varlwplot<-Varplot(dt,pf,"LW")
+
+ggarrange(Kalmanvarplot,Varsisplot,Varpfplot,Varapfplot,Varlwplot)
+
+```
+
+```{r}
+truex<-x
+estimatedx<-matrix(NA,ncol=5,nrow=3)
+colnames(estimatedx)<-c("N","KF","PF","APF","LWF")
+estimatedx[,1]<-c(20,100,500)
+RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
+
+
+i=1
+for(N in c(20,100,500)){
+
+DLM1<-DLM(y,sigma2,tau2,m0,C0)
+pf1<-PFfun(y,N,m0,C0,tau,sigma)
+apf1<-APFfun(y,N,m0,C0,tau,sigma)
+lwf1<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T)
+
+
+estimatedx[i,2]<-RMSE(truex,DLM1$m)
+estimatedx[i,3]<-RMSE(truex,Filtervalues(pf1)$mean)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(apf1)$mean)
+estimatedx[i,5]<-RMSE(truex,Filtervalues(lwf1)$mean)
+i=i+1
+
+}
+
+
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
+```
+
+
+

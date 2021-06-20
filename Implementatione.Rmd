@@ -1,0 +1,161 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+```{r include=FALSE}
+library(ggplot2)
+q025=function(x){quantile(x,0.025)}
+q975=function(x){quantile(x,0.975)}
+```
+
+
+
+\section{Implementation}
+
+In this section we present some practical illustrations of the algorithms previously discussed. We start by considering a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
+\begin{align}
+y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
+x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
+x_{0} & \sim N(m_{0},C_{0})
+\end{align}
+As we already know, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example is useful to understand the logic of the algorithms and compare the performances of different filtering strategies. \
+\
+\textbf{Kalman Filter}
+\
+The Kalman Filter for this model can be easily implemented. Starting from the filtering distribution at period $t-1$, $x_{t-1}|y_{1:t-1} \sim N(m_{t-1},C_{t-1})$, we compute:
+\begin{itemize}
+\item the one-step-ahead predictive distribution at time $t-1$
+\begin{align*}
+x_{t}|y_{1:t-1} & \sim N(a_{t},R_{t})\\
+a_{t} & = m_{t-1}\\
+R_{t} & = C_{t-1}+\tau^2
+\end{align*}
+\item the filtering distribution at time $t$ as $p(x_{t}|y_{1:t}) \propto p(x_{t}|y_{1:t-1})p(y_{t}|x_{t})$
+\begin{align*}
+x_{t}|y_{1:t} & \sim N(m_{t},C_{t}) \\
+m_{t} & = \big(1-\frac{R_{t}}{R_{t}+\sigma^2}\big)a_{t}+\frac{R_{t}}{R_{t}+\sigma^2}y_{t} \\
+C_{t} & = \frac{R_{t}}{R_{t}+\sigma^2}\sigma^2
+\end{align*}
+\end{itemize}
+```{r}
+DLM<-function(data,sig2,tau2,m0,C0){
+  n  = length(data)
+  m  = rep(0,n)
+  C  = rep(0,n)
+  for (t in 1:n){
+    if (t==1){
+      a = m0
+      R = C0 + tau2
+    }else{
+      a = m[t-1]
+      R = C[t-1] + tau2
+    }
+    A = R/(R+sig2)
+    m[t] = (1-A)*a + A*y[t]
+    C[t] = A*sig2
+  }
+  return(list(m=m,C=C))
+}
+```
+\
+\textbf{Sequential Importance Sampling}
+\
+Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \frac{1}{N}\sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. For $t=1,...,n$ where $n$ is the length of the sample, at any iteration
+\begin{itemize}
+\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\end{itemize}
+```{r}
+SISfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  for(t in 1:length(data)){
+    x    = rnorm(N,x,tau)                   #sample from N(x_{t-1},tau)
+    w    = w*dnorm(data[t],x,sigma)         #update weight
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    
+    wnorm= w/sum(w)                         #normalized weight
+    ESS  = 1/sum(wnorm^2)                   #effective sample size
+    
+    ess =rbind(ess,ESS)
+  }
+  
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+
+```{r}
+
+```
+
+
+
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#Generate a random walk plus noise
+#---------------------------------
+#n = sample dim
+#sigma = obs noise variance
+#tau = state noise variance
+#x0 = init state
+
+dlm.sim = function(n,sigma,tau,x0){
+  x    = rep(0,n)  #state process
+  y    = rep(0,n)  #obs process
+  x[1] = rnorm(1,x0,tau)
+  y[1] = rnorm(1,x[1],sigma)
+  for (t in 2:n){
+    x[t] = rnorm(1,x[t-1],tau)
+    y[t] = rnorm(1,x[t],sigma)
+  }
+  return(list(x=x,y=y))
+}
+n=500
+tau2=1
+sigma2=1
+sigma=sqrt(sigma2)
+tau=sqrt(tau2)
+x0=0
+set.seed(1990)
+sim<-dlm.sim(n,sigma,tau,x0)
+y<-sim$y
+x<-sim$x
+
+#Kalman Filter
+#-------------
+m0=0
+C0=100
+filtval<-DLM(y,sigma2,tau2,m0,C0)
+m<-filtval$m
+C<-filtval$C
+Low = m + qnorm(0.025)*sqrt(C)
+Up = m + qnorm(0.975)*sqrt(C)
+
+#Put everything in a data frate (for ggplot)
+timeframe<-c(1:length(y))
+DLM.df<-data.frame(timeframe,y,x,m,C,Low,Up)
+
+#Plots (observetions in black and filtered states in red)
+ggplot(DLM.df,aes(x=timeframe))+
+  geom_line(aes(y=y))+
+  geom_line(aes(y=m),col="red")+
+  geom_ribbon(aes(ymin = Low, ymax = Up),
+              fill="red",alpha=0.16) +
+  labs(x="Periods",
+       y="")+
+  ggtitle("Kalman Filter")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+```
+
+
