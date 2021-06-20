@@ -82,11 +82,11 @@ C<-filtval$C
 Low = m + qnorm(0.025)*sqrt(C)
 Up = m + qnorm(0.975)*sqrt(C)
 
-#Put everything in a data frate (for ggplot)
+#Put everything in a data frame (for ggplot)
 timeframe<-c(1:length(y))
 DLM.df<-data.frame(timeframe,y,x,m,C,Low,Up)
 
-#Plots (observetions in black and filtered states in red)
+#Plots (observations in black and filtered states in red)
 ggplot(DLM.df,aes(x=timeframe))+
   geom_line(aes(y=y))+
   geom_line(aes(y=m),col="red")+
@@ -143,8 +143,8 @@ SISfun<-function(data,N,m0,C0,tau,sigma,smooth){
 }
 
 #Nota: il SIS così costruito (Chopin-Papastiliopoluos) 
-#ha problemi con i pesi infatti wnorm dopo un po di iteraioni 
-#è un vettore (0,0,...,0,1) dopodichè da errore
+#ha problemi con i pesi infatti wnorm dopo un po' di iterazioni 
+#è un vettore (0,0,...,0,1) dopodichè dà errore
 
 #Sequential Importance Sampling with Resampling
 #----------------------------------------------
