@@ -285,9 +285,6 @@ GPFfun<-function(data,N,m0,C0,tau,sigma){
 
 
 
-
-
-
 #Auxiliary Particle Filter (ESS-based resampling)
 #------------------------------------------------
 APFfun<-function(data,N,m0,C0,tau,sigma){
@@ -366,11 +363,14 @@ NAMEfun<-function(data,N,m0,C0,tau,sigma,smooth){
 set.seed(8642)
 N      = 10
 
-LWfun<-function(data,N,m0,C0,v0,V0,w0,W0,delta){
+LWfun<-function(data,N,m0,C0,alphav,betav,alphaw,betaw,delta){
   
   xs     = rnorm(N,m0,sqrt(C0))
-  pars   = cbind(rgamma(N,v0,V0),rgamma(N,w0,W0))
-  #pars   = cbind(runif(N,0,10),runif(N,0,10))
+  if(missing(c(alphav,betav,alphaw,betaw))){
+    pars   = cbind(runif(N,0,10),runif(N,0,10))
+  }else{
+  pars   = cbind(rgamma(N,shape=alphav,scale=betav),rgamma(N,shape=alphaw,scale=betaw))
+  }
   a      = (3*delta-1)/(2*delta)
   h2     = 1-a^2
   parss  = array(0,c(N,2,n))
