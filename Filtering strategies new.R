@@ -29,7 +29,7 @@ dlm.sim = function(n,sigma,tau,x0){
 #---------------------
 #y = observed data
 
-DLM<-function(data,sig2,tau2,m0,C0){
+DLM<-function(data,sig2,tau2,m0,C0,smooth){
   n  = length(data)
   m  = rep(0,n)
   C  = rep(0,n)
@@ -214,6 +214,79 @@ PFfun<-function(data,N,m0,C0,tau,sigma){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
+
+
+
+#Guided Particle Filter
+#----------------------
+GPFfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    x<-rnorm(N,x,tau)
+    w1<-w*dnorm(data[t],x,sigma)*dnorm(x,xprev,tau)*I(x>0)/dnorm(x,xprev,tau)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+a<-PFfun(y,1000,0,100,1,1)
+s<-sample(a$xs[200,],replace=T,prob=a$ws[200,])
+#
+#
+#Guided Particle Filter
+#----------------------
+GPFfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    x<-rnorm(N,x,tau)
+    w1<-w*dnorm(data[t],x,sigma)*dunif(x,xprev,xprev+10)/dnorm(x,xprev,tau)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+
+
+
+
 
 #Auxiliary Particle Filter (ESS-based resampling)
 #------------------------------------------------

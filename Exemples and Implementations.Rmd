@@ -1,0 +1,504 @@
+---
+title: "R Notebook"
+output:
+  pdf_document: default
+  html_notebook: default
+---
+
+\textbf{Implementation}
+
+In this section we present some practical illustrations of the algorithm discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
+\begin{align}
+y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
+x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
+x_{0} & \sim N(m_{0},C_{0})
+\end{align}
+As we already know, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be the basis for the implementations of other filtering strategies since we think that it is useful to understand the logic of the algorithms and to compare their performances.
+The typical observed process for this kind of model is the one presented in Figure XX. We simulated 500 observation imposing $\sigma^{2}=\tau^{2}=1$.
+```{r echo=FALSE, fig.align='center', fig.cap="Toy example: the true states and the observation sequence", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+library(ggplot2)
+q025=function(x){quantile(x,0.025)}
+q975=function(x){quantile(x,0.975)}
+
+
+set.seed(1991)
+dlm.sim = function(n,sigma,tau,x0){
+  x    = rep(0,n)  #state process
+  y    = rep(0,n)  #obs process
+  x[1] = rnorm(1,x0,tau)
+  y[1] = rnorm(1,x[1],sigma)
+  for (t in 2:n){
+    x[t] = rnorm(1,x[t-1],tau)
+    y[t] = rnorm(1,x[t],sigma)
+  }
+  return(list(x=x,y=y))
+}
+
+n=50
+tau2=1
+sigma2=1
+sigma=sqrt(sigma2)
+tau=sqrt(tau2)
+x0=0
+
+sim<-dlm.sim(n,sigma,tau,x0)
+y<-sim$y
+x<-sim$x
+
+timeframe<-c(1:length(y))
+df<-data.frame(timeframe,y,x)
+
+ggplot(df,aes(x=timeframe))+
+  geom_line(aes(y=y, linetype="Observations"))+
+  geom_line(aes(y=x, linetype="True States"))+
+  scale_linetype_manual(name="",
+                      values=c("Observations" = 1,
+                               "True States" = 3))+
+  labs(x="Time",
+       y="")+
+  ggtitle("States and Observations")+
+  theme_bw()+
+  theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+The Kalman Filter for this model can be easily implemented. Starting from the filtering distribution at period $t-1$, $x_{t-1}|y_{1:t-1} \sim N(m_{t-1},C_{t-1})$, we compute:
+\begin{itemize}
+\item the one-step-ahead predictive distribution at time $t-1$
+\begin{align*}
+x_{t}|y_{1:t-1} & \sim N(a_{t},R_{t})\\
+a_{t} & = m_{t-1}\\
+R_{t} & = C_{t-1}+\tau^2
+\end{align*}
+\item the filtering distribution at time $t$ as $p(x_{t}|y_{1:t}) \propto p(x_{t}|y_{1:t-1})p(y_{t}|x_{t})$
+\begin{align*}
+x_{t}|y_{1:t} & \sim N(m_{t},C_{t}) \\
+m_{t} & = \big(1-\frac{R_{t}}{R_{t}+\sigma^2}\big)a_{t}+\frac{R_{t}}{R_{t}+\sigma^2}y_{t} \\
+C_{t} & = \frac{R_{t}}{R_{t}+\sigma^2}\sigma^2
+\end{align*}
+\end{itemize}
+```{r}
+DLM<-function(data,sig2,tau2,m0,C0){
+  n  = length(data)
+  m  = rep(0,n)
+  C  = rep(0,n)
+  for (t in 1:n){
+    if (t==1){
+      a = m0
+      R = C0 + tau2
+    }else{
+      a = m[t-1]
+      R = C[t-1] + tau2
+    }
+    A = R/(R+sig2)
+    m[t] = (1-A)*a + A*y[t]
+    C[t] = A*sig2
+  }
+  return(list(m=m,C=C))
+}
+```
+In the Figure below we show the filtered states states estimated using Kalman Filter with $x_{0} \sim N(0,100)$. The filtered states follow the observations closely and they provide a good approximation of the true states.
+```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+#Kalman Filter
+#-------------
+m0=0
+C0=100
+filtval<-DLM(y,sigma2,tau2,m0,C0)
+m<-filtval$m
+C<-filtval$C
+Low = m + qnorm(0.025)*sqrt(C)
+Up = m + qnorm(0.975)*sqrt(C)
+
+#Put everything in a data frate (for ggplot)
+timeframe<-c(1:length(y))
+DLM.df<-data.frame(timeframe,y,x,m,C,Low,Up)
+
+#Plots (observetions in black and filtered states in red)
+ggplot(DLM.df,aes(x=timeframe))+
+  geom_line(aes(y=y, col="Observations", linetype="Observations"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=m, col="Filtered States", linetype="Filtered States"))+
+  geom_ribbon(aes(ymin = Low, ymax = Up),
+              fill="red",alpha=0.16) +
+    scale_color_manual("",
+                      values=c("Observations" = "black",
+                               "True States" = "black",
+                               "Filtered States"= "red"))+
+  scale_linetype_manual("",
+                      values=c("Observations" = 1,
+                               "True States" = 3,
+                               "Filtered States"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle("Kalman Filter")+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+\textbf{Implementation}
+With reference to the random walk plus noise of section XX, let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \frac{1}{N}\sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. For $t=1,...,n$ where $n$ is the length of the sample, at any iteration
+\begin{itemize}
+\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\end{itemize}
+```{r}
+SISfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  for(t in 1:length(data)){
+    x    = rnorm(N,x,tau)                   #sample from N(x_{t-1},tau)
+    w    = w*dnorm(data[t],x,sigma)         #update weight
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    
+    wnorm= w/sum(w)                         #normalized weight
+    ESS  = 1/sum(wnorm^2)                   #effective sample size
+    
+    ess =rbind(ess,ESS)
+  }
+  
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+```{r echo=FALSE}
+N=1000
+sis<-SISfun(y,N,m0,C0,tau,sigma)
+sisxs<-sis$xs
+sisws<-sis$ws
+sisess<-sis$ess
+sis.data<-data.frame(df,sisxs,sisws,sisess)
+
+ggplot(sis.data,aes(x=timeframe))+
+  geom_line(aes(y=sisess))+
+    labs(x="Time",
+       y="")+
+  ggtitle("Effective Sample size")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="SIS Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+Filtervalues<-function(fun){
+  xhat<-sapply(1:n,function(i)
+    weighted.mean(fun$xs[i,],fun$ws[i,]))
+  sdhat<-sapply(1:n,function(i)
+    sqrt(weighted.mean((fun$xs[i,]-xhat[i])^2,fun$ws[i,])))
+  
+  return(list(mean=xhat,sd=sdhat))
+  
+}
+
+Filtplot<-function(dataframe,fun,title){
+
+Filt<-Filtervalues(fun)
+mean<-Filt$mean
+sd<-Filt$sd
+dataframe<-data.frame(dataframe,mean,sd)
+  
+ggplot(dataframe,aes(x=timeframe))+
+  geom_line(aes(y=y, col="Observations", linetype="Observations"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
+  geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+              fill="red",alpha=0.16) +
+    scale_color_manual("",
+                      values=c("Observations" = "black",
+                               "True States" = "black",
+                               "Filtered States"= "red"))+
+  scale_linetype_manual("",
+                      values=c("Observations" = 1,
+                               "True States" = 3,
+                               "Filtered States"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+}
+
+Filtplot(df,sis,title="Sequential Importance Sampling Filter")
+
+```
+\
+\textbf{Particle Filter}
+\
+With reference to the random walk plus noise of section XX, let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \frac{1}{N}\sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. For $t=1,...,n$ where $n$ is the length of the sample, at any iteration
+\begin{itemize}
+\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\end{itemize}
+In addition, when $ESS<ESS_{0}$ \footnote{In our example we fix $ESS_{0}=N/2$, this is an arbitrary common rule of thumb.}, resempling applies
+\begin{itemize}
+\item Draw a sample of size N, $x_{t}^{(1)},...,x_{t}^{(N)}$,from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{itemize}
+```{r}
+PFfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+   
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,x,tau)
+    w1<-w*dnorm(data[t],x,sigma)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+N=1000
+
+pf<-PFfun(y,N,m0,C0,tau,sigma)
+
+ESSplot<-function(dataframe,fun,threshold){
+if(missing(threshold)){threshold=T}else{}
+xs<-fun$xs
+ws<-fun$ws
+ess<-fun$ess
+dt<-data.frame(dataframe,xs,ws,ess)
+
+ggplot(dt,aes(x=timeframe))+
+  geom_line(aes(y=ess))+
+  geom_line(aes(y=500),col="orange")+
+  labs(x="Time",
+       y="")+
+  ggtitle("Effective Sample Size")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))
+}
+ESSplot(df,pf)
+
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="Particle Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+Filtplot(df,pf,"Particle Filter")
+```
+
+\textbf{Guided Particle Filter}
+
+Let's consider another toy example. Suppose that we have the following model
+
+```{r}
+GPFfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    x<-rnorm(N,x,tau)
+    w1<-w*dnorm(data[t],x,sigma)*dnorm(x,xprev,tau)*I(x>0)/dnorm(x,xprev,tau)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+
+\textbf{}
+
+With reference to the linear gaussian model of section XX, a very basic auxiliary particle sampling technique is 
+\begin{itemize}
+\item Let $\{(x_{t-1},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t-1}|y_{t-1})$
+\end{itemize}
+For $k=1,...,N$
+\begin{itemize}
+\item Draw $I_{k}$ with $P(I_{k}) \propto w_{t-1}^{(i)}f(y_{t}|g(x_{t-1}^{(i)})) $ where $g(x_{t-1}^{(i)})=E(X_{t}|X_{t-1})$
+\item Draw $x_{t}^{(k)} \sim N(x_{t-1}^{(I_{k})},\tau^2)$
+\item Set  $w_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})}))}$
+\end{itemize}
+The remaining steps are the same of the particle filter already seen in section XX.
+
+```{r}
+APFfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    weight = w*dnorm(data[t],x,sigma)
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    x1   = rnorm(N,x[k],tau)
+    lw  = dnorm(data[t],x1,sigma,log=TRUE)-dnorm(data[t],x[k],sigma,log=TRUE)
+    w   = exp(lw)
+    w   = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x1<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+```{r echo=FALSE}
+apf<-APFfun(y,N,m0,C0,tau,sigma)
+ESSplot(df,apf)
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="Particle Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+Filtplot(df,apf,"Particle Filter")
+```
+\
+\textbf{Liu and West Filter}
+\
+Consider the toy example of section XX. Let $\psi=(\sigma^{2},\tau^{2})$ be unknown and assign a gamma prior on these parameters
+\begin{align*}
+\sigma^{2}  & \sim G(\alpha_{v},\beta_{v}) \\
+\tau^{2}  & \sim G(\alpha_{w},\beta_{w})
+\end{align*}
+or let assign them a uniform prior if we have no knowledge on hyperparameters.
+After having drown the hyperparameters indipendently form their priors and having set $w_{0}^{(i)}=N^{-1}$, $i=1,...,N$, and $\hat{\pi}_{0}=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi^{(i)})}$, for t=1,..T 
+\begin{itemize}
+\item Compute $\hat{\psi}=E_{\hat{\pi}_{t-1}}(\psi)$ and $\Sigma=Var_{\hat{\pi}_{t-1}}(\psi)$. For $i=1,...,N$ set
+\begin{align*}
+m(\psi^{(i)}) & =a\psi^{(i)}+(1-a)\overline{\psi}\\
+v(\psi^{(i)}) & =(1-a^2)\Sigma
+\end{align*}
+and
+\begin{align*}
+\alpha(\psi^{(i)}) & =\frac{m(\psi^{(i)})^2}{v(\psi^{(i)})} \\
+\beta(\psi^{(i)}) & =\frac{m(\psi^{(i)})}{v(\psi^{(i)})}
+\end{align*}
+For $k=1,...,N$
+\begin{itemize}
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1^{(i)}}f_{N}(y_{t}|g(x_{t}^{(i)}),m(\psi^{(i)}))$ where for simplicity $g(x_{t}^{(i)})=E(x_{t}|x_{t-1},m(\psi^{(i)}))$
+\item Draw $\psi^{(k)} \sim G(\alpha(\psi^{(I_{k})}),\beta(\psi^{(I_{k})}))$
+\item Draw $x_{t}^{(k)} \sim N(x_{t-1}^{(I_{k})},\tau^{{2}^{(k)}})$
+\item Set $\tilde{w}_{t}^{k}=\frac{f_N(y_{t}|x_{t}^{(k)},\psi=\psi^{(k)})}{f_N(y_{t}|g(x_{t}^{(I_{k})}),\psi=m(\psi)^{(I_k)})}$
+\end{itemize}
+\item Normalize the weights
+\item Compute the effective sample size ($ESS$)
+\item If $ESS<N/2$, resample:
+\begin{itemize}
+\item Draw a sample of size N, $x_{t}^{(1)},...,x_{t}^{(N)}$,from the discrete distribution $P((x_{t},\psi)=(x_{t}^{(i)},\psi^{(i)}))=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{itemize}
+
+\end{itemize}
+```{r}
+LWfun<-function(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif){
+  
+  xs     = rnorm(N,m0,sqrt(C0))
+  if(unif==T){
+  pars   = cbind(runif(N,0,10),runif(N,0,10))}else{}
+  pars   = cbind(rgamma(N,shape=alphav,scale=betav),rgamma(N,shape=alphaw,scale=betaw))
+  a      = (3*delta-1)/(2*delta)
+  h2     = 1-a^2
+  parss  = array(0,c(N,2,n))
+  xss    = NULL
+  ws     = NULL
+  ess    = NULL
+  w      = rep(1/N,N)
+  for (t in 1:length(data)){
+    meanV = weighted.mean(pars[,1],w)
+    varV  = weighted.mean((pars[,1]-meanV)^2,w)
+    meanW = weighted.mean(pars[,2],w)
+    varW  = weighted.mean((pars[,2]-meanW)^2,w)
+    
+    muV = a*pars[,1]+(1-a)*meanV
+    sigma2V = (1-a^2)*varV
+    alphaV = muV^2/sigma2V
+    betaV = muV/sigma2V
+    
+    muW = a*pars[,1]+(1-a)*meanW
+    sigma2W = (1-a^2)*varW
+    alphaW = muW^2/sigma2W
+    betaW = muW/sigma2W
+    
+    weight      = w*dnorm(data[t],xs,sqrt(muV))
+    k           = sample(1:N,size=N,replace=T,prob=weight)
+    
+    pars[,1]<-rgamma(N,shape=alphaV[k],rate=betaV[k])
+    pars[,2]<-rgamma(N,shape=alphaW[k],rate=betaW[k])
+    
+    xsprevious<-xs[k]
+    xs = rnorm(N,xs[k],sqrt(pars[,2]))
+    
+    w           = exp(dnorm( data[t],xs,sqrt(pars[,1]),log=T)-
+                        dnorm( data[t],xsprevious,sqrt(muV[k]),log=T))
+    w           = w/sum(w)
+    ESS         = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      xs<-xs[index]
+      pars<-pars[index,]
+      w<-rep(1/N,N)
+    }else{
+      xs<-xs
+      pars<-pars
+    }
+    
+    
+    xss         = rbind(xss,xs)
+    parss[,,t]  = pars 
+    ws          = rbind(ws,w)
+    ess         = rbind(ess,ESS)
+  }
+  return(list(xss=xss,parss=parss,ws=ws,ess=ess))
+}
+```
+
+```{r echo=FALSE}
+delta=0.7
+lwf<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T)
+ESSplot(df,lwf)
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="Particle Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+Filtplot(df,lwf,"Liu and West Filter")
+```
+
