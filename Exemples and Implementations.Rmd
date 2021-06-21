@@ -755,13 +755,13 @@ lambda  = tau2
 # Liu and West filter
 # -------------------
 set.seed(8642)
-N      = 1000
+N      = 10
 ```
 
 ```{r}
 SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 
-xs     = rnorm(N,m0,sqrt(C0))
+xs = rnorm(N,m0,sqrt(C0))
 pars   = cbind(rnorm(N,ealpha,sqrt(valpha)),rnorm(N,ebeta,sqrt(vbeta)),
                log(1/rgamma(N,nu/2,nu*lambda/2)))
 delta  = 0.75
@@ -773,15 +773,16 @@ ws     = NULL
 ESS    = NULL
 w      = rep(1/N,N)
 for (t in 1:length(data)){
+  
   mpar        = apply(pars,2,mean)
   vpar        = var(pars)
   ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
   mus         = pars[,1]+pars[,2]*xs 
-  weight      = w*dnorm(data[t],0,exp(mus/2))
+  weight      = w*dnorm(y[1],0,exp(mus/2))
   k           = sample(1:N,size=N,replace=T,prob=weight)
   ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
   xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
-  w           = dnorm(y[t],0,exp(xt/2))/dnorm(y[t],0,exp(mus/2))
+  w           = dnorm(y[1],0,exp(xt/2))/dnorm(y[1],0,exp(mus[k]/2))
   w           = w/sum(w)
   ESS         = 1/sum(w^2)
   
@@ -848,11 +849,11 @@ ggplot(DLM.df,aes(x=timeframe))+
 N=1000
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
-#svlw<-SVLWfun(y,N=5000000,m0,C0,ealpha=0,valpha=1,ebeta=1,vbeta=1,nu=1,lambda=1)
+svlw<-SVLWfun(y,N=1000,m0,C0,ealpha=0.12,valpha=0.4,ebeta=1,vbeta=0.3,nu=0.11,lambda=0.1)
 ```
 
 ```{r}
-#Filtplot(dfsv,,"")
+Filtplot(dfsv,svlw,"")
 ```
 
 
