@@ -45,7 +45,8 @@ PFfun<-function(data,N,m0,C0,tau,sigma,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,x,tau)
-    y<-rnorm(N,x,sigma)
+    z<-sample(x,replace=T,prob=w)
+    y<-rnorm(N,z,sigma)
     w1<-w*dnorm(data[t],x,sigma)
     
     w = w1/sum(w1)
@@ -176,7 +177,8 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    y<-rnorm(N,0,exp(x/2))
+    z<-sample(x,N,replace = T,prob=w)
+    y<-rnorm(N,0,exp(z/2))
     w1<-w*dnorm(data[t],0,exp(x/2))
     
     w = w1/sum(w1)
@@ -357,10 +359,10 @@ ggplot(DLM.df,aes(x=timeframe))+
 
 
 Forecastvalues<-function(fun){
-  yhat<-sapply(1:n,function(i)
-    weighted.mean(fun$ys[i,],fun$ws[i,]))
-  sdhat<-sapply(1:n,function(i)
-    sqrt(weighted.mean((fun$ys[i,]-yhat[i])^2,fun$ws[i,])))
+  yhat<-sapply(2:n,function(i)
+    weighted.mean(fun$ys[i,],fun$ws[i-1,]))
+  sdhat<-sapply(2:n,function(i)
+    sqrt(weighted.mean((fun$ys[i,]-yhat[i-1])^2,fun$ws[i-1,])))
   
   return(list(mean=yhat,sd=sdhat))
   

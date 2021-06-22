@@ -778,7 +778,7 @@ for (t in 1:length(data)){
   vpar        = var(pars)
   ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
   mus         = pars[,1]+pars[,2]*xs 
-  weight      = w*dnorm(y[1],0,exp(mus/2))
+  weight      = w*dnorm(data[t],0,exp(mus/2))
   k           = sample(1:N,size=N,replace=T,prob=weight)
   ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
   xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
@@ -850,8 +850,7 @@ set.seed(12345)
 N=5000
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
-set.seed(1235)
-svlw<-SVLWfun(y,N=1000,m0,C0,ealpha=0.12,valpha=0.4,ebeta=1,vbeta=0.3,nu=0.11,lambda=0.1)
+svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 ```
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=8, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
