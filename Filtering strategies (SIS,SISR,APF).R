@@ -65,7 +65,7 @@ x<-sim$x
 #-------------
 m0=0
 C0=100
-filtval<-DLMsmooth(y,sigma2,tau2,m0,C0)
+filtval<-DLM(y,sigma2,tau2,m0,C0)
 m<-filtval$m
 C<-filtval$C
 Low = m + qnorm(0.025)*sqrt(C)
@@ -219,6 +219,10 @@ ESSARfun<-function(data,N,m0,C0,tau,sigma){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
+
+
+
+
 
 #ESS-based adaptive resampling specificato da libro Petris
 #---------------------------------------------------------

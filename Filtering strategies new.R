@@ -71,6 +71,7 @@ x0=0
 sim<-dlm.sim(n,sigma,tau,x0)
 y<-sim$y
 x<-sim$x
+truex<-x
 
 #Kalman Filter
 #-------------
@@ -215,6 +216,41 @@ PFfun<-function(data,N,m0,C0,tau,sigma){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
+#Petrone more efficient PF
+#-------------------------
+PF2fun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
+  predsd <- sqrt(sigma+tau)
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    means<-x+(tau/(tau+sigma))*(data[t]-x)
+    x<-rnorm(N,means,importancesd)
+    w1<-w*dnorm(data[t],x,predsd)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+pf2<-PF2fun(y,1000,0,100,1,1)
 
 
 #Guided Particle Filter
@@ -283,6 +319,44 @@ GPFfun<-function(data,N,m0,C0,tau,sigma){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
+#
+#Guided Particle Filter example C-P
+#----------------------------------
+GPF2fun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    
+    
+    if(data[t]==1){x<-rnorm(N,x,tau)*I(x>0)
+    }else if(data[t]==-1){
+      rnorm(N,x,tau)*I(x<0)
+    }
+    
+    
+    w1<-w*dnorm(data[t],x,sigma)*dnorm(x,xprev,tau)*I(x>0)/dnorm(x,xprev,tau)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
 
 
 #Auxiliary Particle Filter (ESS-based resampling)
@@ -493,5 +567,22 @@ Smoothplot<-function(data,fun,title){
     theme(plot.title = element_text(hjust = 0.5))
   
 }
+
+#Calcolo intevalli di credibilità
+#--------------------------------
+CredInt<-function(fun){
+  
+  Filt<-Filtervalues(fun)
+  mean<-Filt$mean
+  sd<-Filt$sd
+  vec<-NULL
+  for(t in 1:length(mean)){
+  if(mean[t]-1.96*sd[t]<truex[t] & truex[t]<mean[t]+1.96*sd[t]){vec[t]<-1}else{vec[t]<-0}
+  }
+  return(mean(vec))
+}
+
+CredInt(sis)
+
 
 

@@ -4,6 +4,33 @@ output:
   pdf_document: default
   html_notebook: default
 ---
+```{r include=FALSE}
+library(ggplot2)
+library(ggpubr)
+library(kableExtra)
+```
+
+
+```{r include=FALSE}
+#Calcolo intevalli di credibilità
+#--------------------------------
+CredInt<-function(fun){
+  
+  Filt<-Filtervalues(fun)
+  mean<-Filt$mean
+  sd<-Filt$sd
+  vec<-NULL
+  for(t in 1:length(mean)){
+  if(mean[t]-1.96*sd[t]<truex[t] & truex[t]<mean[t]+1.96*sd[t]){vec[t]<-1}else{vec[t]<-0}
+  }
+  return(mean(vec))
+}
+
+#RMSE
+#----
+RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
+```
+
 
 \textbf{Implementation}
 
@@ -44,6 +71,7 @@ x0=0
 sim<-dlm.sim(n,sigma,tau,x0)
 y<-sim$y
 x<-sim$x
+truex<-x
 
 timeframe<-c(1:length(y))
 df<-data.frame(timeframe,y,x)
@@ -300,6 +328,71 @@ ESSplot(df,pf)
 Filtplot(df,pf,"Particle Filter")
 ```
 
+\textbf{Particle Filter Petroni more efficient}
+```{r}
+PF2fun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
+  predsd <- sqrt(sigma+tau)
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    means<-x+(tau/(tau+sigma))*(data[t]-x)
+    x<-rnorm(N,means,importancesd)
+    w1<-w*dnorm(data[t],x,predsd)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+\textbf{comparison between Particle Filters}
+
+```{r echo=FALSE}
+pf1<-PFfun(y,1000,0,100,1,1)
+pf2<-PF2fun(y,1000,0,100,1,1)
+plotpf1<-Filtplot(df,pf1,"transition")
+plotpf2<-Filtplot(df,pf2,"more efficient")
+
+ggarrange(plotpf1,plotpf2)
+```
+
+```{r}
+Comparethetwo<-matrix(NA,nrow=2,ncol=2)
+colnames(Comparethetwo)<-c("Credible Interval","RMSE")
+rownames(Comparethetwo)<-c("transition","more efficient")
+Comparethetwo[1,1]<-CredInt(pf1)
+Comparethetwo[2,1]<-CredInt(pf2)
+Comparethetwo[1,2]<-RMSE(truex,Filtervalues(pf1)$mean)
+Comparethetwo[2,2]<-RMSE(truex,Filtervalues(pf2)$mean)
+```
+
+```{r echo=FALSE}
+kbl(Comparethetwo, align="c", longtable = T, booktabs = T, caption="Comparison",digits=3)
+```
+
+
+
+
+
+
 \textbf{Guided Particle Filter}
 
 Let's consider another toy example. Suppose that we have the following model
@@ -508,9 +601,9 @@ Filtplot(df,lwf,"Liu and West Filter")
 
 
 # COMPARISON (ANOTHER SECTION)
-```{r}
-library(ggpubr)
-library(kableExtra)
+
+```{r echo=FALSE, fig.align='center', fig.cap="Variances", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+
 
 Kalmanvarplot<-ggplot(DLM.df,aes(x=timeframe))+
   geom_line(aes(y=C))+
@@ -546,13 +639,12 @@ ggarrange(Kalmanvarplot,Varsisplot,Varpfplot,Varapfplot,Varlwplot)
 
 ```
 
-```{r}
+```{r include=FALSE}
 truex<-x
 estimatedx<-matrix(NA,ncol=6,nrow=6)
 colnames(estimatedx)<-c("N","Threshold","KF","PF","APF","LWF")
 estimatedx[,1]<-c(20,100,500,1000,1000,1000)
 estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
-RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
 
 
 i=1
@@ -644,7 +736,7 @@ timeframe<-c(1:length(y))
 dfsv<-data.frame(timeframe,y,x)
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, fig.align='center', fig.cap="SV", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
 n=50
 tau2=1
 sigma2=1
@@ -822,7 +914,7 @@ timeframe<-c(1:length(y))
 DLM.df<-data.frame(timeframe,y,x,m,C,Low,Up)
 
 #Plots (observetions in black and filtered states in red)
-ggplot(DLM.df,aes(x=timeframe))+
+plot0<-ggplot(DLM.df,aes(x=timeframe))+
   geom_line(aes(y=y, col="Observations", linetype="Observations"))+
   geom_line(aes(y=x, col="True States", linetype="True States"))+
   geom_line(aes(y=m, col="Filtered States", linetype="Filtered States"))+
@@ -836,6 +928,7 @@ ggplot(DLM.df,aes(x=timeframe))+
                       values=c("Observations" = 1,
                                "True States" = 3,
                                "Filtered States"=1))+
+    coord_cartesian(ylim=c(-6,6))+
   labs(x="Time",
        y="")+
   ggtitle("Kalman Filter")+
@@ -853,12 +946,12 @@ svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=8, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison filter performances", fig.height=8, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
 plot1<-Filtplot(dfsv,svpf,"Particle Filter")
 plot2<-Filtplot(dfsv,svapf,"Auxiliary Particle Filter")
 plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
 
-ggarrange(plot1,plot2,plot3)
+ggarrange(plot0,plot1,plot2,plot3)
 ```
 
 
