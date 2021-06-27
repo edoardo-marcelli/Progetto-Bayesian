@@ -44,6 +44,48 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   return(list(xs=xs,ws=ws,ess=ess,ys=ys))
 }
 
+#
+#-----------------------
+#Particle Filter Optimal Kernel
+#------------------------------
+SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ys<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x+(tau^2)/4*(y^2*exp(-alpha+beta*x)-2),tau^2)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    ys = rbind(ys,y)
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess,ys=ys))
+}
+
+
+
+
+
+
+
+
 #Auxiliary Particle Filter
 #-------------------------
 SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){

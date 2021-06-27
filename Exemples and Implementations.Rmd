@@ -14,7 +14,7 @@ library(kableExtra)
 ```{r include=FALSE}
 #Calcolo intevalli di credibilità
 #--------------------------------
-CredInt<-function(fun){
+Coverage<-function(fun){
   
   Filt<-Filtervalues(fun)
   mean<-Filt$mean
@@ -376,10 +376,10 @@ ggarrange(plotpf1,plotpf2)
 
 ```{r}
 Comparethetwo<-matrix(NA,nrow=2,ncol=2)
-colnames(Comparethetwo)<-c("Credible Interval","RMSE")
+colnames(Comparethetwo)<-c("Coverage","RMSE")
 rownames(Comparethetwo)<-c("transition","more efficient")
-Comparethetwo[1,1]<-CredInt(pf1)
-Comparethetwo[2,1]<-CredInt(pf2)
+Comparethetwo[1,1]<-Coverage(pf1)
+Comparethetwo[2,1]<-Coverage(pf2)
 Comparethetwo[1,2]<-RMSE(truex,Filtervalues(pf1)$mean)
 Comparethetwo[2,2]<-RMSE(truex,Filtervalues(pf2)$mean)
 ```
