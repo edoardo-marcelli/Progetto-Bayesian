@@ -48,7 +48,7 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 #-----------------------
 #Particle Filter Optimal Kernel
 #------------------------------
-SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
   ys<-NULL
@@ -59,7 +59,7 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   
   for(t in 1:length(data)){
     
-    x<-rnorm(N,alpha+beta*x+(tau^2)/4*(y^2*exp(-alpha+beta*x)-2),tau^2)
+    x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau^2)
     w1<-w*dnorm(data[t],0,exp(x/2))
     
     w = w1/sum(w1)
@@ -217,6 +217,7 @@ N=5000
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+svopt<-SVPFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 #Filtering Values and Plot
 #-------------------------
@@ -267,10 +268,11 @@ plot2<-Filtplot(dfsv,svapf,"Auxiliary Particle Filter")
 #set.seed(123)
 #svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
+plot4<-Filtplot(dfsv,svopt,"Opt Ker")
 
 ggarrange(plot1,plot2,plot3)
 
-
+ggarrange(plot1,plot4)
 
 
 
