@@ -59,40 +59,6 @@ SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   
   for(t in 1:length(data)){
     
-    x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))
-    
-    w = w1/sum(w1)
-    ESS  = 1/sum(w^2)
-    
-    if(ESS<(N/r)){
-      index<-sample(N,size=N,replace=T,prob=w)
-      x<-x[index]
-      w<-rep(1/N,N)
-    }else{}
-    
-    ys = rbind(ys,y)
-    xs = rbind(xs,x)
-    ws = rbind(ws,w)
-    ess =rbind(ess,ESS)
-  }
-  return(list(xs=xs,ws=ws,ess=ess,ys=ys))
-}
-
-
-#Particle Filter Optimal Kernel 2
-#------------------------------
-SVPFopt1fun<-function(data,N,m0,C0,alpha,beta,tau,r){
-  if(missing(r)){r=2}else{}
-  xs<-NULL
-  ys<-NULL
-  ws<-NULL
-  ess<-NULL
-  x  = rnorm(N,m0,sqrt(C0))
-  w  = rep(1/N,N)
-  
-  for(t in 1:length(data)){
-    
     xprev<-x
     x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
     w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
@@ -135,14 +101,14 @@ SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     weight = w*dnorm(data[t],0,exp(x/2))
     k   = sample(1:N,size=N,replace=TRUE,prob=weight)
     x1   = rnorm(N,alpha+beta*x[k],tau)
-    lw  = dnorm(data[t],0,exp(x/2),log=TRUE)-dnorm(data[t],0,exp(x/2),log=TRUE)
+    lw  = dnorm(data[t],0,exp(x1/2),log=TRUE)-dnorm(data[t],0,exp(x[k]/2),log=TRUE)
     w   = exp(lw)
     w   = w/sum(w)
     ESS  = 1/sum(w^2)
     
     if(ESS<(N/r)){
       index<-sample(N,size=N,replace=T,prob=w)
-      x1<-x1[index]
+      x<-x1[index]
       w<-rep(1/N,N)
     }else{}
     
@@ -154,6 +120,45 @@ SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
+
+#Auxiliary Particle Filter Optimal Kernel
+#----------------------------------------
+SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    
+    weight = w*dnorm(data[t],0,exp(x/2))
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    x1 <-rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+    lw  = dnorm(data[t],0,exp(x1/2),log=TRUE)-dnorm(data[t],0,exp(x[k]/2),log=TRUE)
+    w   = exp(lw)
+    w   = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
 
 #Liu West
 #--------
@@ -253,6 +258,7 @@ svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 svopt<-SVPFoptfun(y,N,m0,C0,alpha,beta,tau)
 svopt1<-SVPFopt1fun(y,N,m0,C0,alpha,beta,tau)
+svapfopt1<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 #Filtering Values and Plot
 #-------------------------
@@ -305,6 +311,7 @@ plot2<-Filtplot(dfsv,svapf,"Auxiliary Particle Filter")
 plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
 plot4<-Filtplot(dfsv,svopt,"Opt Ker")
 plot5<-Filtplot(dfsv,svopt1,"Opt Ker")
+plot6<-Filtplot(dfsv,svapfopt1,"Opt Ker")
 
 ggarrange(plot1,plot2,plot3)
 
