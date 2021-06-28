@@ -34,7 +34,7 @@ RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
 
 \textbf{Implementation}
 
-In this section we present some practical illustrations of the algorithm discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
+In this section we present a practical illustration of the algorithm discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
 \begin{align}
 y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
 x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
@@ -125,7 +125,7 @@ DLM<-function(data,sig2,tau2,m0,C0){
   return(list(m=m,C=C))
 }
 ```
-In the Figure below we show the filtered states states estimated using Kalman Filter with $x_{0} \sim N(0,100)$. The filtered states follow the observations closely and they provide a good approximation of the true states.
+In the Figure below we show the filtered states states estimated using Kalman Filter with $x_{0} \sim N(0,100)$ and  $\sigma^{2}=\tau^{2}=1$. The filtered states follow the observations closely and they provide a good approximation of the true states.
 ```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
 #Kalman Filter
 #-------------
