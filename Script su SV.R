@@ -14,7 +14,6 @@
 SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
-  ys<-NULL
   ws<-NULL
   ess<-NULL
   x  = rnorm(N,m0,sqrt(C0))
@@ -23,8 +22,6 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    z<-sample(x,replace=T,prob=w)
-    y<-rnorm(N,0,exp(z/2))
     w1<-w*dnorm(data[t],0,exp(x/2))
     
     w = w1/sum(w1)
@@ -36,12 +33,11 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
       w<-rep(1/N,N)
     }else{}
     
-    ys = rbind(ys,y)
     xs = rbind(xs,x)
     ws = rbind(ws,w)
     ess =rbind(ess,ESS)
   }
-  return(list(xs=xs,ws=ws,ess=ess,ys=ys))
+  return(list(xs=xs,ws=ws,ess=ess))
 }
 
 #
@@ -51,7 +47,6 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
-  ys<-NULL
   ws<-NULL
   ess<-NULL
   x  = rnorm(N,m0,sqrt(C0))
@@ -72,12 +67,11 @@ SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
       w<-rep(1/N,N)
     }else{}
     
-    ys = rbind(ys,y)
     xs = rbind(xs,x)
     ws = rbind(ws,w)
     ess =rbind(ess,ESS)
   }
-  return(list(xs=xs,ws=ws,ess=ess,ys=ys))
+  return(list(xs=xs,ws=ws,ess=ess))
 }
 
 
@@ -257,9 +251,7 @@ svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 svopt<-SVPFoptfun(y,N,m0,C0,alpha,beta,tau)
-svopt1<-SVPFopt1fun(y,N,m0,C0,alpha,beta,tau) 
-#SVPFopt1fun non definito prima. Sia APF che GPF con optimal kernel hanno la funzione SVPFoptfun, che viene sovrascritta
-svapfopt1<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
+svapfopt<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 #Filtering Values and Plot
 #-------------------------
@@ -311,8 +303,7 @@ plot2<-Filtplot(dfsv,svapf,"Auxiliary Particle Filter")
 #svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
 plot4<-Filtplot(dfsv,svopt,"Opt Ker")
-plot5<-Filtplot(dfsv,svopt1,"Opt Ker")
-plot6<-Filtplot(dfsv,svapfopt1,"Opt Ker")
+plot6<-Filtplot(dfsv,svapfopt,"Opt Ker")
 
 ggarrange(plot1,plot2,plot3)
 
