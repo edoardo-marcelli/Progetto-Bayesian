@@ -257,7 +257,8 @@ svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 svopt<-SVPFoptfun(y,N,m0,C0,alpha,beta,tau)
-svopt1<-SVPFopt1fun(y,N,m0,C0,alpha,beta,tau)
+svopt1<-SVPFopt1fun(y,N,m0,C0,alpha,beta,tau) 
+#SVPFopt1fun non definito prima. Sia APF che GPF con optimal kernel hanno la funzione SVPFoptfun, che viene sovrascritta
 svapfopt1<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 #Filtering Values and Plot
