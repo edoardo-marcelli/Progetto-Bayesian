@@ -124,7 +124,7 @@ SVAPFfun_2<-function(data,N,m0,C0,alpha,beta,tau,r){
     x_hat = alpha+beta*x #means of the transition from the previous particle 
     I_k = sample(1:N,prob=w*dnorm(data[t],0,sqrt(exp((x_hat)/2))))
     for(k in 1:N){
-      x[k]=rnorm(size=1,mean=alpha+beta*x_prev[I_k],sd=1)
+      x[k]=rnorm(size=1,mean=alpha+beta*x_prev[I_k],sd=tau)
       w[k]=dnorm(data[t],0,sqrt(exp((x[k])/2)))/dnorm(data[t],0,sqrt(exp((x_hat)/2)))
     }
     w = w/sum(w)
