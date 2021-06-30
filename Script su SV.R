@@ -74,12 +74,6 @@ SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
-
-
-
-
-
-
 #Auxiliary Particle Filter
 #-------------------------
 SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
@@ -107,6 +101,41 @@ SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     }else{}
     
     x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#Auxiliary Particle Filter (PETRONE p 218)
+#-------------------------
+SVAPFfun_2<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    x_prev=x
+    x_hat = alpha+beta*x #means of the transition from the previous particle 
+    I_k = sample(1:N,prob=w*dnorm(data[t],0,sqrt(exp((x_hat)/2))))
+    for(k in 1:N){
+      x[k]=rnorm(size=1,mean=alpha+beta*x_prev[I_k],sd=1)
+      w[k]=dnorm(data[t],0,sqrt(exp((x[k])/2)))/dnorm(data[t],0,sqrt(exp((x_hat)/2)))
+    }
+    w = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
     xs = rbind(xs,x)
     ws = rbind(ws,w)
     ess =rbind(ess,ESS)
