@@ -257,10 +257,10 @@ tau   = sqrt(tau2)
 #Real dataset
 
 library(openxlsx)
-realdatasetSPX<-read.xlsx("Dataset 2.xlsx", sheet = 1)
+realdatasetSPX<-read.xlsx("Dataset 2 x250.xlsx", sheet = 1)
 y<-realdatasetSPX[,1]
 n = length(y)
-volatilitySPX<-read.xlsx("Dataset 3.xlsx", sheet = 1)
+volatilitySPX<-read.xlsx("Dataset 3 x10000.xlsx", sheet = 1)
 x<-volatilitySPX[,1]
 alpha.true = alpha
 beta.true  = beta
@@ -299,7 +299,6 @@ Filtplot<-function(dataframe,fun,title){
   dataframe<-data.frame(dataframe,mean,sd)
   
   ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y, col="Observations", linetype="Observations"))+
     geom_line(aes(y=x, col="True States", linetype="True States"))+
     geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
     geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
@@ -326,16 +325,6 @@ Filtplot<-function(dataframe,fun,title){
 library(ggplot2)
 library(ggpubr)
 plot1<-Filtplot(dfsv,svpf,"Particle Filter")
-plot2<-Filtplot(dfsv,svapf,"Auxiliary Particle Filter")
-#set.seed(123)
-#svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
-plot4<-Filtplot(dfsv,svopt,"Opt Ker")
-plot6<-Filtplot(dfsv,svapfopt,"Opt Ker")
-
-ggarrange(plot1,plot2,plot3)
-
-ggarrange(plot1,plot4)
-
-
-
+ggarrange(plot1)
+ggarrange(plot3)
