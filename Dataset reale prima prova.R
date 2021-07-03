@@ -260,8 +260,8 @@ library(openxlsx)
 realdatasetSPX<-read.xlsx("Dataset 2 x250.xlsx", sheet = 1)
 y<-realdatasetSPX[,1]
 n = length(y)
-volatilitySPX<-read.xlsx("Dataset 3 annualised.xlsx", sheet = 1)
-x<-volatilitySPX[,3]
+volatilitySPX<-read.xlsx("Dataset 3 x10000.xlsx", sheet = 1)
+x<-volatilitySPX[,1]
 alpha.true = alpha
 beta.true  = beta
 tau2.true  = tau2
