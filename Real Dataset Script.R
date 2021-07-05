@@ -336,3 +336,68 @@ ggarrange(plot2)
 ggarrange(plot3)
 ggarrange(plot4)
 ggarrange(plot5)
+
+#Kalman filter
+m00=0
+c00=100
+nu2=1
+sig2=1
+DLM<-function(data,sig2,nu2,m00,C00){
+  n  = length(data)
+  m  = rep(0,n)
+  C  = rep(0,n)
+  f  = rep(0,n)
+  Q  = rep(0,n)
+  for (t in 1:n){
+    if (t==1){
+      a = m00
+      R = C00 + nu2
+      j = a
+      K = R + sig2
+    }else{
+      a = m[t-1]
+      R = C[t-1] + nu2
+      j = a
+      K = R + sig2
+    }
+    A = R/(R+sig2)
+    m[t] = (1-A)*a + A*y[t]
+    C[t] = A*sig2
+    f[t] = j
+    Q[t] = K
+  }
+  return(list(m=m,C=C,f=f,Q=Q))
+}
+filtval<-DLM(y,sig2,nu2,m00,c00)
+f<-filtval$f
+Q<-filtval$Q
+Low = f + qnorm(0.025)*sqrt(Q)
+Up = f + qnorm(0.975)*sqrt(Q)
+
+#Put everything in a data frate (for ggplot)
+timeframeKF<-c(1:length(y))
+DLM.df<-data.frame(timeframeKF,y,x,f,Q,Low,Up)
+
+library(ggplot2)
+library(ggpubr)
+ggplot(DLM.df,aes(x=timeframeKF))+
+  geom_line(aes(y=y, col="Observations", linetype="Observations"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=f, col="Filtered States", linetype="Filtered States"))+
+  geom_ribbon(aes(ymin = Low, ymax= Up),
+              fill="red",alpha=0.16) +
+  scale_color_manual("",
+                     values=c("Observations" = "black",
+                              "True States" = "black",
+                              "Filtered States"= "red"))+
+  scale_linetype_manual("",
+                        values=c("Observations" = 1,
+                                 "True States" = 3,
+                                 "Filtered States"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle("Kalman Filter")+
+  theme_bw()+
+  theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
