@@ -257,11 +257,11 @@ tau   = sqrt(tau2)
 #Real dataset
 
 library(openxlsx)
-realdatasetSPX<-read.xlsx("Dataset 2 x100 17-21.xlsx", sheet = 1)
-y<-realdatasetSPX[,1]
+realdatasetSPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
+y<-realdatasetSPX[,2]
 n = length(y)
-volatilitySPX<-read.xlsx("Dataset 3 scale 17-21.xlsx", sheet = 1)
-x<-volatilitySPX[,1]
+volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
+x<-volatilitySPX[,3]
 alpha.true = alpha
 beta.true  = beta
 tau2.true  = tau2
