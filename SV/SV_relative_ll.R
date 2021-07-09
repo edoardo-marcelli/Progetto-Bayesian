@@ -40,17 +40,19 @@ SVPFfun<-function(data,N,m0,C0,a,a.v,b.v,s.v,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 ## data
-y<-as.matrix(read.csv("sp500_17-21.csv", header=F))
+#y<-as.matrix(read.csv("sp500_17-21.csv", header=F))
+y<-as.matrix(rnorm(1000,mean=1,sd=1)) #test
 
 n<-dim(y)[1]
 
 # find parameters for constant and stochastic vol models
 mean=sum(y)/n
 res<-(y-mean)^2
-lres<-c(NA,res[1:n-1,1])
-resdf=data.frame(res,lres)
-colnames(resdf)=c("res","lres")
-lm_res<-lm(res~1+lres,data=resdf)
+lres<-log(res)
+l.lres<-c(NA,lres[1:n-1,1])
+resdf=data.frame(lres,l.lres)
+colnames(resdf)=c("lres","l.lres")
+lm_res<-lm(lres~1+l.lres,data=resdf)
 c_res<-lm_res[[1]]
 sigma_res<-sqrt(mean(summary(lm_res)$residuals^2))
 meansq_res<-sqrt(sum(res)/n)
@@ -74,7 +76,7 @@ N=1000
 pf<-SVPFfun(data=y,N=N,m0=0,C0=100,a=a,a.v=a.v,b.v=b.v,s.v=s.v,r=4)
 xs<-pf$xs
 ws<-pf$ws
-l_sv<-matrix(0,996,1)
+l_sv<-matrix(0,n,1)
 for (i in 1:n){
   for (j in 1:N){
   l_sv[i]=l_sv[i]+dnorm(y[i],a,exp(xs[i,j]/2))*ws[i,j]
@@ -87,6 +89,7 @@ for (i in 2:n){
 }
 # Difference
 cll_diff=cll_cv-cll_sv
-cll_diff.df=data.frame(1:996,cll_diff)
+ll_diff=ll_cv-ll_sv
+cll_diff.df=data.frame(1:n,cll_diff)
 colnames(cll_diff.df)<-c('t','cll_diff')
 ggplot(data = cll_diff.df, aes(x = t, y = cll_diff))+geom_line()
