@@ -22,6 +22,7 @@ SVPFfun<-function(data,N,m0,C0,a,a.v,b.v,s.v,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,a.v+b.v*x,s.v)
+    xp.1<-x
     w1<-w*dnorm(data[t],a,exp(x/2))
     
     w = w1/sum(w1)
@@ -37,10 +38,41 @@ SVPFfun<-function(data,N,m0,C0,a,a.v,b.v,s.v,r){
     ws = rbind(ws,w)
     ess =rbind(ess,ESS)
   }
-  return(list(xs=xs,ws=ws,ess=ess))
+  return(list(xs=xs,ws=ws,ess=ess,xp.1=xp.1))
 }
+# SVPFfun.f<-function(data,N,m0,C0,a,a.v,b.v,s.v,r){
+#   if(missing(r)){r=2}else{}
+#   xs<-NULL
+#   xf<-NULL
+#   ws<-NULL
+#   ess<-NULL
+#   x  = rnorm(N,m0,sqrt(C0))
+#   w  = rep(1/N,N)
+#   
+#   for(t in 1:length(data)){
+#     
+#     x<-rnorm(N,a.v+b.v*x,s.v)
+#     x.f1<-x
+#     w1<-w*dnorm(data[t],a,exp(x/2))
+#     x.f<-rnorm(N,a.v+b.v*x,s.v)
+#     w = w1/sum(w1)
+#     ESS  = 1/sum(w^2)
+#     
+#     if(ESS<(N/r)){
+#       index<-sample(N,size=N,replace=T,prob=w)
+#       x<-x[index]
+#       w<-rep(1/N,N)
+#     }else{}
+#     
+#     xs = rbind(xs,x)
+#     xs.f = rbind(xs.f,x.f) 
+#     ws = rbind(ws,w)
+#     ess =rbind(ess,ESS)
+#   }
+#   return(list(xs=xs,xs.f=xs.f,ws=ws,ess=ess,x.f1=x.f1))
+# }
 ## data
-#y<-as.matrix(read.csv("sp500_17-21.csv", header=F))
+# y<-as.matrix(read.csv("sp500_17-21.csv", header=F))
 y<-as.matrix(rnorm(1000,mean=1,sd=1)) #test
 
 n<-dim(y)[1]
@@ -63,6 +95,9 @@ s<-meansq_res
 a.v<-c_res[1]
 b.v<-c_res[2]
 s.v<-sigma_res
+
+m0=0
+C0=100
 # calculate cumulative marginal likelihood
 # CV model
 l_cv<-dnorm(y,a,s)
@@ -73,13 +108,22 @@ for (i in 2:n){
 }
 # SV model
 N=1000
-pf<-SVPFfun(data=y,N=N,m0=0,C0=100,a=a,a.v=a.v,b.v=b.v,s.v=s.v,r=4)
+pf<-SVPFfun(data=y,N=N,m0=m0,C0=C0,a=a,a.v=a.v,b.v=b.v,s.v=s.v,r=4)
 xs<-pf$xs
 ws<-pf$ws
+# make particles for predictive state distribution
+xp<-xs
+xp[1:N,1]<-pf$xp.1
+for (i in 2:n){
+  xp[1:N,i]=rnorm(N,a.v+b.v*xs[1:N,i-1],s.v)
+}
+wp<-ws
+wp[1:N,1]=1/N
+wp[1:N,2:n]=ws[1:N,1:n-1]
 l_sv<-matrix(0,n,1)
 for (i in 1:n){
   for (j in 1:N){
-  l_sv[i]=l_sv[i]+dnorm(y[i],a,exp(xs[i,j]/2))*ws[i,j]
+  l_sv[i]=l_sv[i]+dnorm(y[i],a,exp(xp[i,j]/2))*wp[i,j]
   }
 }
 ll_sv<-log(l_sv)
