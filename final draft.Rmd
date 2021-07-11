@@ -1,9 +1,9 @@
 ---
 header-includes:
+- \usepackage{txfonts}
 - \usepackage{amsmath}
 - \usepackage[bindingoffset=1.5cm, left=3cm, right=3cm, top=3cm, bottom=3cm]{geometry}
 - \usepackage{graphicx}
-- \usepackage{amssymb}
 - \usepackage{MnSymbol} %allows to insert the QED at the end of the proofs
 - \usepackage{hyperref} %set the hyperlink to cite sections, equations...
 - \urlstyle{same}
