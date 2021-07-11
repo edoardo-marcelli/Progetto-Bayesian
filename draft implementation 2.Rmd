@@ -3,6 +3,7 @@ header-includes:
 - \newcommand{\R}{\textnormal{\sffamily\bfseries R}}
 - \def\code#1{\texttt{#1}}
 - \newtheorem{algorithm}{Algorithm}[section]
+
 title: "R Notebook"
 
 output:
