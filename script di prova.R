@@ -6,7 +6,8 @@ use_git_config(user.name = "michelebolla",
                user.email = "michele.bolla@studbocconi.it")
 use_git_config(user.name = "RobertoColarieti", 
                user.email = "roberto.colarieti1998@gmail.com")
-
+use_git_config(user.name = "gabrieleromano111", 
+               user.email = "gabrieleromano111@gmail.com")
 
 
 #@@@@@@@@@@@@@@@@@@@@##
@@ -104,3 +105,4 @@ ggplot(DLM.df,aes(x=timeframe))+
 # test (Alexei)
 # alexei teast from local
 #ciao 
+#Robbi
