@@ -216,8 +216,8 @@ Consider again the random walk plus noise model of section XX,the challenge here
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
 \item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
-\end{enumerate}
 \item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{enumerate}
 \end{itemize}
 \end{algorithm}
 Our \code{SIS} function implemented in \R replicate this steps.
@@ -335,13 +335,13 @@ In this section, Bootstrap Particle Filter will be used to estimate filtered sta
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
 \item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
-\end{enumerate}
 \item if $ESS<N/2$ then
 \begin{enumerate}
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
 \item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{enumerate}
 \end{itemize}
 \end{algorithm}
 These steps are resumed in our \code{PF} function.
@@ -567,13 +567,13 @@ On the other hand, the incremental weights, using this importance transition den
 \item Compute $\mu_{opt}$
 \item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma_{opt}^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
 \item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2+\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
-\end{enumerate}
 \item if $ESS<N/2$ then
 \begin{enumerate}
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
 \item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{enumerate}
 \end{itemize}
 \end{algorithm}
 The \code{GPF} function resume this passages.
@@ -631,6 +631,19 @@ GPFfun<-function(data,N,m0,C0,tau,sigma,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 ```
+
+```{r echo=FALSE}
+gpf<-GPFfun(y,N,m0,C0,tau,sigma)
+ESS.GPF<-ESSplot(df,gpf)
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="a) GPF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+FILT.GPF<-Filtplot(df,gpf,"")
+ggarrange(FILT.GPF,ESS.GPF,labels=c("(a)","(b)"))
+```
+
+
+
 Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure XX, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
 
 ```{r include=FALSE}
@@ -646,7 +659,7 @@ for(k in c(2,5,10)){
   N=1000
 
 pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
-gpf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
+gpf2<-GPFfun(y,N,m0,C0,tau,sigma,r=k)
 
 estimatedx[i,3]<-RMSE(truex,Filtervalues(pf2)$mean)
 estimatedx[i,4]<-RMSE(truex,Filtervalues(gpf2)$mean)
@@ -753,3 +766,206 @@ ggarrange(p2,c2)
 
 \textbf{Implementation}
 
+For illustration purposes, we are going implement an auxiliary particle filter with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  
+\begin{algorithm} APF for Random Walk plus Noise Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item For $k=1,...,N$:
+\begin{enumerate}
+\item Draw $I_{k}$ with $P(I_{k}) \propto w_{t-1}^{(i)}f(y_{t}|g(x_{t-1}^{(i)})) $
+\item Draw $x_{t}^{(k)} \sim N(x_{t-1}^{(I_{k})},\tau^2)$
+\item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})}))}$
+\end{enumerate}
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{enumerate}
+\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+The \code{APF} function resume this passages.
+\
+\hrule
+\hrule
+\code{APF(data,N,m0,C0,tau,sigma,r)}
+\hrule
+\textbf{Arguments}
+\
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\
+\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+
+```{r}
+APFfun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    weight = w*dnorm(data[t],x,sigma)
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    x1   = rnorm(N,x[k],tau)
+    lw  = dnorm(data[t],x1,sigma,log=TRUE)-dnorm(data[t],x[k],sigma,log=TRUE)
+    w   = exp(lw)
+    w   = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x1<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+```{r echo=FALSE}
+apf<-APFfun(y,N,m0,C0,tau,sigma)
+ESS.APF<-ESSplot(df,apf)
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+FILT.APF<-Filtplot(df,apf,"")
+ggarrange(FILT.APF,ESS.APF,labels=c("(a)","(b)"))
+```
+
+Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap Particle Filter (BPF).
+
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+N2=1000
+
+
+pf2<-PFfun(y,N2,m0,C0,tau,sigma)
+apf2<-APFfun(y,N2,m0,C0,tau,sigma)
+
+
+
+Comparetwofunplot<-function(dataframe,fun1,fun2,title){
+
+Filt1<-Filtervalues(fun1)
+mean1<-Filt1$mean
+sd1<-Filt1$sd
+dataframe<-data.frame(dataframe,mean1,sd1)
+
+Filt2<-Filtervalues(fun2)
+mean2<-Filt2$mean
+sd2<-Filt2$sd
+dataframe<-data.frame(dataframe,mean2,sd2)
+
+ggplot(dataframe,aes(x=timeframe))+
+  geom_line(aes(y=mean1, col="APF", linetype="APF"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=mean2, col="BPF", linetype="BPF"))+
+  #geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+   #           fill="red",alpha=0.16) +
+    scale_color_manual("",
+                      values=c("APF" = "orange",
+                               "True States" = "black",
+                               "BPF"= "blue"))+
+  scale_linetype_manual("",
+                      values=c("APF" = 1,
+                               "True States" = 3,
+                               "BPF"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+}
+
+
+p2<-Comparetwofunplot(df,pf2,apf2,"Filtered States")
+
+
+
+ComparetwoVarplot<-function(dataframe,fun1,fun2,title){
+
+Filt1<-Filtervalues(fun1)
+mean1<-Filt1$mean
+sd1<-Filt1$sd
+dataframe<-data.frame(dataframe,mean1,sd1)
+
+Filt2<-Filtervalues(fun2)
+mean2<-Filt2$mean
+sd2<-Filt2$sd
+dataframe<-data.frame(dataframe,mean2,sd2)
+
+ggplot(dataframe,aes(x=timeframe))+
+geom_line(aes(y=sd2, col="APF"))+
+geom_line(aes(y=sd1,col="BPF"))+
+  scale_color_manual("",
+                      values=c("APF" = "orange",
+                               "BPF"= "blue"))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30"))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+}
+
+
+c2<-ComparetwoVarplot(Combined,pf2,apf2,"Standard Deviation")
+
+
+ggarrange(p2,c2)
+```
+
+```{r include=FALSE}
+truex<-x
+estimatedx<-matrix(NA,ncol=4,nrow=3)
+colnames(estimatedx)<-c("N","Threshold","BPF","APF")
+estimatedx[,1]<-c(1000,1000,1000)
+estimatedx[,2]<-c(0.5,0.25,0.1)
+
+
+i=1
+for(k in c(2,5,10)){
+  N=1000
+
+pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
+apf2<-APFfun(y,N,m0,C0,tau,sigma,r=k)
+
+estimatedx[i,3]<-RMSE(truex,Filtervalues(pf2)$mean)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(apf2)$mean)
+i=i+1
+
+
+}
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
+```
