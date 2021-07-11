@@ -1,0 +1,754 @@
+---
+header-includes: 
+- \newcommand{\R}{\textnormal{\sffamily\bfseries R}}
+- \def\code#1{\texttt{#1}}
+- \newtheorem{algorithm}{Algorithm}[section]
+title: "R Notebook"
+
+output:
+  pdf_document: 
+   latex_engine: xelatex
+   fig_width: 5
+   fig_height: 3.5
+   fig_caption: true
+   extra_dependencies: ["float"]
+   number_sections: true 
+---
+```{r include=FALSE}
+library(ggplot2)
+library(ggpubr)
+library(kableExtra)
+```
+
+
+```{r include=FALSE}
+#Quantiles functions
+#-------------------
+q025=function(x){quantile(x,0.025)}
+q975=function(x){quantile(x,0.975)}
+
+
+#Calcolo intevalli di credibilità
+#--------------------------------
+Coverage<-function(fun){
+  
+  Filt<-Filtervalues(fun)
+  mean<-Filt$mean
+  sd<-Filt$sd
+  vec<-NULL
+  for(t in 1:length(mean)){
+  if(mean[t]-1.96*sd[t]<truex[t] & truex[t]<mean[t]+1.96*sd[t]){vec[t]<-1}else{vec[t]<-0}
+  }
+  return(mean(vec))
+}
+
+#RMSE
+#----
+RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
+```
+
+
+\textbf{Implementation}
+
+In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
+\begin{align}
+y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
+x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
+x_{0} & \sim N(m_{0},C_{0})
+\end{align}
+As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involving filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
+The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
+```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+
+set.seed(1991)
+dlm.sim = function(n,sigma,tau,x0){
+  x    = rep(0,n)  #state process
+  y    = rep(0,n)  #obs process
+  x[1] = rnorm(1,x0,tau)
+  y[1] = rnorm(1,x[1],sigma)
+  for (t in 2:n){
+    x[t] = rnorm(1,x[t-1],tau)
+    y[t] = rnorm(1,x[t],sigma)
+  }
+  return(list(x=x,y=y))
+}
+
+n=50
+tau2=1
+sigma2=1
+sigma=sqrt(sigma2)
+tau=sqrt(tau2)
+x0=0
+
+sim<-dlm.sim(n,sigma,tau,x0)
+y<-sim$y
+x<-sim$x
+truex<-x
+
+timeframe<-c(1:length(y))
+df<-data.frame(timeframe,y,x)
+
+ggplot(df,aes(x=timeframe))+
+  geom_line(aes(y=y, linetype="Observations"))+
+  geom_line(aes(y=x, linetype="True States"))+
+  coord_cartesian(ylim = c(-4, +12)) +
+  scale_linetype_manual(name="",
+                      values=c("Observations" = 1,
+                               "True States" = 3))+
+  labs(x="Time",
+       y="")+
+  #ggtitle("States and Observations")+
+  theme_bw()+
+  theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+The Kalman Filter for this model is implemented as described below.
+\begin{algorithm} Kalman Filter for Random Walk plus Noise Model
+\begin{itemize}
+\item Initialize $\theta_{0} \sim N(m_{0},C_{0})$
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Compute the one-step-ahead state predictive distribution at time $t-1$, notice that if $t=1$ no data have been observed yet and therefore $x_{1}|x_{0}\sim N(a_{1},R_{1})$ otherwise
+\begin{align*}
+x_{t}|y_{1:t-1} & \sim N(a_{t},R_{t})\\
+a_{t} & = m_{t-1}\\
+R_{t} & = C_{t-1}+\tau^2
+\end{align*}
+\item Compute the filtering distribution at time $t$ as $p(x_{t}|y_{1:t}) \propto p(x_{t}|y_{1:t-1})p(y_{t}|x_{t})$, i.e. the product of the one-step-ahead state predictive distribution and the likelihood
+\begin{align*}
+x_{t}|y_{1:t} & \sim N(m_{t},C_{t}) \\
+m_{t} & = \big(1-\frac{R_{t}}{R_{t}+\sigma^2}\big)a_{t}+\frac{R_{t}}{R_{t}+\sigma^2}y_{t} \\
+C_{t} & = \frac{R_{t}}{R_{t}+\sigma^2}\sigma^2
+\end{align*}
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+Our \code{DLM} function implement in \R replicate this steps.
+\
+\hrule
+\hrule
+\code{DLM(data,sig2,tau2,m0,C0)}
+\hrule
+\textbf{Arguments}
+\
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
+\code{sig2} \ \ the variance $\sigma^{2}$ in Equation (1)
+\
+\code{tau2} \ \ the variance $\tau^{2}$ in Equation (2)
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\hrule
+\hrule
+```{r}
+DLM<-function(data,sig2,tau2,m0,C0){
+  n  = length(data)
+  m  = rep(0,n)
+  C  = rep(0,n)
+  for (t in 1:n){
+    if (t==1){
+      a = m0
+      R = C0 + tau2
+    }else{
+      a = m[t-1]
+      R = C[t-1] + tau2
+    }
+    A = R/(R+sig2)
+    m[t] = (1-A)*a + A*y[t]
+    C[t] = A*sig2
+  }
+  return(list(m=m,C=C))
+}
+```
+In Figure XX below filtered states estimated using Kalman Filter with $x_{0} \sim N(0,100)$ and $\sigma^{2}=\tau^{2}=1$ are compared to the true states values.
+Notice how closely the filtered states follow the observations and the goodness of the approximation of the true states. 95 percent credible intervals are computed as
+\[[E(\theta_{t}|y_{1:t})-z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})},E(\theta_{t}|y_{1:t})+z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})}]\]
+```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+#Kalman Filter
+#-------------
+m0=0
+C0=100
+filtval<-DLM(y,sigma2,tau2,m0,C0)
+m<-filtval$m
+C<-filtval$C
+Low = m + qnorm(0.025)*sqrt(C)
+Up = m + qnorm(0.975)*sqrt(C)
+
+#Put everything in a data frate (for ggplot)
+timeframe<-c(1:length(y))
+DLM.df<-data.frame(timeframe,y,x,m,C,Low,Up)
+
+#Plots (observetions in black and filtered states in red)
+ggplot(DLM.df,aes(x=timeframe))+
+  geom_line(aes(y=y, col="Observations", linetype="Observations"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=m, col="Filtered States", linetype="Filtered States"))+
+  geom_ribbon(aes(ymin = Low, ymax = Up),
+              fill="red",alpha=0.16) +
+    scale_color_manual("",
+                      values=c("Observations" = "black",
+                               "True States" = "black",
+                               "Filtered States"= "red"))+
+  scale_linetype_manual("",
+                      values=c("Observations" = 1,
+                               "True States" = 3,
+                               "Filtered States"=1))+
+  labs(x="Time",
+       y="")+
+  #ggtitle("Kalman Filter")+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
+
+\
+\textbf{Implementation}
+Consider again the random walk plus noise model of section XX,the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
+\begin{algorithm} SIS filter for Random Walk plus Noise Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\end{enumerate}
+\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{itemize}
+\end{algorithm}
+Our \code{SIS} function implemented in \R replicate this steps.
+\
+\hrule
+\hrule
+\code{SIS(data,N,m0,C0,tau,sigma)}
+\hrule
+\textbf{Arguments}
+\
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\
+\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\hrule
+\hrule
+```{r}
+SISfun<-function(data,N,m0,C0,tau,sigma){
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  for(t in 1:length(data)){
+    x    = rnorm(N,x,tau)                   #sample from N(x_{t-1},tau)
+    w    = w*dnorm(data[t],x,sigma)         #update weight
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    
+    wnorm= w/sum(w)                         #normalized weight
+    ESS  = 1/sum(wnorm^2)                   #effective sample size
+    
+    ess =rbind(ess,ESS)
+  }
+  
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+We have already discussed the reasons why the SIS algorithm does not provide a good strategy in the filtering problem. We provide a graphical intuition of what happens when we use such filtering strategy on a simulated dataset. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. The results shown in the following two plots shows a clear degeneration of the effective sample size and bad fit of filtered states with respect to the true values.
+```{r echo=FALSE}
+N=1000
+sis<-SISfun(y,N,m0,C0,tau,sigma)
+sisxs<-sis$xs
+sisws<-sis$ws
+sisess<-sis$ess
+sis.data<-data.frame(df,sisxs,sisws,sisess)
+
+ESS.SIS<-ggplot(sis.data,aes(x=timeframe))+
+  geom_line(aes(y=sisess))+
+    labs(x="Time",
+       y="")+
+  ggtitle("Effective Sample size")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="a) SIS Filtered States with credible interval (in red). b) Effective sample size.", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+Filtervalues<-function(fun){
+  xhat<-sapply(1:n,function(i)
+    weighted.mean(fun$xs[i,],fun$ws[i,]))
+  sdhat<-sapply(1:n,function(i)
+    sqrt(weighted.mean((fun$xs[i,]-xhat[i])^2,fun$ws[i,])))
+  
+  return(list(mean=xhat,sd=sdhat))
+  
+}
+
+Filtplot<-function(dataframe,fun,title){
+
+Filt<-Filtervalues(fun)
+mean<-Filt$mean
+sd<-Filt$sd
+dataframe<-data.frame(dataframe,mean,sd)
+  
+ggplot(dataframe,aes(x=timeframe))+
+  geom_line(aes(y=y, col="Observations", linetype="Observations"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
+  geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+              fill="red",alpha=0.16) +
+    scale_color_manual("",
+                      values=c("Observations" = "black",
+                               "True States" = "black",
+                               "Filtered States"= "red"))+
+  scale_linetype_manual("",
+                      values=c("Observations" = 1,
+                               "True States" = 3,
+                               "Filtered States"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+}
+
+PlotSIS<-Filtplot(df,sis,title="")
+
+ggarrange(PlotSIS,ESS.SIS,labels=c("(a)","(b)"))
+```
+
+\textbf{Implementation}
+In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section XX. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
+\begin{algorithm} BPF for Random Walk plus Noise Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\end{enumerate}
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{enumerate}
+\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{itemize}
+\end{algorithm}
+These steps are resumed in our \code{PF} function.
+\
+\hrule
+\hrule
+\code{PF(data,N,m0,C0,tau,sigma,r)}
+\hrule
+\textbf{Arguments}
+\
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\
+\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+```{r}
+PFfun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+   
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,x,tau)
+    w1<-w*dnorm(data[t],x,sigma)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure XX. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
+```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+N=1000
+
+pf<-PFfun(y,N,m0,C0,tau,sigma)
+
+ESSplot<-function(dataframe,fun,threshold){
+if(missing(threshold)){threshold=T}else{}
+xs<-fun$xs
+ws<-fun$ws
+ess<-fun$ess
+dt<-data.frame(dataframe,xs,ws,ess)
+
+ggplot(dt,aes(x=timeframe))+
+  geom_line(aes(y=ess))+
+  geom_line(aes(y=500),col="orange")+
+  labs(x="Time",
+       y="")+
+  ggtitle("Effective Sample Size")+
+  theme_bw()+
+  theme(plot.title = element_text(hjust = 0.5))
+}
+ESS.PF<-ESSplot(df,pf)
+
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+FILT.PF <- Filtplot(df,pf,"")
+ggarrange(FILT.PF,ESS.PF,labels=c("(a)","(b)"))
+```
+
+Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure XX, when the number of particles generated at any interaction increases the results for both the estimated mean and the variance tend to converge [[SPIEGARE PERCHE']]. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
+
+```{r include=FALSE}
+truex<-x
+estimatedx<-matrix(NA,ncol=4,nrow=6)
+colnames(estimatedx)<-c("N","Threshold","KF","BPF")
+estimatedx[,1]<-c(100,1000,10000,1000,1000,1000)
+estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
+
+
+i=1
+for(N in c(100,1000,10000)){
+
+DLM1<-DLM(y,sigma2,tau2,m0,C0)
+pf1<-PFfun(y,N,m0,C0,tau,sigma)
+
+estimatedx[i,3]<-RMSE(truex,DLM1$m)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(pf1)$mean)
+i=i+1
+
+}
+
+i=4
+for(k in c(2,5,10)){
+  N=1000
+DLM2<-DLM(y,sigma2,tau2,m0,C0)
+pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
+
+estimatedx[i,3]<-RMSE(truex,DLM2$m)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(pf2)$mean)
+i=i+1
+
+
+}
+
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+kbl(estimatedx[1:3,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
+```
+
+
+
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='ht', fig.width=10, message=FALSE, warning=FALSE, results=F}
+N1=100
+N2=1000
+N3=10000
+
+
+Combined<-data.frame(DLM.df,df)
+pf1<-PFfun(y,N1,m0,C0,tau,sigma)
+pf2<-PFfun(y,N2,m0,C0,tau,sigma)
+pf3<-PFfun(y,N3,m0,C0,tau,sigma)
+
+
+Compareplot<-function(dataframe,fun,title){
+
+Filt<-Filtervalues(fun)
+mean<-Filt$mean
+sd<-Filt$sd
+dataframe<-data.frame(dataframe,mean,sd)
+
+ggplot(dataframe,aes(x=timeframe))+
+  geom_line(aes(y=m, col="KF", linetype="KF"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=mean, col="BPF", linetype="BPF"))+
+  #geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+   #           fill="red",alpha=0.16) +
+    scale_color_manual("",
+                      values=c("KF" = "red",
+                               "True States" = "black",
+                               "BPF"= "blue"))+
+  scale_linetype_manual("",
+                      values=c("KF" = 1,
+                               "True States" = 3,
+                               "BPF"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+}
+
+p1<-Compareplot(Combined,pf1,"Filtered States")
+p2<-Compareplot(Combined,pf2,"")
+p3<-Compareplot(Combined,pf3,"")
+
+
+CompareVarplot<-function(dataframe,fun,title){
+
+Filt<-Filtervalues(fun)
+mean<-Filt$mean
+sd<-Filt$sd
+dataframe<-data.frame(dataframe,mean,sd)
+
+ggplot(dataframe,aes(x=timeframe))+
+geom_line(aes(y=sqrt(C), col="KF"))+
+geom_line(aes(y=sd,col="BPF"))+
+  scale_color_manual("",
+                      values=c("KF" = "red",
+                               "BPF"= "blue"))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30"))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+}
+
+
+c1<-CompareVarplot(Combined,pf1,"Standard Deviation")
+c2<-CompareVarplot(Combined,pf2,"")
+c3<-CompareVarplot(Combined,pf3,"")
+
+ggarrange(p1,c1,p2,c2,p3,c3,nrow=3,ncol=2,labels=c("N=100","","N=1000","","N=10000",""))
+```
+\
+\textbf{Implementation}
+\
+The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model described in Section XX can be improved accounting for the observations in the importance transition density and it consists of generating $x_{t}$ from its conditional distribution given $x_{t-1}$ and $y_{t}$. In the Normal model we are considering, the optimal proposal will be a Normal density as well with mean and variance given by 
+\begin{align*}
+\mu_{opt}=E(x_{t}|x_{t-1},y_{t})&=x_{t-1}+\frac{\tau^{2}}{\tau^{2}+\sigma^{2}}(y_{t}-x_{t-1})\\
+\sigma_{opt}^{2}=V(x_{t}|x_{t-1},y_{t})&=\frac{\tau^{2}\sigma^{2}}{\tau^{2}+\sigma^{2}}
+\end{align*}
+On the other hand, the incremental weights, using this importance transition density, are proportional to the conditional density of $y_{t}$ given $x_{t-1}=x_{t-1}^{(i)}$ , i.e $N(x_{t-1}^{(i)},\tau^{2}+\sigma^{2})$, evaluated at $y_{t}$. In other words the algorithm implemented in \R is:
+\begin{algorithm} GPF for Random Walk plus Noise Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Compute $\sigma_{opt}^{2}$ 
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Compute $\mu_{opt}$
+\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma_{opt}^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2+\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\end{enumerate}
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{enumerate}
+\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{itemize}
+\end{algorithm}
+The \code{GPF} function resume this passages.
+\
+\hrule
+\hrule
+\code{GPF(data,N,m0,C0,tau,sigma,r)}
+\hrule
+\textbf{Arguments}
+\
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\
+\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+```{r}
+GPFfun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
+  predsd <- sqrt(sigma+tau)
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    means<-x+(tau/(tau+sigma))*(data[t]-x)
+    x<-rnorm(N,means,importancesd)
+    w1<-w*dnorm(data[t],x,predsd)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure XX, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
+
+```{r include=FALSE}
+truex<-x
+estimatedx<-matrix(NA,ncol=4,nrow=3)
+colnames(estimatedx)<-c("N","Threshold","BPF","GPF")
+estimatedx[,1]<-c(1000,1000,1000)
+estimatedx[,2]<-c(0.5,0.25,0.1)
+
+
+i=1
+for(k in c(2,5,10)){
+  N=1000
+
+pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
+gpf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
+
+estimatedx[i,3]<-RMSE(truex,Filtervalues(pf2)$mean)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(gpf2)$mean)
+i=i+1
+
+
+}
+
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
+```
+
+
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+N2=1000
+
+
+pf2<-PFfun(y,N2,m0,C0,tau,sigma)
+gpf2<-GPFfun(y,N2,m0,C0,tau,sigma)
+
+
+
+Comparetwofunplot<-function(dataframe,fun1,fun2,title){
+
+Filt1<-Filtervalues(fun1)
+mean1<-Filt1$mean
+sd1<-Filt1$sd
+dataframe<-data.frame(dataframe,mean1,sd1)
+
+Filt2<-Filtervalues(fun2)
+mean2<-Filt2$mean
+sd2<-Filt2$sd
+dataframe<-data.frame(dataframe,mean2,sd2)
+
+ggplot(dataframe,aes(x=timeframe))+
+  geom_line(aes(y=mean1, col="GPF", linetype="GPF"))+
+  geom_line(aes(y=x, col="True States", linetype="True States"))+
+  geom_line(aes(y=mean2, col="BPF", linetype="BPF"))+
+  #geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+   #           fill="red",alpha=0.16) +
+    scale_color_manual("",
+                      values=c("GPF" = "green",
+                               "True States" = "black",
+                               "BPF"= "blue"))+
+  scale_linetype_manual("",
+                      values=c("GPF" = 1,
+                               "True States" = 3,
+                               "BPF"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+}
+
+
+p2<-Comparetwofunplot(df,pf2,gpf2,"Filtered States")
+
+
+
+ComparetwoVarplot<-function(dataframe,fun1,fun2,title){
+
+Filt1<-Filtervalues(fun1)
+mean1<-Filt1$mean
+sd1<-Filt1$sd
+dataframe<-data.frame(dataframe,mean1,sd1)
+
+Filt2<-Filtervalues(fun2)
+mean2<-Filt2$mean
+sd2<-Filt2$sd
+dataframe<-data.frame(dataframe,mean2,sd2)
+
+ggplot(dataframe,aes(x=timeframe))+
+geom_line(aes(y=sd2, col="GPF"))+
+geom_line(aes(y=sd1,col="BPF"))+
+  scale_color_manual("",
+                      values=c("GPF" = "green",
+                               "BPF"= "blue"))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30"))+
+  theme(plot.title = element_text(hjust = 0.5))
+
+}
+
+
+c2<-ComparetwoVarplot(Combined,pf2,gpf2,"Standard Deviation")
+
+
+ggarrange(p2,c2)
+```
+
+
+
+
+\textbf{Implementation}
+
