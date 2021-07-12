@@ -121,7 +121,7 @@ $$
 \P_T(dx_{0:t})=\P_0(dx_0)\prod\limits_{s=1}^t P_s(x_{s-1},dx_s)=\P_t(dx_{0:t}).
 $$
 \end{proposition}
-This means that the marginal distribution of $X_{0:t}$ with respect to $\P_T$ is $\P_t.$ 
+This means that the marginal distribution of $X_{0:t}$ with respect to $\P_T$ is $\P_t.$ .
 
 
 \section{State-Space Models}
