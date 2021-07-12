@@ -1,6 +1,4 @@
 ---
-header-includes: 
-- \newcommand{\R}{\textnormal{\sffamily\bfseries R}}}
 title: "R Notebook"
 output:
   pdf_document: default
@@ -14,12 +12,6 @@ library(kableExtra)
 
 
 ```{r include=FALSE}
-#Quantiles functions
-#-------------------
-q025=function(x){quantile(x,0.025)}
-q975=function(x){quantile(x,0.975)}
-
-
 #Calcolo intevalli di credibilità
 #--------------------------------
 Coverage<-function(fun){
@@ -42,15 +34,19 @@ RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
 
 \textbf{Implementation}
 
-In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
+In this section we present a practical illustration of the algorithm discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
 \begin{align}
 y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
 x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
 x_{0} & \sim N(m_{0},C_{0})
 \end{align}
-As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involving filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
-The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
-```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+As we already know, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be the basis for the implementations of other filtering strategies since we think that it is useful to understand the logic of the algorithms and to compare their performances.
+The typical observed process for this kind of model is the one presented in Figure XX. We simulated 500 observation imposing $\sigma^{2}=\tau^{2}=1$.
+```{r echo=FALSE, fig.align='center', fig.cap="Toy example: the true states and the observation sequence", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+library(ggplot2)
+q025=function(x){quantile(x,0.025)}
+q975=function(x){quantile(x,0.975)}
+
 
 set.seed(1991)
 dlm.sim = function(n,sigma,tau,x0){
@@ -83,38 +79,32 @@ df<-data.frame(timeframe,y,x)
 ggplot(df,aes(x=timeframe))+
   geom_line(aes(y=y, linetype="Observations"))+
   geom_line(aes(y=x, linetype="True States"))+
-  coord_cartesian(ylim = c(-4, +12)) +
   scale_linetype_manual(name="",
                       values=c("Observations" = 1,
                                "True States" = 3))+
   labs(x="Time",
        y="")+
-  #ggtitle("States and Observations")+
+  ggtitle("States and Observations")+
   theme_bw()+
   theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
         legend.background = element_rect(fill = "white", colour = "gray30")) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-The Kalman Filter for this model is implemented as described below.
+The Kalman Filter for this model can be easily implemented. Starting from the filtering distribution at period $t-1$, $x_{t-1}|y_{1:t-1} \sim N(m_{t-1},C_{t-1})$, we compute:
 \begin{itemize}
-\item Initialize $\theta_{0} \sim N(m_{0},C_{0})$
-\item For $t=1,..N$
-\begin{enumerate}
-\item Compute the one-step-ahead state predictive distribution at time $t-1$
+\item the one-step-ahead predictive distribution at time $t-1$
 \begin{align*}
 x_{t}|y_{1:t-1} & \sim N(a_{t},R_{t})\\
 a_{t} & = m_{t-1}\\
 R_{t} & = C_{t-1}+\tau^2
 \end{align*}
-\item Compute the filtering distribution at time $t$ as $p(x_{t}|y_{1:t}) \propto p(x_{t}|y_{1:t-1})p(y_{t}|x_{t})$, i.e. the product of the one-step-ahead state predictive distribution and the likelihood
+\item the filtering distribution at time $t$ as $p(x_{t}|y_{1:t}) \propto p(x_{t}|y_{1:t-1})p(y_{t}|x_{t})$
 \begin{align*}
 x_{t}|y_{1:t} & \sim N(m_{t},C_{t}) \\
 m_{t} & = \big(1-\frac{R_{t}}{R_{t}+\sigma^2}\big)a_{t}+\frac{R_{t}}{R_{t}+\sigma^2}y_{t} \\
 C_{t} & = \frac{R_{t}}{R_{t}+\sigma^2}\sigma^2
 \end{align*}
-\end{enumerate}
 \end{itemize}
-These steps are summarize in the 
 ```{r}
 DLM<-function(data,sig2,tau2,m0,C0){
   n  = length(data)
@@ -658,7 +648,7 @@ estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
 
 
 i=1
-for(N in c(100,1000,10000)){
+for(N in c(20,100,500)){
 
 DLM1<-DLM(y,sigma2,tau2,m0,C0)
 pf1<-PFfun(y,N,m0,C0,tau,sigma)
@@ -964,7 +954,7 @@ plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
 ggarrange(plot0,plot1,plot2,plot3)
 ```
 
-
+.
 
 
 
