@@ -2,12 +2,18 @@ library(usethis)
 
 use_git_config(user.name = "edoardo-marcelli", 
                user.email = "edoardomarcelli2@gmail.com")
+<<<<<<< HEAD
+use_git_config(user.name = "nebedetta", 
+               user.email = "etta.bruni@gmail.com")
+
+=======
 use_git_config(user.name = "michelebolla", 
                user.email = "michele.bolla@studbocconi.it")
 use_git_config(user.name = "RobertoColarieti", 
                user.email = "roberto.colarieti1998@gmail.com")
 use_git_config(user.name = "gabrieleromano111", 
                user.email = "gabrieleromano111@gmail.com")
+>>>>>>> 6f1752646ddcf3919f83af94f17e9231e557b3fd
 
 
 #@@@@@@@@@@@@@@@@@@@@##
@@ -104,5 +110,9 @@ ggplot(DLM.df,aes(x=timeframe))+
 #ciao sono Michele
 # test (Alexei)
 # alexei teast from local
+<<<<<<< HEAD
+# Test Benedetta
+=======
 #ciao 
 #Robbi
+>>>>>>> 6f1752646ddcf3919f83af94f17e9231e557b3fd
