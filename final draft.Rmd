@@ -19,6 +19,7 @@ header-includes:
 - \newtheorem{proposition}{Proposition}
 - \newtheorem{assumption}{Assumption}
 - \newtheorem{lemma}{Lemma}
+- \newtheorem{definition}{Definition}
 - \theoremstyle{nonumberplain}
 - \newtheorem{proof*}{Proof.}
 - \newtheorem{definition}{Definition}
@@ -70,7 +71,7 @@ The probability distribution of a random variable $X_t$ is represented by $\math
 Let $\varphi$ be a function defined on the random variable $X\propto\mathbb{Q}.$ Then, we denote the expected value of $\varphi(X)$ with 
 $$
     \mathbb{E}_{\mathbb{Q}}[\varphi(X)]=
-    \int_{\mathbb{X}}\varphi(x)\mathbb{Q}(dx).
+    \int_{\mathcal{X}}\varphi(x)\mathbb{Q}(dx).
 $$
 
 \section{Markov Processes}
@@ -87,7 +88,7 @@ Notice that for any random variables $X_1$ and $X_0=x_0,$
 $$
     \mathbb{P}_1(dx_{0:1})=\mathbb{P}_0(dx_{0})P_1(x_0,dx_1),
 $$
-where $P_1(x_0,dx_1)$ is a probability kernel from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ This remark, provides some intuition about the link between probability kernels and conditional probabilities. As a matter of fact, it is possible to show that for given $X_{0:1}$ with probability distribution $\mathbb{P}_1(dx_{0:1}),$ 
+where $P_1(x_0,dx_1)$ is a probability kernel from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ This remark, provides some intuition about the link between probability kernels and conditional probabilities. As a matter of fact, it is possible to show that for given $X_{0:1}$ with joint probability distribution $\mathbb{P}_1(dx_{0:1}),$ 
 \begin{equation}\label{prob_kern_condit_prob}
     \mathbb{P}_1(X_1\in dx_1\mid X_0=x_0)=P_1(x_0,dx_1).
 \end{equation}
@@ -98,7 +99,7 @@ $$
 $$
 meaning that, 
 $$
-    \mathbb{Q}(A)=\int_\mathcal{X} w(x) \mathbb{M}(dx).
+    \mathbb{Q}(A)=\int_A w(x) \mathbb{M}(dx).
 $$
 
 Let $P_1, P_2, \dots, P_T$ be a finite measure of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ \begin{definition}
