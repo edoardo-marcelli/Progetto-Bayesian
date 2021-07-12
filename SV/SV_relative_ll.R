@@ -138,7 +138,6 @@ cll_diff.df=data.frame(data$t,cll_diff)
 colnames(cll_diff.df)<-c('t','cll_diff')
 
 cll_plot<-ggplot(data = cll_diff.df, aes(x = t, y = cll_diff))+
-geom_line()+
-labs(x="Time",y="")
+geom_line()
 
 save(cll_plot, file="cll_plot.Rda")
