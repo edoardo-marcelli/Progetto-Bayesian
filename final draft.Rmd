@@ -56,7 +56,19 @@ output:
    number_sections: true 
 
 ---
-
+```{r, results= FALSE, message=FALSE, warning=FALSE, echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(fig.pos = '')
+knitr::opts_chunk$set(out.extra='')
+```
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+Sys.setlocale("LC_TIME", "English")
+```
+```{r include=FALSE}
+library(ggplot2)
+library(ggpubr)
+library(kableExtra)
+```
 \chapter*{Introduction}
 
 \chapter{Markov Processes and State-Space Models}
@@ -132,3 +144,69 @@ This means that the marginal distribution of $X_{0:t}$ with respect to $\P_T$ is
 
 \chapter{Particle Filtering}
 
+\chapter{Applications to Stochastic Volatility Models}
+\section{Comparing Constant and Stochastic Volatility Models of Equity Returns}
+
+In this section, we apply the particle filter in a model-comparison
+exercise, ultimately underlining the importance of taking stochastic
+volatility into account in modeling equity returns.
+
+We consider a stochastic volatility model
+$$
+\mathcal{M}_{SV}:\begin{array}{lc}
+r_{t}=\alpha_{r}+\sigma_{r,t}\cdot v_{t}\\
+\log\sigma_{r,t}^{2}=\alpha_{\sigma}+\beta_{\sigma}\cdot\log\sigma_{r,t-1}^{2}+\sigma_{\sigma}\cdot w_{t}
+\end{array}\ (v_{t},w_{t})\sim\mathcal{N}_{2}(\boldsymbol{0},I_{2})
+$$
+
+and a constant volatility iid model 
+$$
+\mathcal{M}_{CV}:(r_{t})\overset{iid}{\sim}\mathcal{N}(\alpha,\sigma^{2}).
+$$
+
+We calibrate the model parameters using the whole sample, and proceed
+by setting the return mean of both models to equal the sample mean,
+$\sigma^{2}$ equal to the return variance, and the parameters of
+the volatility equation in $\mathcal{M}_{SV}$ by running an $AR(1)$
+regression of the log squared residuals.
+
+In order to compare the predictive performance of the two, we compare
+the cumulative log likelihood of the observed returns up to time $t$
+given the considered model. In formulas, the cumulative likelihood
+can be computed as
+$$
+p(y_{1:t}|\mathcal{M}_{i})=\prod_{s=0}^{t-1}p(y_{s+1}|y_{1:s},\mathcal{M}_{i}),i\in\{SV,CV\},
+$$
+
+adopting the convention $y_{1:0}=\emptyset$. This is trivial to obtain
+in the iid case; considering the stohastic volatility model, the predictive
+likelihoods can be derived as
+
+$$
+p(y_{t+1}|y_{1:t},\mathcal{M}_{SV})=\int p(y_{t+1}|\sigma_{r,t+1},y_{1:t},\mathcal{M}_{SV})p(\sigma_{r,t+1}|y_{1:t},\mathcal{M}_{SV})d(\sigma_{r,t+1})
+$$
+$$
+=\int p(y_{t+1}|\sigma_{r,t+1}\mathcal{M}_{SV})p(\sigma_{r,t+1}|y_{1:t},\mathcal{M}_{SV})d(\sigma_{r,t+1})
+$$
+
+Whereas the emission distribution $p(y_{t+1}|\sigma_{r,t+1}\mathcal{M}_{SV})$
+is known, we approximate the predictive state distribution $p(\sigma_{r,t+1}|y_{1:t},\mathcal{M}_{SV})$
+with weighted particles obtained with particle filtering.
+
+Figure XX reports the time series of the cumulative log-likelihood
+given the constant volatility model $\mathcal{M}_{CV}$ relative to
+the one given $\mathcal{M}_{SV}$, obtained as $\log p(y_{1:t}|\mathcal{M}_{CV})-\log p(y_{1:t}|\mathcal{M}_{SV})$.
+Notice that the first difference of this series is the relative log-likelihood
+of the incoming observation, $p(y_{t}|y_{1:t-1},\mathcal{M}_{CV})-p(y_{t}|y_{1:t-1},\mathcal{M}_{SV})$.
+
+```{r cll_plot, echo=F, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, results=F}
+load("SV/cll_plot.Rda")
+cll_plot+
+  theme_bw()+
+  scale_x_date(date_breaks = "3 months",date_minor_breaks="1 month",date_labels = "%m/%y")+
+  labs(x="Time (month/year)",y="")
+```
+Overall, this analysis shows how a model with stochastic
+volatility is better at describing and predicting returns. As can be seen from the graph and perhaps unsurprisingly,
+the density forecast given the stochastic volatility model represents
+a particularly significant improvement in the period of extreme values of returns in March 2020.
