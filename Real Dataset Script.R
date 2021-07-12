@@ -11,6 +11,37 @@
 
 #Particle Filter
 #---------------
+SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<0){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#Particle Filter
+#---------------
 SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
@@ -273,6 +304,7 @@ dfsv<-data.frame(timeframe,y,x)
 #---------
 set.seed(12345)
 N=5000
+svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
@@ -305,12 +337,10 @@ Filtplot<-function(dataframe,fun,title){
     geom_ribbon(aes(ymin = mean1-1.96*sd, ymax = mean1+1.96*sd),
                 fill="red",alpha=0.16) +
     scale_color_manual("",
-                       values=c("Observations" = "black",
-                                "True States" = "black",
+                       values=c("True States" = "black",
                                 "Filtered States"= "red"))+
     scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "True States" = 3,
+                          values=c("True States" = 3,
                                    "Filtered States"=1))+
     labs(x="Time",
          y="")+
@@ -330,12 +360,14 @@ plot2<-Filtplot(dfsv,svapf, "Auxiliary Particle Filter")
 plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
 plot4<-Filtplot(dfsv,svopt,"Opt Ker Particle Filter")
 plot5<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
+plot6<-Filtplot(dfsv,svsis,"No Resampling")
 ggarrange(plot1,plot2,plot3,plot4,plot5)
 ggarrange(plot1)
 ggarrange(plot2)
 ggarrange(plot3)
 ggarrange(plot4)
 ggarrange(plot5)
+ggarrange(plot6,plot1)
 
 #Kalman filter
 m00=0
