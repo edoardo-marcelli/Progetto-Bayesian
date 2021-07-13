@@ -599,7 +599,7 @@ In this section, we apply the particle filter in a model-comparison
 exercise, ultimately underlining the importance of taking stochastic
 volatility into account in modeling equity returns.
 
-We consider a stochastic volatility model
+We analyze a dataset of log close-to-close returns of the S&P500, from 2017 to 2021. Consider a stochastic volatility model
 $$
 \mathcal{M}_{SV}:\begin{array}{lc}
 r_{t}=\alpha_{r}+\sigma_{r,t}\cdot v_{t}\\
@@ -655,7 +655,7 @@ cll_plot+
   labs(x="Time (month/year)",y="")
 ```
 Overall, this analysis shows how a model with stochastic
-volatility is better at describing and predicting returns. As can be seen from the graph and perhaps unsurprisingly,
+volatility is better at describing and predicting the considered time-frame of S&P500 returns. As can be seen from the graph and perhaps unsurprisingly,
 the density forecast given the stochastic volatility model represents
 a particularly significant improvement in the period of extreme values of returns in March 2020.
 
