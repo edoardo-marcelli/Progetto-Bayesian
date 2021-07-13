@@ -132,7 +132,7 @@ Our \code{DLM} function implement in \R replicate this steps.
 \code{DLM(data,sig2,tau2,m0,C0)}
 \hrule
 \textbf{Arguments}
-\
+
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
 \code{sig2} \ \ the variance $\sigma^{2}$ in Equation (1)
 \
@@ -220,14 +220,14 @@ Consider again the random walk plus noise model of section XX,the challenge here
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
-Our \code{SIS} function implemented in \R replicate this steps.
+Our \code{SISfun} function implemented in \R replicate this steps.
 \
 \hrule
 \hrule
-\code{SIS(data,N,m0,C0,tau,sigma)}
+\code{SISfun(data,N,m0,C0,tau,sigma)}
 \hrule
 \textbf{Arguments}
-\
+
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
 \code{N} \ \ number of particles generated at each step
 \
@@ -344,14 +344,14 @@ In this section, Bootstrap Particle Filter will be used to estimate filtered sta
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
-These steps are resumed in our \code{PF} function.
+These steps are resumed in our \code{PFfun} function.
 \
 \hrule
 \hrule
-\code{PF(data,N,m0,C0,tau,sigma,r)}
+\code{PFfun(data,N,m0,C0,tau,sigma,r)}
 \hrule
 \textbf{Arguments}
-\
+
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
 \code{N} \ \ number of particles generated at each step
 \
@@ -576,14 +576,14 @@ On the other hand, the incremental weights, using this importance transition den
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
-The \code{GPF} function resume this passages.
+The \code{GPFfun} function resume this passages.
 \
 \hrule
 \hrule
-\code{GPF(data,N,m0,C0,tau,sigma,r)}
+\code{GPFfun(data,N,m0,C0,tau,sigma,r)}
 \hrule
 \textbf{Arguments}
-\
+
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
 \code{N} \ \ number of particles generated at each step
 \
@@ -785,18 +785,18 @@ For illustration purposes, we are going implement an auxiliary particle filter w
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
-\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\item Set $p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
-The \code{APF} function resume this passages.
+The \code{APFfun} function resume this passages.
 \
 \hrule
 \hrule
-\code{APF(data,N,m0,C0,tau,sigma,r)}
+\code{APFfun(data,N,m0,C0,tau,sigma,r)}
 \hrule
 \textbf{Arguments}
-\
+
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
 \code{N} \ \ number of particles generated at each step
 \
@@ -970,6 +970,58 @@ i=i+1
 kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
 ```
 
+
+```{r}
+APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
+  predsd <- sqrt(sigma+tau)
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+    weight = w*dnorm(data[t],x,predsd)
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    }else{
+    weight = rep(1/N,N)
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    }
+    
+    means<-x[k]+(tau/(tau+sigma))*(data[t]-x[k])
+    x1   = rnorm(N,means,importancesd)
+    lw  = dnorm(data[t],x1,predsd,log=TRUE)-dnorm(data[t],x[k],predsd,log=TRUE)
+    w   = exp(lw)
+    w   = w/sum(w)
+    x <- x1
+   
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+```{r echo=FALSE}
+apfopt<-APFoptfun(y,N,m0,C0,tau,sigma)
+ESS.APFopt<-ESSplot(df,apfopt)
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+FILT.APFopt<-Filtplot(df,apfopt,"")
+ggarrange(FILT.APFopt,ESS.APFopt,labels=c("(a)","(b)"))
+```
+
+
+
 \
 \textbf{Implementation}
 \
@@ -982,68 +1034,121 @@ Alternatively, assign them a uniform prior if we have no knowledge of the hyperp
 \begin{algorithm} LWF for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$, $({\sigma^{2}}^{(1)},...,{\sigma^{2}}^{(N)})$ from $G(\alpha_{v},\beta_{v})$ and $({\tau^{2}}^{(1)},...,{\tau^{2}}^{(N)})$ from $G(\alpha_{w},\beta_{w})$. Set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$. Therefore $\psi^{(i)}=({\sigma^{2}}^{(i)},{\tau^{2}}^{(i)})$, and
-$p(x_{0}|y_{0})=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi^{(i)})}$
+$\hat{\pi}_{0}=p(x_{0}|y_{0})=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi^{(i)})}$
 \item For $t=1,...,n$:.
 \begin{enumerate}
-\item Compute $$
-\end{enumerate}
-
-and $(\psi^{(1)},...,\psi^{(N)})$ from 
-
-
-
-
-Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
-\item For $t=1,...,n$:
-\begin{enumerate}
+\item Compute $\overline{\psi}=E_{\hat{\pi}_{t-1}}(\psi)$ and $\Sigma=V_{\hat{\pi}_{t-1}}(\psi)$. For $i=1,...,N$, set
+\begin{align*}
+m^{(i)} & = a\psi^{(i)}+(1-a)\hat{\psi} \\
+\hat{x}_{t}^{(i)} & = E(x_{t}|x_{t-1}=x_{t-1}^{(i)},\psi=\psi^{(k)})
+\end{align*}
 \item For $k=1,...,N$:
-\begin{enumerate}
-\item Draw $I_{k}$ with $P(I_{k}) \propto w_{t-1}^{(i)}f(y_{t}|g(x_{t-1}^{(i)})) $
-\item Draw $x_{t}^{(k)} \sim N(x_{t-1}^{(I_{k})},\tau^2)$
-\item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})}))}$
-\end{enumerate}
-\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\begin{itemize}
+\item Draw $I_{k}$, with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),\psi=m^{(i)}) $
+\item Draw ${\sigma^{2}}^{(k)}$ from $G(\alpha_{v}^{(I_k)},\beta_{v}^{(I_k)})$ 
+\item Draw ${\tau^{2}}^{(k)}$ from $G(\alpha_{w}^{(I_k)},\beta_{w}^{(I_k)})$
+\item Draw $x_{t}^{(k)}$ from $N(x_{t-1}^{(I_k)},\psi=\psi^{(k)})$
+\item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)},\psi=\psi^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})},\psi=m^{(I_k)}))}$
+\end{itemize}
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
 \begin{enumerate}
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
-\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\item Set $\hat{\pi}_{t}=p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{(x_{t}^{(i)},\psi^{(i)})}$
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
+Our \code{LWfun} function goes through the illustrated steps.
+\
+\hrule
+\hrule
+\
+\code{LWfun(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif,r)}
+\
+\hrule
+\textbf{Arguments}
 
-
-
-
-
-After having drown the hyperparameters  indipendently form their priors and having set $w_{0}^{(i)}=N^{-1}$, $i=1,...,N$, and $\hat{\pi}_{0}=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi^{(i)})}$, for t=1,..T 
-\begin{itemize}
-\item Compute $\hat{\psi}=E_{\hat{\pi}_{t-1}}(\psi)$ and $\Sigma=Var_{\hat{\pi}_{t-1}}(\psi)$. For $i=1,...,N$ set
-\begin{align*}
-m(\psi^{(i)}) & =a\psi^{(i)}+(1-a)\overline{\psi}\\
-v(\psi^{(i)}) & =(1-a^2)\Sigma
-\end{align*}
-and
-\begin{align*}
-\alpha(\psi^{(i)}) & =\frac{m(\psi^{(i)})^2}{v(\psi^{(i)})} \\
-\beta(\psi^{(i)}) & =\frac{m(\psi^{(i)})}{v(\psi^{(i)})}
-\end{align*}
-For $k=1,...,N$
-\begin{itemize}
-\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1^{(i)}}f_{N}(y_{t}|g(x_{t}^{(i)}),m(\psi^{(i)}))$ where for simplicity $g(x_{t}^{(i)})=E(x_{t}|x_{t-1},m(\psi^{(i)}))$
-\item Draw $\psi^{(k)} \sim G(\alpha(\psi^{(I_{k})}),\beta(\psi^{(I_{k})}))$
-\item Draw $x_{t}^{(k)} \sim N(x_{t-1}^{(I_{k})},\tau^{{2}^{(k)}})$
-\item Set $\tilde{w}_{t}^{k}=\frac{f_N(y_{t}|x_{t}^{(k)},\psi=\psi^{(k)})}{f_N(y_{t}|g(x_{t}^{(I_{k})}),\psi=m(\psi)^{(I_k)})}$
-\end{itemize}
-\item Normalize the weights
-\item Compute the effective sample size ($ESS$)
-\item If $ESS<N/2$, resample:
-\begin{itemize}
-\item Draw a sample of size N, $x_{t}^{(1)},...,x_{t}^{(N)}$,from the discrete distribution $P((x_{t},\psi)=(x_{t}^{(i)},\psi^{(i)}))=w_{t}^{(i)},\ \ i=1,...,N$
-\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
-\end{itemize}
-
-
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alphav, betav} \ \  Gamma prior hyperparameters on $\sigma^{2}$
+\
+\code{alphaw,betaw} \ \  Gamma prior hyperparameters on $\tau^{2}$
+\
+\code{delta} \ \ hyperparameter delta value
+\
+\code{unif} \ \ if True then it sets a Uniform $(0,10)$ prior on $\sigma^{2}$ and $\tau^{2}$
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+```{r}
+LWfun<-function(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif,r){
+  if(missing(r)){r=2}else{}
+  xs     = rnorm(N,m0,sqrt(C0))
+  if(unif==T){
+  pars   = cbind(runif(N,0,10),runif(N,0,10))}else{}
+  pars   = cbind(rgamma(N,shape=alphav,scale=betav),rgamma(N,shape=alphaw,scale=betaw))
+  a      = (3*delta-1)/(2*delta)
+  h2     = 1-a^2
+  parss  = array(0,c(N,2,n))
+  xss    = NULL
+  ws     = NULL
+  ess    = NULL
+  w      = rep(1/N,N)
+  for (t in 1:length(data)){
+    meanV = weighted.mean(pars[,1],w)
+    varV  = weighted.mean((pars[,1]-meanV)^2,w)
+    meanW = weighted.mean(pars[,2],w)
+    varW  = weighted.mean((pars[,2]-meanW)^2,w)
+    
+    muV = a*pars[,1]+(1-a)*meanV
+    sigma2V = (1-a^2)*varV
+    alphaV = muV^2/sigma2V
+    betaV = muV/sigma2V
+    
+    muW = a*pars[,2]+(1-a)*meanW
+    sigma2W = (1-a^2)*varW
+    alphaW = muW^2/sigma2W
+    betaW = muW/sigma2W
+    
+    weight      = w*dnorm(data[t],xs,sqrt(muV))
+    k           = sample(1:N,size=N,replace=T,prob=weight)
+    
+    pars[,1]<-rgamma(N,shape=alphaV[k],rate=betaV[k])
+    pars[,2]<-rgamma(N,shape=alphaW[k],rate=betaW[k])
+    
+    xsprevious<-xs[k]
+    xs = rnorm(N,xs[k],sqrt(pars[,2]))
+    
+    w           = exp(dnorm( data[t],xs,sqrt(pars[,1]),log=T)-
+                        dnorm( data[t],xsprevious,sqrt(muV[k]),log=T))
+    w           = w/sum(w)
+    ESS         = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      xs<-xs[index]
+      pars<-pars[index,]
+      w<-rep(1/N,N)
+    }else{
+      xs<-xs
+      pars<-pars
+    }
+    
+    
+    xss         = rbind(xss,xs)
+    parss[,,t]  = pars 
+    ws          = rbind(ws,w)
+    ess         = rbind(ess,ESS)
+  }
+  return(list(xss=xss,parss=parss,ws=ws,ess=ess))
+}
+```
 
