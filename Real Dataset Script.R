@@ -303,7 +303,7 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=5000
+N=10000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
@@ -357,7 +357,7 @@ library(ggplot2)
 library(ggpubr)
 plot1<-Filtplot(dfsv,svpf,"Particle Filter")
 plot2<-Filtplot(dfsv,svapf, "Auxiliary Particle Filter")
-plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
+plot3<-Filtplot(dfsv,svlw,"Liu and West Filter")
 plot4<-Filtplot(dfsv,svopt,"Opt Ker Particle Filter")
 plot5<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
 plot6<-Filtplot(dfsv,svsis,"No Resampling")
