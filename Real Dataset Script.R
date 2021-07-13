@@ -361,13 +361,27 @@ plot3<-Filtplot(dfsv,svlw,"Liu and West Filter")
 plot4<-Filtplot(dfsv,svopt,"Opt Ker Particle Filter")
 plot5<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
 plot6<-Filtplot(dfsv,svsis,"No Resampling")
-ggarrange(plot1,plot2,plot3,plot4,plot5)
+ggarrange(plot1,plot2)
 ggarrange(plot1)
 ggarrange(plot2)
 ggarrange(plot3)
 ggarrange(plot4)
 ggarrange(plot5)
 ggarrange(plot6,plot1)
+
+## RMSE comparison
+
+realisedx<-x
+RMSEvol<-matrix(NA,ncol=6,nrow=1)
+colnames(RMSEvol)<-c("N","PF", "PFOPT", "APF","LWF", "SIS")
+RMSEvol[,1]<-c(10000)
+RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
+comparablevol<-function(fun){exp((Filtervalues(fun)$mean)/2)}
+RMSEvol[1,2]<-RMSE(realisedx,comparablevol(svpf))
+RMSEvol[1,3]<-RMSE(realisedx,comparablevol(svopt))
+RMSEvol[1,4]<-RMSE(realisedx,comparablevol(svapf))
+RMSEvol[1,5]<-RMSE(realisedx,comparablevol(svlw))
+RMSEvol[1,6]<-RMSE(realisedx,comparablevol(svsis))
 
 #Kalman filter
 m00=0
@@ -433,3 +447,6 @@ ggplot(DLM.df,aes(x=timeframeKF))+
   theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
         legend.background = element_rect(fill = "white", colour = "gray30")) +
   theme(plot.title = element_text(hjust = 0.5))
+
+
+
