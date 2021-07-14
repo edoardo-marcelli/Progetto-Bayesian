@@ -207,7 +207,7 @@ ggplot(DLM.df,aes(x=timeframe))+
 The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
 
 \
-\textbf{Implementation}
+\section{Implementation}
 Consider again the random walk plus noise model of section XX,the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
 \begin{algorithm} SIS filter for Random Walk plus Noise Model
 \begin{itemize}
@@ -326,7 +326,7 @@ PlotSIS<-Filtplot(df,sis,title="")
 ggarrange(PlotSIS,ESS.SIS,labels=c("(a)","(b)"))
 ```
 
-\textbf{Implementation}
+\section{Implementation}
 In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section XX. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
 \begin{algorithm} BPF for Random Walk plus Noise Model
 \begin{itemize}
@@ -550,7 +550,7 @@ c3<-CompareVarplot(Combined,pf3,"")
 ggarrange(p1,c1,p2,c2,p3,c3,nrow=3,ncol=2,labels=c("N=100","","N=1000","","N=10000",""))
 ```
 \
-\textbf{Implementation}
+\section{Implementation}
 \
 The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model described in Section XX can be improved accounting for the observations in the importance transition density and it consists of generating $x_{t}$ from its conditional distribution given $x_{t-1}$ and $y_{t}$. In the Normal model we are considering, the optimal proposal will be a Normal density as well with mean and variance given by 
 \begin{align*}
