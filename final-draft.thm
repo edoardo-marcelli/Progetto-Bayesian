@@ -1,3 +1,5 @@
-\contentsline {definition}{{Definition}{1}{}}{4}{definition.1}
-\contentsline {definition}{{Definition}{2}{}}{4}{definition.2}
-\contentsline {proposition}{{Proposition}{1}{}}{5}{proposition.1}
+\contentsline {definition}{{Definition}{1}{}}{4}{definition.1}%
+\contentsline {definition}{{Definition}{2}{}}{5}{definition.2}%
+\contentsline {proposition}{{Proposition}{1}{}}{5}{proposition.1}%
+\contentsline {lemma}{{Lemma}{1}{}}{10}{lemma.1}%
+\contentsline {proof*}{{Proof.}{1}{}}{10}{proof*.1}%
