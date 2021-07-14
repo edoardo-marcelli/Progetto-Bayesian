@@ -11,6 +11,37 @@
 
 #Particle Filter
 #---------------
+SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<0){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#Particle Filter
+#---------------
 SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
@@ -273,6 +304,7 @@ dfsv<-data.frame(timeframe,y,x)
 #---------
 set.seed(12345)
 N=5000
+svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
@@ -305,12 +337,10 @@ Filtplot<-function(dataframe,fun,title){
     geom_ribbon(aes(ymin = mean1-1.96*sd, ymax = mean1+1.96*sd),
                 fill="red",alpha=0.16) +
     scale_color_manual("",
-                       values=c("Observations" = "black",
-                                "True States" = "black",
+                       values=c("True States" = "black",
                                 "Filtered States"= "red"))+
     scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "True States" = 3,
+                          values=c("True States" = 3,
                                    "Filtered States"=1))+
     labs(x="Time",
          y="")+
@@ -327,15 +357,38 @@ library(ggplot2)
 library(ggpubr)
 plot1<-Filtplot(dfsv,svpf,"Particle Filter")
 plot2<-Filtplot(dfsv,svapf, "Auxiliary Particle Filter")
-plot3<-Filtplot(dfsv,svlw,"Liu e West Filter")
+plot3<-Filtplot(dfsv,svlw,"Liu and West Filter")
 plot4<-Filtplot(dfsv,svopt,"Opt Ker Particle Filter")
 plot5<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
-ggarrange(plot1,plot2,plot3,plot4,plot5)
+plot6<-Filtplot(dfsv,svsis,"No Resampling")
+ggarrange(plot1,plot2)
 ggarrange(plot1)
 ggarrange(plot2)
 ggarrange(plot3)
 ggarrange(plot4)
 ggarrange(plot5)
+ggarrange(plot6,plot1)
+
+## RMSE MAE comparison
+
+realisedx<-x
+Errorvol<-matrix(NA,ncol=6,nrow=2)
+colnames(Errorvol)<-c("N","PF", "PFOPT", "APF","LWF", "SIS")
+rownames(Errorvol)<-c("RMSE","MAE")
+Errorvol[,1]<-c(10000)
+RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
+MAE<-function(x,xhat){mean(abs(x-xhat))}
+comparablevol<-function(fun){exp((Filtervalues(fun)$mean)/2)}
+Errorvol[1,2]<-RMSE(realisedx,comparablevol(svpf))
+Errorvol[1,3]<-RMSE(realisedx,comparablevol(svopt))
+Errorvol[1,4]<-RMSE(realisedx,comparablevol(svapf))
+Errorvol[1,5]<-RMSE(realisedx,comparablevol(svlw))
+Errorvol[1,6]<-RMSE(realisedx,comparablevol(svsis))
+Errorvol[2,2]<-MAE(realisedx,comparablevol(svpf))
+Errorvol[2,3]<-MAE(realisedx,comparablevol(svopt))
+Errorvol[2,4]<-MAE(realisedx,comparablevol(svapf))
+Errorvol[2,5]<-MAE(realisedx,comparablevol(svlw))
+Errorvol[2,6]<-MAE(realisedx,comparablevol(svsis))
 
 #Kalman filter
 m00=0
@@ -401,3 +454,6 @@ ggplot(DLM.df,aes(x=timeframeKF))+
   theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
         legend.background = element_rect(fill = "white", colour = "gray30")) +
   theme(plot.title = element_text(hjust = 0.5))
+
+
+

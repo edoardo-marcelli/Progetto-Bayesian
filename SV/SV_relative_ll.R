@@ -17,12 +17,12 @@ SVPFfun<-function(data,N,m0,C0,a,a.v,b.v,s.v,r){
   ws<-NULL
   ess<-NULL
   x  = rnorm(N,m0,sqrt(C0))
+  xp.1<-rnorm(N,a.v+b.v*x,s.v)
   w  = rep(1/N,N)
   
   for(t in 1:length(data)){
     
     x<-rnorm(N,a.v+b.v*x,s.v)
-    xp.1<-x
     w1<-w*dnorm(data[t],a,exp(x/2))
     
     w = w1/sum(w1)
@@ -34,9 +34,9 @@ SVPFfun<-function(data,N,m0,C0,a,a.v,b.v,s.v,r){
       w<-rep(1/N,N)
     }else{}
     
-    xs = rbind(xs,x)
-    ws = rbind(ws,w)
-    ess =rbind(ess,ESS)
+    xs  = rbind(xs,x)
+    ws  = rbind(ws,w)
+    ess = rbind(ess,ESS)
   }
   return(list(xs=xs,ws=ws,ess=ess,xp.1=xp.1))
 }
@@ -72,18 +72,18 @@ SVPFfun<-function(data,N,m0,C0,a,a.v,b.v,s.v,r){
 #   return(list(xs=xs,xs.f=xs.f,ws=ws,ess=ess,x.f1=x.f1))
 # }
 ## data
-# y<-as.matrix(read.csv("sp500_17-21.csv", header=F))
-y<-as.matrix(rnorm(1000,mean=1,sd=1)) #test
-
-n<-dim(y)[1]
+data<-read.csv("sp500_17-21.csv", header=T)
+data$t<-as.Date(data$t)
+y<-data$r
+#y<-rnorm(996,mean=1,sd=1) #test
+n<-length(y)
 
 # find parameters for constant and stochastic vol models
 mean=sum(y)/n
 res<-(y-mean)^2
 lres<-log(res)
-l.lres<-c(NA,lres[1:n-1,1])
+l.lres<-c(NA,lres[1:n-1])
 resdf=data.frame(lres,l.lres)
-colnames(resdf)=c("lres","l.lres")
 lm_res<-lm(lres~1+l.lres,data=resdf)
 c_res<-lm_res[[1]]
 sigma_res<-sqrt(mean(summary(lm_res)$residuals^2))
@@ -113,14 +113,14 @@ xs<-pf$xs
 ws<-pf$ws
 # make particles for predictive state distribution
 xp<-xs
-xp[1:N,1]<-pf$xp.1
+xp[1,1:N]<-pf$xp.1
 for (i in 2:n){
-  xp[1:N,i]=rnorm(N,a.v+b.v*xs[1:N,i-1],s.v)
+  xp[i,1:N]=rnorm(N,a.v+b.v*xs[i-1,1:N],s.v)
 }
 wp<-ws
-wp[1:N,1]=1/N
-wp[1:N,2:n]=ws[1:N,1:n-1]
-l_sv<-matrix(0,n,1)
+wp[1,1:N]=1/N
+wp[2:n,1:N]=ws[1:n-1,1:N]
+l_sv<-rep(0,n)
 for (i in 1:n){
   for (j in 1:N){
   l_sv[i]=l_sv[i]+dnorm(y[i],a,exp(xp[i,j]/2))*wp[i,j]
@@ -134,6 +134,10 @@ for (i in 2:n){
 # Difference
 cll_diff=cll_cv-cll_sv
 ll_diff=ll_cv-ll_sv
-cll_diff.df=data.frame(1:n,cll_diff)
+cll_diff.df=data.frame(data$t,cll_diff)
 colnames(cll_diff.df)<-c('t','cll_diff')
-ggplot(data = cll_diff.df, aes(x = t, y = cll_diff))+geom_line()
+
+cll_plot<-ggplot(data = cll_diff.df, aes(x = t, y = cll_diff))+
+geom_line()
+
+save(cll_plot, file="cll_plot.Rda")
