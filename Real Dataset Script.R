@@ -339,7 +339,7 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=1000
+N=10000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svbapf<-SVBAPFfun(y,N,m0,C0,alpha,beta,tau)
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
@@ -412,7 +412,7 @@ ggarrange(plot7)
 
 realisedx<-x
 Errorvol<-matrix(NA,ncol=6,nrow=2)
-colnames(Errorvol)<-c("N","PF", "PFOPT", "APF","LWF", "SIS")
+colnames(Errorvol)<-c("N","BPF", "GPFOPT", "APF","LWF", "SIS", "PF")
 rownames(Errorvol)<-c("RMSE","MAE")
 Errorvol[,1]<-c(10000)
 RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
@@ -423,11 +423,13 @@ Errorvol[1,3]<-RMSE(realisedx,comparablevol(svopt))
 Errorvol[1,4]<-RMSE(realisedx,comparablevol(svapf))
 Errorvol[1,5]<-RMSE(realisedx,comparablevol(svlw))
 Errorvol[1,6]<-RMSE(realisedx,comparablevol(svsis))
+Errorvol[1,7]<-RMSE(realisedx,comparablevol(svbapf))
 Errorvol[2,2]<-MAE(realisedx,comparablevol(svpf))
 Errorvol[2,3]<-MAE(realisedx,comparablevol(svopt))
 Errorvol[2,4]<-MAE(realisedx,comparablevol(svapf))
 Errorvol[2,5]<-MAE(realisedx,comparablevol(svlw))
 Errorvol[2,6]<-MAE(realisedx,comparablevol(svsis))
+Errorvol[2,7]<-MAE(realisedx,comparablevol(svbapf))
 
 #Kalman filter
 m00=0
