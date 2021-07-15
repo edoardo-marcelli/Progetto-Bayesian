@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021/W32TeX) (preloaded format=xelatex 2021.6.20)  14 JUL 2021 18:00
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021/W32TeX) (preloaded format=xelatex 2021.6.20)  15 JUL 2021 12:16
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -855,11 +855,11 @@ Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
 \TeXr@lab=\toks52
 )
 LaTeX Font Info:    Trying to load font information for TU+txr on input line 16
-4.
-LaTeX Font Info:    No file TUtxr.fd. on input line 164.
+6.
+LaTeX Font Info:    No file TUtxr.fd. on input line 166.
 
 LaTeX Font Warning: Font shape `TU/txr/m/n' undefined
-(Font)              using `TU/lmr/m/n' instead on input line 164.
+(Font)              using `TU/lmr/m/n' instead on input line 166.
 
 (./final-draft.aux
 
@@ -868,63 +868,63 @@ LaTeX Warning: Label `sis_update' multiply defined.
 )
 \openout1 = `final-draft.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 164.
+LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 166.
 LaTeX Font Info:    Trying to load font information for OML+txmi on input line 
-164.
+166.
 
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/omltxmi.fd
 File: omltxmi.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 164.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for OMS/txsy/m/n on input line 166.
 LaTeX Font Info:    Trying to load font information for OMS+txsy on input line 
-164.
+166.
 
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/omstxsy.fd
 File: omstxsy.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 164.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for OMX/txex/m/n on input line 166.
 LaTeX Font Info:    Trying to load font information for OMX+txex on input line 
-164.
+166.
 
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/omxtxex.fd
 File: omxtxex.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 164.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for U/txexa/m/n on input line 166.
 LaTeX Font Info:    Trying to load font information for U+txexa on input line 1
-64.
+66.
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/utxexa.fd
 File: utxexa.fd 2000/12/15 v3.1
 )
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 164.
-LaTeX Font Info:    ... okay on input line 164.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 166.
+LaTeX Font Info:    ... okay on input line 166.
 LaTeX Font Info:    Overwriting math alphabet `\mathrm' in version `normal'
-(Font)                  OT1/txr/m/n --> TU/txr/m/n on input line 164.
+(Font)                  OT1/txr/m/n --> TU/txr/m/n on input line 166.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/txr/m/it --> TU/txr/m/it on input line 164.
+(Font)                  OT1/txr/m/it --> TU/txr/m/it on input line 166.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/txr/bx/n --> TU/txr/b/n on input line 164.
+(Font)                  OT1/txr/bx/n --> TU/txr/b/n on input line 166.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/txss/m/n --> TU/txss/m/n on input line 164.
+(Font)                  OT1/txss/m/n --> TU/txss/m/n on input line 166.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/txss/b/n --> TU/txss/b/n on input line 164.
+(Font)                  OT1/txss/b/n --> TU/txss/b/n on input line 166.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/txtt/m/n --> TU/txtt/m/n on input line 164.
+(Font)                  OT1/txtt/m/n --> TU/txtt/m/n on input line 166.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/txtt/b/n --> TU/txtt/b/n on input line 164.
+(Font)                  OT1/txtt/b/n --> TU/txtt/b/n on input line 166.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -953,7 +953,7 @@ pt=math;language=dflt;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(0)/m/n' will be
-(Font)              scaled to size 10.0pt on input line 164.
+(Font)              scaled to size 10.0pt on input line 166.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -992,18 +992,18 @@ pt=math;language=dflt;"
 (fontspec)             - 'bold small caps'  (b/sc) with NFSS spec.: 
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 10.0pt on input line 164.
+(Font)              scaled to size 10.0pt on input line 166.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 164.
+(Font)              `operators' in the math version `normal' on input line 166.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
 (Font)                  OT1/txr/m/n --> TU/latinmodern-math.otf(1)/m/n on input
- line 164.
+ line 166.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 164.
+(Font)              `operators' in the math version `bold' on input line 166.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
 (Font)                  OT1/txr/bx/n --> TU/latinmodern-math.otf(1)/b/n on inpu
-t line 164.
+t line 166.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -1090,15 +1090,15 @@ t=math;language=dflt;"
 (fontspec)             \fontdimen 21\font =0pt\relax 
 
 LaTeX Font Info:    Encoding `U' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `normal' on input line 164.
+(Font)              `symbols' in the math version `normal' on input line 166.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
 (Font)                  U/MnSymbolF/m/n --> TU/latinmodern-math.otf(2)/m/n on i
-nput line 164.
+nput line 166.
 LaTeX Font Info:    Encoding `U' has changed to `TU' for symbol font
-(Font)              `symbols' in the math version `bold' on input line 164.
+(Font)              `symbols' in the math version `bold' on input line 166.
 LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
 (Font)                  U/MnSymbolF/b/n --> TU/latinmodern-math.otf(2)/b/n on i
-nput line 164.
+nput line 166.
 
 Package fontspec Info: latinmodern-math scale = 0.9999964596882403.
 
@@ -1168,17 +1168,17 @@ pt=math;language=dflt;"
 
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
 (Font)              `largesymbols' in the math version `normal' on input line 1
-64.
+66.
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
 (Font)                  OMX/MnSymbolE/m/n --> TU/latinmodern-math.otf(3)/m/n on
- input line 164.
+ input line 166.
 LaTeX Font Info:    Encoding `OMX' has changed to `TU' for symbol font
-(Font)              `largesymbols' in the math version `bold' on input line 164
+(Font)              `largesymbols' in the math version `bold' on input line 166
 .
 LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
 (Font)                  OMX/MnSymbolE/b/n --> TU/latinmodern-math.otf(3)/b/n on
- input line 164.
-Package hyperref Info: Link coloring OFF on input line 164.
+ input line 166.
+Package hyperref Info: Link coloring OFF on input line 166.
 
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.s
 ty
@@ -1194,9 +1194,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count334
 )
-LaTeX Info: Redefining \ref on input line 164.
-LaTeX Info: Redefining \pageref on input line 164.
-LaTeX Info: Redefining \nameref on input line 164.
+LaTeX Info: Redefining \ref on input line 166.
+LaTeX Info: Redefining \pageref on input line 166.
+LaTeX Info: Redefining \nameref on input line 166.
 (./final-draft.out) (./final-draft.out)
 \@outlinefile=\write5
 \openout5 = `final-draft.out'.
@@ -1237,45 +1237,45 @@ LaTeX Info: Redefining \nameref on input line 164.
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 12.0pt on input line 167.
+(Font)              scaled to size 12.0pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 8.0pt on input line 167.
+(Font)              scaled to size 8.0pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 6.0pt on input line 167.
+(Font)              scaled to size 6.0pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 12.0011pt on input line 167.
+(Font)              scaled to size 12.0011pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 8.00073pt on input line 167.
+(Font)              scaled to size 8.00073pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 6.00055pt on input line 167.
+(Font)              scaled to size 6.00055pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 11.99872pt on input line 167.
+(Font)              scaled to size 11.99872pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 7.99915pt on input line 167.
+(Font)              scaled to size 7.99915pt on input line 169.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 5.99936pt on input line 167.
+(Font)              scaled to size 5.99936pt on input line 169.
 LaTeX Font Info:    Trying to load font information for U+txsya on input line 1
-67.
+69.
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/utxsya.fd
 File: utxsya.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Trying to load font information for U+txsyb on input line 1
-67.
+69.
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/utxsyb.fd
 File: utxsyb.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Trying to load font information for OT1+txr on input line 1
-67.
+69.
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/ot1txr.fd
 File: ot1txr.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Trying to load font information for U+txmia on input line 1
-67.
+69.
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/utxmia.fd
 File: utxmia.fd 2000/12/15 v3.1
 )
 LaTeX Font Info:    Trying to load font information for U+txsyc on input line 1
-67.
+69.
 (c:/Users/edoar/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/txfonts/utxsyc.fd
 File: utxsyc.fd 2000/12/15 v3.1
 ) [1
@@ -1285,67 +1285,67 @@ File: utxsyc.fd 2000/12/15 v3.1
 ]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 168.
+(Font)              using `TU/txr/m/it' instead on input line 170.
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/it' undefined
-(Font)              using `TU/txr/m/n' instead on input line 168.
+(Font)              using `TU/txr/m/n' instead on input line 170.
 
 [2
 
 ]
 
 LaTeX Font Warning: Font shape `TU/txr/b/n' undefined
-(Font)              using `TU/txr/m/n' instead on input line 169.
+(Font)              using `TU/txr/m/n' instead on input line 171.
 
 [1
 
 ]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 171.
+(Font)              using `TU/txr/m/it' instead on input line 173.
 
 [2
 
 ]
 Chapter 1.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 7.0pt on input line 175.
+(Font)              scaled to size 7.0pt on input line 177.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/m/n' will be
-(Font)              scaled to size 5.0pt on input line 175.
+(Font)              scaled to size 5.0pt on input line 177.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 10.00092pt on input line 175.
+(Font)              scaled to size 10.00092pt on input line 177.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 7.00064pt on input line 175.
+(Font)              scaled to size 7.00064pt on input line 177.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/m/n' will be
-(Font)              scaled to size 5.00046pt on input line 175.
+(Font)              scaled to size 5.00046pt on input line 177.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 9.99893pt on input line 175.
+(Font)              scaled to size 9.99893pt on input line 177.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 6.99925pt on input line 175.
+(Font)              scaled to size 6.99925pt on input line 177.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/m/n' will be
-(Font)              scaled to size 4.99947pt on input line 175.
+(Font)              scaled to size 4.99947pt on input line 177.
 
 Underfull \vbox (badness 6188) has occurred while \output is active []
 
 [3]
 Package hyperref Info: bookmark level for unknown definition defaults to 0 on i
-nput line 211.
+nput line 213.
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 259.
+(Font)              using `TU/txr/m/it' instead on input line 261.
 
 [4]
 Package hyperref Info: bookmark level for unknown proposition defaults to 0 on 
-input line 271.
+input line 273.
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 282.
+(Font)              using `TU/txr/m/it' instead on input line 284.
 
 [5]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 282.
+(Font)              using `TU/txr/m/it' instead on input line 284.
 
 [6
 
@@ -1354,36 +1354,39 @@ Chapter 2.
 File: final-draft_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type p
 df)
 <use final-draft_files/figure-latex/unnamed-chunk-5-1.pdf>
-Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 316.
+
+Underfull \vbox (badness 3989) has occurred while \output is active []
+
 [7]
+Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
+put line 318.
 LaTeX Font Info:    Trying to load font information for TU+txtt on input line 3
-37.
-LaTeX Font Info:    No file TUtxtt.fd. on input line 337.
+39.
+LaTeX Font Info:    No file TUtxtt.fd. on input line 339.
 
 LaTeX Font Warning: Font shape `TU/txtt/m/n' undefined
-(Font)              using `TU/lmr/m/n' instead on input line 337.
+(Font)              using `TU/lmr/m/n' instead on input line 339.
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 337--338
+Underfull \hbox (badness 10000) in paragraph at lines 339--340
 
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 346.
+(Font)              using `TU/txr/m/it' instead on input line 340.
 
 [8]
 
 LaTeX Font Warning: Font shape `TU/txtt/b/n' undefined
-(Font)              using `TU/txtt/m/n' instead on input line 358.
+(Font)              using `TU/txtt/m/n' instead on input line 360.
 
 File: final-draft_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type p
 df)
 <use final-draft_files/figure-latex/unnamed-chunk-7-1.pdf>
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 398.
+(Font)              using `TU/txr/m/it' instead on input line 396.
 
 [9]
 File: final-draft_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (type p
@@ -1391,17 +1394,17 @@ df)
 <use final-draft_files/figure-latex/unnamed-chunk-8-1.pdf>
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 426.
+(Font)              using `TU/txr/m/it' instead on input line 428.
 
 [10]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 431.
+(Font)              using `TU/txr/m/it' instead on input line 433.
 
 [11]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 431.
+(Font)              using `TU/txr/m/it' instead on input line 433.
 
 [12
 
@@ -1409,117 +1412,117 @@ LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
 Chapter 3.
 [13]
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/b/n' will be
-(Font)              scaled to size 10.0pt on input line 467.
+(Font)              scaled to size 10.0pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/b/n' will be
-(Font)              scaled to size 7.0pt on input line 467.
+(Font)              scaled to size 7.0pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(1)/b/n' will be
-(Font)              scaled to size 5.0pt on input line 467.
+(Font)              scaled to size 5.0pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/b/n' will be
-(Font)              scaled to size 10.00092pt on input line 467.
+(Font)              scaled to size 10.00092pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/b/n' will be
-(Font)              scaled to size 7.00064pt on input line 467.
+(Font)              scaled to size 7.00064pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(2)/b/n' will be
-(Font)              scaled to size 5.00046pt on input line 467.
+(Font)              scaled to size 5.00046pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/b/n' will be
-(Font)              scaled to size 9.99893pt on input line 467.
+(Font)              scaled to size 9.99893pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/b/n' will be
-(Font)              scaled to size 6.99925pt on input line 467.
+(Font)              scaled to size 6.99925pt on input line 469.
 LaTeX Font Info:    Font shape `TU/latinmodern-math.otf(3)/b/n' will be
-(Font)              scaled to size 4.99947pt on input line 467.
+(Font)              scaled to size 4.99947pt on input line 469.
 Package hyperref Info: bookmark level for unknown lemma defaults to 0 on input 
-line 486.
+line 488.
 Package hyperref Info: bookmark level for unknown proof* defaults to 0 on input
- line 494.
+ line 496.
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 515.
+(Font)              using `TU/txr/m/it' instead on input line 517.
 
 [14]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 565.
+(Font)              using `TU/txr/m/it' instead on input line 567.
 
 [15]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 603.
+(Font)              using `TU/txr/m/it' instead on input line 605.
 
 [16]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 642.
+(Font)              using `TU/txr/m/it' instead on input line 644.
 
 [17]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 683.
+(Font)              using `TU/txr/m/it' instead on input line 685.
 
 [18]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 721.
+(Font)              using `TU/txr/m/it' instead on input line 723.
 
 [19]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 773.
+(Font)              using `TU/txr/m/it' instead on input line 775.
 
 [20]
-Overfull \hbox (1.87772pt too wide) in paragraph at lines 789--790
+Overfull \hbox (1.87772pt too wide) in paragraph at lines 791--792
 []\TU/txtt/b/n/10 Let $[][][][][] [][][][][][]$ summarizes $[][][][][][][][]$ s
 uch that, for example, $[][][][][][][][][][][] [] [][] [][][][][][][]$.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 799--800
+Underfull \hbox (badness 10000) in paragraph at lines 801--802
 
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 815.
+(Font)              using `TU/txr/m/it' instead on input line 817.
 
 [21]
 
 LaTeX Font Warning: Font shape `TU/txtt/m/it' undefined
-(Font)              using `TU/txtt/m/n' instead on input line 828.
+(Font)              using `TU/txtt/m/n' instead on input line 830.
 
 File: final-draft_files/figure-latex/unnamed-chunk-11-1.pdf Graphic file (type 
 pdf)
 <use final-draft_files/figure-latex/unnamed-chunk-11-1.pdf>
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 868.
+(Font)              using `TU/txr/m/it' instead on input line 862.
 
 [22]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 878.
+(Font)              using `TU/txr/m/it' instead on input line 880.
 
 [23]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 936.
+(Font)              using `TU/txr/m/it' instead on input line 938.
 
 [24]
-Overfull \hbox (1.87772pt too wide) in paragraph at lines 956--957
+Overfull \hbox (1.87772pt too wide) in paragraph at lines 958--959
 []\TU/txtt/m/it/10 Let $[][][][][] [][][][][][]$ summarizes $[][][][][][][][]$ 
 such that, for example, $[][][][][][][][][][][] [] [][] [][][][][][][]$.
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 971--972
+Underfull \hbox (badness 10000) in paragraph at lines 973--974
 
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 978.
+(Font)              using `TU/txr/m/it' instead on input line 980.
 
 [25]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1024.
+(Font)              using `TU/txr/m/it' instead on input line 1026.
 
 [26]
 File: final-draft_files/figure-latex/unnamed-chunk-14-1.pdf Graphic file (type 
@@ -1527,121 +1530,144 @@ pdf)
 <use final-draft_files/figure-latex/unnamed-chunk-14-1.pdf>
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1050.
+(Font)              using `TU/txr/m/it' instead on input line 1052.
 
 [27]
 File: final-draft_files/figure-latex/unnamed-chunk-17-1.pdf Graphic file (type 
 pdf)
 <use final-draft_files/figure-latex/unnamed-chunk-17-1.pdf>
 
-LaTeX Warning: Float too large for page by 26.8229pt on input line 1069.
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1071--1072
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1072.
+
+[28]
+Overfull \vbox (26.8229pt too high) has occurred while \output is active []
+
+
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1072.
+
+[29]
+Underfull \hbox (badness 10000) in paragraph at lines 1073--1074
 
  []
 
 
-LaTeX Warning: Citation `**' on page 28 undefined on input line 1109.
+LaTeX Warning: Citation `**' on page 30 undefined on input line 1111.
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1112.
+(Font)              using `TU/txr/m/it' instead on input line 1127.
 
-[28]
+[30]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1146.
+(Font)              using `TU/txr/m/it' instead on input line 1164.
 
-[29]
-Overfull \hbox (1.87772pt too wide) in paragraph at lines 1182--1183
+[31]
+Overfull \hbox (1.87772pt too wide) in paragraph at lines 1184--1185
 []\TU/txtt/m/it/10 Let $[][][][][] [][][][][][]$ summarizes $[][][][][][][][]$ 
 such that, for example, $[][][][][][][][][][][] [] [][] [][][][][][][]$.
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1186.
+(Font)              using `TU/txr/m/it' instead on input line 1195.
 
-[30]
-Underfull \hbox (badness 10000) in paragraph at lines 1199--1200
+[32]
+Underfull \hbox (badness 10000) in paragraph at lines 1201--1202
 
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1255.
+(Font)              using `TU/txr/m/it' instead on input line 1257.
 
-[31]
+[33]
 File: final-draft_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file (type 
 pdf)
 <use final-draft_files/figure-latex/unnamed-chunk-20-1.pdf>
 
-LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1282.
+Underfull \vbox (badness 7099) has occurred while \output is active []
 
-[32]
+
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1274.
+
+[34]
 File: final-draft_files/figure-latex/unnamed-chunk-23-1.pdf Graphic file (type 
 pdf)
 <use final-draft_files/figure-latex/unnamed-chunk-23-1.pdf>
 
-Underfull \hbox (badness 10000) in paragraph at lines 1317--1319
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1309.
+
+[35]
+Underfull \hbox (badness 10000) in paragraph at lines 1319--1321
 
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1330.
+(Font)              using `TU/txr/m/it' instead on input line 1349.
 
-[33]
+[36]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1365.
+(Font)              using `TU/txr/m/it' instead on input line 1390.
 
-[34]
-Underfull \hbox (badness 10000) in paragraph at lines 1394--1397
+[37]
+Underfull \hbox (badness 10000) in paragraph at lines 1396--1399
 
  []
 
 
-Overfull \hbox (1.87772pt too wide) in paragraph at lines 1400--1401
+Overfull \hbox (1.87772pt too wide) in paragraph at lines 1402--1403
 []\TU/txtt/m/it/10 Let $[][][][][] [][][][][][]$ summarizes $[][][][][][][][]$ 
 such that, for example, $[][][][][][][][][][][] [] [][] [][][][][][][]$.
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1401.
+(Font)              using `TU/txr/m/it' instead on input line 1417.
 
-[35]
-Underfull \hbox (badness 10000) in paragraph at lines 1421--1422
+[38]
+Underfull \hbox (badness 10000) in paragraph at lines 1423--1424
 
  []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1443.
+(Font)              using `TU/txr/m/it' instead on input line 1480.
 
-[36]
+[39]
 File: final-draft_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (type 
 pdf)
 <use final-draft_files/figure-latex/unnamed-chunk-26-1.pdf>
-File: final-draft_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type 
-pdf)
-<use final-draft_files/figure-latex/unnamed-chunk-27-1.pdf>
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1499.
+(Font)              using `TU/txr/m/it' instead on input line 1490.
 
-[37]
+[40]
+File: final-draft_files/figure-latex/unnamed-chunk-27-1.pdf Graphic file (type 
+pdf)
+<use final-draft_files/figure-latex/unnamed-chunk-27-1.pdf>
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1551.
+(Font)              using `TU/txr/m/it' instead on input line 1512.
 
-[38]
+[41]
+
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1553.
+
+[42]
 File: final-draft_files/figure-latex/unnamed-chunk-32-1.pdf Graphic file (type 
 pdf)
 <use final-draft_files/figure-latex/unnamed-chunk-32-1.pdf>
@@ -1653,53 +1679,70 @@ ex-text;!
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
 (Font)              using `TU/txr/m/it' instead on input line 1590.
 
-[39]
-
-LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1649.
-
-[40]
-
-LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1678.
-
-[41]
-
-LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1678.
-
-[42]
-
-LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1678.
-
 [43]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1678.
+(Font)              using `TU/txr/m/it' instead on input line 1616.
 
 [44]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1678.
+(Font)              using `TU/txr/m/it' instead on input line 1668.
 
 [45]
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1678.
+(Font)              using `TU/txr/m/it' instead on input line 1701.
 
 [46]
+Underfull \hbox (badness 10000) in paragraph at lines 1721--1722
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 1726--1728
+
+ []
+
+
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1750.
+
+[47]
+Underfull \vbox (badness 10000) detected at line 1814
+ []
+
+
+Underfull \vbox (badness 6592) has occurred while \output is active []
+
+
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1814.
+
+[48]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1818.
+
+[49]
+
+LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
+(Font)              using `TU/txr/m/it' instead on input line 1818.
+
+[50]
 Chapter 4.
-[47
+[51
 
 ]
 File: final-draft_files/figure-latex/cll_plot-1.pdf Graphic file (type pdf)
 <use final-draft_files/figure-latex/cll_plot-1.pdf>
 
 LaTeX Font Warning: Font shape `TU/txr/m/sl' undefined
-(Font)              using `TU/txr/m/it' instead on input line 1750.
+(Font)              using `TU/txr/m/it' instead on input line 1890.
 
-[48]
+[52]
 \tf@thm=\write6
 \openout6 = `final-draft.thm'.
 
@@ -1714,15 +1757,15 @@ LaTeX Warning: There were undefined references.
 LaTeX Warning: There were multiply-defined labels.
 
 Package rerunfilecheck Info: File `final-draft.out' has not changed.
-(rerunfilecheck)             Checksum: 6012FE038CBE12CF84E6D7D932F29BAB;4354.
+(rerunfilecheck)             Checksum: 15B4303B9CABCEC0DF3774C3AA8384E5;4479.
  ) 
 Here is how much of TeX's memory you used:
  21838 strings out of 478442
  377301 string characters out of 5856757
- 936692 words of memory out of 5000000
+ 933688 words of memory out of 5000000
  41793 multiletter control sequences out of 15000+600000
  438037 words of font info for 171 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
- 87i,24n,120p,509b,672s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 87i,24n,120p,509b,745s stack positions out of 5000i,500n,10000p,200000b,80000s
 
-Output written on final-draft.pdf (50 pages).
+Output written on final-draft.pdf (54 pages).

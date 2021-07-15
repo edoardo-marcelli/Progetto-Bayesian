@@ -42,6 +42,8 @@ header-includes:
 - \newcommand{\N}{\mathcal N}
 - \def\code#1{\texttt{#1}}
 - \newtheorem{algorithm}{Algorithm}[section]
+- \usepackage{float}
+- \floatplacement{figure}{}
 
 title: "Final draft"
 
@@ -181,7 +183,7 @@ x_{0} & \sim N(m_{0},C_{0})
 \end{align}
 As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involved filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
 The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
-```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 
 set.seed(1991)
 dlm.sim = function(n,sigma,tau,x0){
@@ -289,7 +291,7 @@ DLM<-function(data,sig2,tau2,m0,C0){
 In Figure XX below filtered states estimated using Kalman Filter with $x_{0} \sim N(0,100)$ and $\sigma^{2}=\tau^{2}=1$ are compared to the true states values.
 Notice how closely the filtered states follow the observations and the goodness of the approximation of the true states. 95 percent credible intervals are computed as
 \[[E(\theta_{t}|y_{1:t})-z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})},E(\theta_{t}|y_{1:t})+z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})}]\]
-```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 #Kalman Filter
 #-------------
 m0=0
@@ -339,7 +341,7 @@ x_{0} & \sim N(m_{0},C_{0})
 \end{align}
 As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involved filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
 The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
-```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 
 set.seed(1991)
 dlm.sim = function(n,sigma,tau,x0){
@@ -657,7 +659,7 @@ ESS.SIS<-ggplot(sis.data,aes(x=timeframe))+
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) SIS Filtered States with credible interval (in red). b) Effective sample size.", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="a) SIS Filtered States with credible interval (in red). b) Effective sample size.", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 Filtervalues<-function(fun){
   xhat<-sapply(1:n,function(i)
     weighted.mean(fun$xs[i,],fun$ws[i,]))
@@ -832,7 +834,7 @@ PFfun<-function(data,N,m0,C0,tau,sigma,r){
 }
 ```
 The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure XX. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
-```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 N=1000
 
 pf<-PFfun(y,N,m0,C0,tau,sigma)
@@ -857,7 +859,7 @@ ESS.PF<-ESSplot(df,pf)
 
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 FILT.PF <- Filtplot(df,pf,"")
 ggarrange(FILT.PF,ESS.PF,labels=c("(a)","(b)"))
 ```
@@ -905,7 +907,7 @@ i=i+1
 kbl(estimatedx[1:3,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='ht', fig.width=10, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='H', fig.width=10, message=FALSE, warning=FALSE, results=F}
 N1=100
 N2=1000
 N3=10000
@@ -1117,7 +1119,7 @@ gpf<-GPFfun(y,N,m0,C0,tau,sigma)
 ESS.GPF<-ESSplot(df,gpf)
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) GPF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="a) GPF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 FILT.GPF<-Filtplot(df,gpf,"")
 ggarrange(FILT.GPF,ESS.GPF,labels=c("(a)","(b)"))
 ```
@@ -1154,7 +1156,7 @@ kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Sq
 ```
 
 
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 N2=1000
 
 
@@ -1401,14 +1403,14 @@ apf<-APFfun(y,N,m0,C0,tau,sigma)
 ESS.APF<-ESSplot(df,apf)
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 FILT.APF<-Filtplot(df,apf,"")
 ggarrange(FILT.APF,ESS.APF,labels=c("(a)","(b)"))
 ```
 
 Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap Particle Filter (BPF).
 
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 N2=1000
 
 
@@ -1564,7 +1566,7 @@ apfopt<-APFoptfun(y,N,m0,C0,tau,sigma)
 ESS.APFopt<-ESSplot(df,apfopt)
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 FILT.APFopt<-Filtplot(df,apfopt,"")
 ggarrange(FILT.APFopt,ESS.APFopt,labels=c("(a)","(b)"))
 ```
@@ -1634,6 +1636,137 @@ To conclude, it is worth noting that the LWF produces, together with the usual f
 \begin{equation}
     \pi^N_{t}(\psi)=\pi^N(\psi|y_{1:t})=\sum_{n=1}^NW_{t}^n\delta_{\psi^n}(\psi)
 \end{equation}
+
+\section{Implementation}
+\
+Consider the linear Gaussian example of section XX, but this time with unknown variances $\tau^{2}$ and $\sigma^{2}$. Thus, let $\psi=(\sigma^{2},\tau^{2})$ be the unknown parameter vector and assign a gamma prior for its components,
+\begin{align*}
+\sigma^{2}  & \sim G(\alpha_{v},\beta_{v}) \\
+\tau^{2}  & \sim G(\alpha_{w},\beta_{w})
+\end{align*}
+Alternatively, assign them a uniform prior if we have no knowledge of the hyperparameters. The algorithm follows the following steps.
+\begin{algorithm} LWF for Random Walk plus Noise Model
+\begin{itemize}
+\item Initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$, $({\sigma^{2}}^{(1)},...,{\sigma^{2}}^{(N)})$ from $G(\alpha_{v},\beta_{v})$ and $({\tau^{2}}^{(1)},...,{\tau^{2}}^{(N)})$ from $G(\alpha_{w},\beta_{w})$. Set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$. Therefore $\psi^{(i)}=({\sigma^{2}}^{(i)},{\tau^{2}}^{(i)})$, and
+$\hat{\pi}_{0}=p(x_{0}|y_{0})=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi^{(i)})}$
+\item For $t=1,...,n$:.
+\begin{enumerate}
+\item Compute $\overline{\psi}=E_{\hat{\pi}_{t-1}}(\psi)$ and $\Sigma=V_{\hat{\pi}_{t-1}}(\psi)$. For $i=1,...,N$, set
+\begin{align*}
+m^{(i)} & = a\psi^{(i)}+(1-a)\hat{\psi} \\
+\hat{x}_{t}^{(i)} & = E(x_{t}|x_{t-1}=x_{t-1}^{(i)},\psi=\psi^{(k)})
+\end{align*}
+\item For $k=1,...,N$:
+\begin{itemize}
+\item Draw $I_{k}$, with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),\psi=m^{(i)}) $
+\item Draw ${\sigma^{2}}^{(k)}$ from $G(\alpha_{v}^{(I_k)},\beta_{v}^{(I_k)})$ 
+\item Draw ${\tau^{2}}^{(k)}$ from $G(\alpha_{w}^{(I_k)},\beta_{w}^{(I_k)})$
+\item Draw $x_{t}^{(k)}$ from $N(x_{t-1}^{(I_k)},\psi=\psi^{(k)})$
+\item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)},\psi=\psi^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})},\psi=m^{(I_k)}))}$
+\end{itemize}
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{enumerate}
+\item Set $\hat{\pi}_{t}=p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{(x_{t}^{(i)},\psi^{(i)})}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+Our \code{LWfun} function goes through the illustrated steps.
+\
+\hrule
+\hrule
+\
+\code{LWfun(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif,r)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alphav, betav} \ \  Gamma prior hyperparameters on $\sigma^{2}$
+\
+\code{alphaw,betaw} \ \  Gamma prior hyperparameters on $\tau^{2}$
+\
+\code{delta} \ \ hyperparameter delta value
+\
+\code{unif} \ \ if True then it sets a Uniform $(0,10)$ prior on $\sigma^{2}$ and $\tau^{2}$
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+```{r}
+LWfun<-function(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif,r){
+  if(missing(r)){r=2}else{}
+  xs     = rnorm(N,m0,sqrt(C0))
+  if(unif==T){
+  pars   = cbind(runif(N,0,10),runif(N,0,10))}else{}
+  pars   = cbind(rgamma(N,shape=alphav,scale=betav),rgamma(N,shape=alphaw,scale=betaw))
+  a      = (3*delta-1)/(2*delta)
+  h2     = 1-a^2
+  parss  = array(0,c(N,2,n))
+  xss    = NULL
+  ws     = NULL
+  ess    = NULL
+  w      = rep(1/N,N)
+  for (t in 1:length(data)){
+    meanV = weighted.mean(pars[,1],w)
+    varV  = weighted.mean((pars[,1]-meanV)^2,w)
+    meanW = weighted.mean(pars[,2],w)
+    varW  = weighted.mean((pars[,2]-meanW)^2,w)
+    
+    muV = a*pars[,1]+(1-a)*meanV
+    sigma2V = (1-a^2)*varV
+    alphaV = muV^2/sigma2V
+    betaV = muV/sigma2V
+    
+    muW = a*pars[,2]+(1-a)*meanW
+    sigma2W = (1-a^2)*varW
+    alphaW = muW^2/sigma2W
+    betaW = muW/sigma2W
+    
+    weight      = w*dnorm(data[t],xs,sqrt(muV))
+    k           = sample(1:N,size=N,replace=T,prob=weight)
+    
+    pars[,1]<-rgamma(N,shape=alphaV[k],rate=betaV[k])
+    pars[,2]<-rgamma(N,shape=alphaW[k],rate=betaW[k])
+    
+    xsprevious<-xs[k]
+    xs = rnorm(N,xs[k],sqrt(pars[,2]))
+    
+    w           = exp(dnorm( data[t],xs,sqrt(pars[,1]),log=T)-
+                        dnorm( data[t],xsprevious,sqrt(muV[k]),log=T))
+    w           = w/sum(w)
+    ESS         = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      xs<-xs[index]
+      pars<-pars[index,]
+      w<-rep(1/N,N)
+    }else{
+      xs<-xs
+      pars<-pars
+    }
+    
+    
+    xss         = rbind(xss,xs)
+    parss[,,t]  = pars 
+    ws          = rbind(ws,w)
+    ess         = rbind(ess,ESS)
+  }
+  return(list(xss=xss,parss=parss,ws=ws,ess=ess))
+}
+```
+
+
 
 \section{Convergence}\label{pf_converg}
 
