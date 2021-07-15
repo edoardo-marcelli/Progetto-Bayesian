@@ -7,9 +7,14 @@
 #   w(t) ~ N(0,1)
 #   x(0) ~ N(0,100)
 #
-#   PRIOR ON alpha,beta,tau2
-
-#Particle Filter
+#   For LW, we have a prior on alpha,beta,tau2
+#
+#   alpha ~ N(ealpha,valpha)
+#   beta  ~ N(ebeta,vbeta)
+#   tau2  ~ IG(nu/2,nu*lambda/2)
+#   
+#
+#Sequential Importance Sampling
 #---------------
 SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
