@@ -1836,7 +1836,7 @@ LWfun<-function(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif,r){
 
 In this section, we apply the particle filter in a model-comparison
 exercise, ultimately underlining the importance of taking stochastic
-volatility into account in modeling equity returns.
+volatility into account in modeling equity returns. We follow XX, comparing density forecasts through relative predictive and cumulative likelihoods.
 
 We analyze a dataset of log close-to-close returns of the S&P500, from 2017 to 2021. Consider a stochastic volatility model
 $$
