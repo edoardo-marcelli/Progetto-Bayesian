@@ -45,7 +45,7 @@ SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
-#Particle Filter
+# Bootstrap Particle Filter
 #---------------
 SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
@@ -78,7 +78,7 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 
 #
 #-----------------------
-#Particle Filter Optimal Kernel
+#Guided Particle Filter Optimal Kernel
 #------------------------------
 SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
