@@ -45,6 +45,37 @@ SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 
+# Basis Particle Filter (Resampling at each step)
+#---------------
+SVBAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS>-1){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
 # Bootstrap Particle Filter
 #---------------
 SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
@@ -308,8 +339,9 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=10000
+N=1000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
+svbapf<-SVBAPFfun(y,N,m0,C0,alpha,beta,tau)
 svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
@@ -366,6 +398,7 @@ plot3<-Filtplot(dfsv,svlw,"Liu and West Filter")
 plot4<-Filtplot(dfsv,svopt,"Opt Ker Particle Filter")
 plot5<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
 plot6<-Filtplot(dfsv,svsis,"No Resampling")
+plot7<-Filtplot(dfsv,svbapf,"Always Resampling")
 ggarrange(plot1,plot2)
 ggarrange(plot1)
 ggarrange(plot2)
@@ -373,6 +406,7 @@ ggarrange(plot3)
 ggarrange(plot4)
 ggarrange(plot5)
 ggarrange(plot6,plot1)
+ggarrange(plot7)
 
 ## RMSE MAE comparison
 
