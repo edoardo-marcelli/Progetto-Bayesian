@@ -469,7 +469,7 @@ In all the cases for which sampling takes place from a distribution different fr
 
 \subsection{Importance sampling}
 
-Let us consider two probability spaces: $(\X,\B(\X),\Q)$ and $(\X,\B(\X),\M)$ and let the measurable function $w:\X \rightarrow \R$ be proportional to the Radom-Nikodym derivative between $\Q$ and $\M$, i.e.,  $w(x)\propto\frac{\Q(dx)}{\M(dx)}$.\footnote{From the Radom-Nikodym theorem a sufficient condition for $w$ to exist is that $\Q$ is absolutely continuous with respect to $\M$: $\Q\ll \M$.} \
+Let us consider two probability spaces: $(\X,\B(\X),\Q)$ and $(\X,\B(\X),\M)$ and let the measurable function $w:\X \rightarrow \R$ be proportional to the Radom-Nikodym derivative between $\Q$ and $\M$, i.e.,  $w(x)\propto\frac{\Q(dx)}{\M(dx)}$. \
 The following result represents the starting point for the idea of importance sampling.
 
 \begin{lemma}\label{lemma_imp_sam_1}
