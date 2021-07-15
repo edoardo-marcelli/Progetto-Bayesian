@@ -141,9 +141,66 @@ This means that the marginal distribution of $X_{0:t}$ with respect to $\P_T$ is
 
 
 \section{State-Space Models}
+We now define \textit{State-Space models} as Markov processes that are partially observed. Let $X_t\in\X$ and $Y_t\in\Y$ and let $\{(X_t,Y_t)\}$ be a stochastic process. To help intuition, suppose that $\{Y_t\}$ is observable, i.e., coincides with a sequence of observations, while $\{X_t\}$ is latent. Consider the initial distribution $\P_0(dx_0)$ and the probability kernels
+$P_t(x_{t-1},dx_t)$ and $F_t(x_t,d_t)$, where $t=1,2,\dots$.
+\begin{definition}\label{state-space-def}
+The process $\{(X_t,Y_t)\}$ is a State-Space model if the joint distribution of $(X_{0:T},Y_{0:T})$ is 
+\begin{align*}
+  \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T}) &= \P_0(dx_0)\prod\limits_{t=1}^T P_t(x_{t-1},dx_t)\prod\limits_{t=1}^T F_t(x_t,dy_t)\\
+  &= [\P_0(dx_0)F_0(x_0,y_0)]\prod\limits_{t=1}^T[P_t(x_{t-1},dx_t)F_t(x_t,dy_t)] \\
+  &= \P_T(dx_{0:T})\prod \limits_{t=1}^T F_t(x_t,dy_t)].
+\end{align*}
+\end{definition}
+From the second inequality, it is apparent that $\{(X_t,T_t\}$ is a Markov process with initial distribution $[\P_0(dx_0)F_0(x_0,y_0)]$ and transition kernel $P_t(x_{t-1},dx_t)F_t(x_t,dy_t).$ The third equality, instead, shows that, $\{X_t\}$ has a marginal distribution $\P_T(dx_{0:T})=\P_0(dx_0)\prod_{t=1}^T P_t(x_{t-1},dx_t),$ meaning that $\{X_t\}$ is marginally distributed as a Markov process with initial distribution $\P_T(dx_{0:T})$ and transition kernel $P_t(x_{t-1},dx_t).$ 
 
+Assume now that there exist a dominating measures $\nu(dy)$ such that 
+$F_t(x_t,dy_t)=f_t(y_t\mid x_t)\nu(dy_t)$ for all $t.$
+Then by the last equality of definition \ref{state-space-ref}, the joint distribution of $(X_{0:T},Y_{0:T})$ is 
+\begin{equation}\label{state-space-densities}
+   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\vu(dy_t).
+\end{equation}
+Integrating away $X_{0:T},$ one gets the marginal density
+\begin{align*}\label{state-space-marginal-y}
+  \P_T(dy_{0:T}) &= \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\vu(dy_s) \\
+                &= p_t(y_{0:t})\prod\limits_{s=0}^t\vu(dy_s),
+\end{align*}
+where $p_t(y_{0:t})$ is the likelihood function.
+Dividing the left-hand side of equation \ref{state-space-densities} by the left-hand side of equation \ref{state-space-marginal-y} and the right-hand side of equation \ref{state-space-densities} by the right-hand side of equation \ref{state-space-marginal-y}, one obtains the filtering distribution
+\begin{equation}
+\P_t(X_{t}\in dx_{t}\mid Y_{0:t}=y_{0:t})=\frac{1}{p_t(y_{0:t})}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big]\P_t(dx_{0:t}).
+\end{equation}
 
 \chapter{Linear-Gaussian case}
+\textit{Linear Gaussian models} are a class of popular state-space models. A notable property of such models is that the filtering and predictive distributions are analytically tractable, which makes such models very convenient in applications. 
+
+Suppose that $\X=\R^{d_x}$ and $\Y=\R^{d_y}.$ Let $U_t\thicksim\N(0,\Sigma_t)$ and $V_t\thicksim\N(0,R_t)$ be two independent white-noise errors and assume the initial distribution 
+$X_0\thicksim\N(0,\Sigma_0).$ We have a linear Gaussian model if 
+\begin{align}
+X_t &= A_tX_{t-1}+U_t \\
+Y_t &= B_tX_t + V_t.
+\end{align}
+Note that  $X_t\mid X_{t-1}$ and $Y_t\mid X_t$ are both normally distributed. 
+\begin{lemma}\label{kalman-filter}
+  Let $X\thicksim\N(m_0,Q_0)$ and $Y\mid X\thicksim\N(BX,R)$, where $R$ and $Q_0$ are positive semi-definite matrices. 
+  Then, it holds that
+  \begin{align}
+    X\mid Y=y&\thicksim\N(m_1,Q_1),\\
+    Q_1&= Q_0 (I_{d_x} - B'(B Q_0 B'+ R)^{-1} B Q_0) \\
+    m_1&=[I_{d_x} - Q_0 B'(B Q_0 B'+ R)^{-1} B ]m_0 + Q_0 B'(B Q_0 B'+ R)^{-1}y.
+  \end{align}
+\end{lemma}
+\begin{proof}
+  
+\end{proof}
+
+Assume that $\P_{t-1}(dx_{t-1}\mid Y_{0:t-1}=y_{0:t-1})=\N(m_{t-1},Q_{t-1}).$
+Then, using the transition equation of the latent variable, 
+by the linearity of the Gaussian distribution, we have that the predictive distribution is $\P_{t-1}(dx_{t}\mid Y_{0:t-1}=y_{0:t-1})=\N(A_tm_{t-1},A_tQ_{t-1}A_t'+\Sigma_t).$
+Letting $E_T=A_tQ_{t-1}A_t'+\Sigma_t,$ applying lemma \ref{kalman-filter}, it follows that the filtering distribution is 
+\begin{align*}
+  \P_{t}(dx_{t}\mid Y_{0:t-1}&=y_{0:t-1})=\N(m_t,Q_t), \text{where} \\ Q_t&=E_t[I_{d_x} - B_t'(B_tE_tB_t'+R_t)^{-1} B_tE_t] \\
+  m_t &= [I_{d_x} - E_tB_t'(B_tE_tB_t'+R_t)^{-1} B_t]A_tm_{t-1}+E_tB_t'(B_tE_tB_t'+R_t)^{-1}y_t.
+\end{align*}
 
 
 \chapter{Particle Filter}
