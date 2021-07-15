@@ -137,7 +137,7 @@ Harvey, A. C., & Shephard, N. (1996). Estimation of an asymmetric stochastic vol
 
 Harvey, A., Ruiz, E., & Shephard, N. (1994). Multivariate stochastic variance models. The Review of Economic Studies, 61(2), 247-264.\
 
-Heber, Gerd, Asger Lunde, Neil Shephard and Kevin Sheppard (2009). Oxford-Man Institute's realized library. Oxford-Man Institute, University of Oxford, version 0.3. Available from: https://realized.oxford-man.ox.ac.uk/. \
+Heber, Gerd, Asger Lunde, Neil Shephard and Kevin Sheppard (2009). Oxford-Man Institute's realized library. Oxford-Man Institute, University of Oxford, version 0.3. Available at: https://realized.oxford-man.ox.ac.uk/. \
 
 Heston, S. L. (1993). A closed-form solution for options with stochastic volatility with applications to bond and currency options. The review of financial studies, 6(2), 327-343.\
 
