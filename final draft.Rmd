@@ -233,7 +233,7 @@ Letting $E_T=A_tQ_{t-1}A_t'+\Sigma_t,$ applying lemma \ref{kalman-filter}, it fo
 
 \section{Implementation}
 
-In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
+In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model.  
 \begin{align}
 y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
 x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
