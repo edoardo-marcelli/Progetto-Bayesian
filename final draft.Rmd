@@ -39,6 +39,7 @@ header-includes:
 - \newcommand{\R}{\mathbb R}
 - \newcommand{\B}{\mathcal B}
 - \newcommand{\X}{\mathcal X}
+- \newcommand{\Y}{\mathcal Y}
 - \newcommand{\Pd}{\mathbb P}
 - \newcommand{\N}{\mathcal N}
 - \def\code#1{\texttt{#1}}
@@ -146,10 +147,10 @@ $$
     \mathbb{Q}(A)=\int_A w(x) \mathbb{M}(dx).
 $$
 
-Let $P_1, P_2, \dots, P_T$ be a finite measure of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ \begin{definition}
+Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ \begin{definition}
 A discrete-time Markov process is a sequence $X_{0:T}$ of random variables whose joint distribution can be written as
 \begin{equation}
-    \P_T(X_{0:T}\in dx_{0:T})=\P_0(dx_0)\prod\limits_{s=1}^T P_s(x_{s-1},x_s).
+    \P_T(X_{0:T}\in dx_{0:T})=\P_0(dx_0)\prod\limits_{s=1}^T P_s(x_{s-1},dx_s).
 \end{equation}
 The set $\mathcal{X}$ is the state-space, $\P_0$ is the initial distribution and the probability kernel $P_t$ is the transition kernel.
 \end{definition}
@@ -159,7 +160,7 @@ $$
 \P_T(X_t\in dx_t\mid X_{t-1}=x_{t-1})=\P_t(x_{t-1},dx_t).
 $$
 The first equality implies conditional independence. The second equality implies that it is possible to identify conditional distributions with transition kernels. 
-Assume $\P_t, t\leq T,$ is a sequence of probability measures. Then, the following proposition holds.
+Assume $\P_t,$ with $t\leq T,$ is a sequence of probability measures. Then, the following proposition holds.
 \begin{proposition}
 For all $t\leq T,$ 
 $$
@@ -177,22 +178,24 @@ The process $\{(X_t,Y_t)\}$ is a State-Space model if the joint distribution of 
 \begin{align*}
   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T}) &= \P_0(dx_0)\prod\limits_{t=1}^T P_t(x_{t-1},dx_t)\prod\limits_{t=1}^T F_t(x_t,dy_t)\\
   &= [\P_0(dx_0)F_0(x_0,y_0)]\prod\limits_{t=1}^T[P_t(x_{t-1},dx_t)F_t(x_t,dy_t)] \\
-  &= \P_T(dx_{0:T})\prod \limits_{t=1}^T F_t(x_t,dy_t)].
+  &= \P_T(dx_{0:T})\prod \limits_{t=1}^T F_t(x_t,dy_t).
 \end{align*}
 \end{definition}
-From the second inequality, it is apparent that $\{(X_t,T_t\}$ is a Markov process with initial distribution $[\P_0(dx_0)F_0(x_0,y_0)]$ and transition kernel $P_t(x_{t-1},dx_t)F_t(x_t,dy_t).$ The third equality, instead, shows that, $\{X_t\}$ has a marginal distribution $\P_T(dx_{0:T})=\P_0(dx_0)\prod_{t=1}^T P_t(x_{t-1},dx_t),$ meaning that $\{X_t\}$ is marginally distributed as a Markov process with initial distribution $\P_T(dx_{0:T})$ and transition kernel $P_t(x_{t-1},dx_t).$ 
+From the second inequality, it is apparent that $\{(X_t,Y_t)\}$ is a Markov process with initial distribution $[\P_0(dx_0)F_0(x_0,y_0)]$ and transition kernel $P_t(x_{t-1},dx_t)F_t(x_t,dy_t).$ The third equality, instead, shows that, $\{X_t\}$ has a marginal distribution $$\P_T(dx_{0:T})=\P_0(dx_0)\prod_{t=1}^T P_t(x_{t-1},dx_t),$$ meaning that $\{X_t\}$ is marginally distributed as a Markov process with initial distribution $\P_T(dx_{0:T})$ and transition kernel $P_t(x_{t-1},dx_t).$ 
 
-Assume now that there exist a dominating measures $\nu(dy)$ such that 
+Assume now that there exists a dominating measures $\nu(dy)$ such that 
 $F_t(x_t,dy_t)=f_t(y_t\mid x_t)\nu(dy_t)$ for all $t.$
-Then by the last equality of definition \ref{state-space-ref}, the joint distribution of $(X_{0:T},Y_{0:T})$ is 
+Then by the last equality of definition \ref{state-space-def}, the joint distribution of $(X_{0:T},Y_{0:T})$ is 
 \begin{equation}\label{state-space-densities}
    \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\vu(dy_t).
 \end{equation}
 Integrating away $X_{0:T},$ one gets the marginal density
-\begin{align*}\label{state-space-marginal-y}
-  \P_T(dy_{0:T}) &= \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\vu(dy_s) \\
-                &= p_t(y_{0:t})\prod\limits_{s=0}^t\vu(dy_s),
-\end{align*}
+\begin{equation}\label{state-space-marginal-y}
+\begin{align*}
+  \P_T(dy_{0:T}) &= \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\nu(dy_s) \\
+                &= p_t(y_{0:t})\prod\limits_{s=0}^t\nu(dy_s),
+\end{align*}                
+\end{equation}
 where $p_t(y_{0:t})$ is the likelihood function.
 Dividing the left-hand side of equation \ref{state-space-densities} by the left-hand side of equation \ref{state-space-marginal-y} and the right-hand side of equation \ref{state-space-densities} by the right-hand side of equation \ref{state-space-marginal-y}, one obtains the filtering distribution
 \begin{equation}
@@ -218,16 +221,16 @@ Note that  $X_t\mid X_{t-1}$ and $Y_t\mid X_t$ are both normally distributed.
     m_1&=[I_{d_x} - Q_0 B'(B Q_0 B'+ R)^{-1} B ]m_0 + Q_0 B'(B Q_0 B'+ R)^{-1}y.
   \end{align}
 \end{lemma}
-\begin{proof}
-  
-\end{proof}
 
 Assume that $\P_{t-1}(dx_{t-1}\mid Y_{0:t-1}=y_{0:t-1})=\N(m_{t-1},Q_{t-1}).$
 Then, using the transition equation of the latent variable, 
-by the linearity of the Gaussian distribution, we have that the predictive distribution is $\P_{t-1}(dx_{t}\mid Y_{0:t-1}=y_{0:t-1})=\N(A_tm_{t-1},A_tQ_{t-1}A_t'+\Sigma_t).$
-Letting $E_T=A_tQ_{t-1}A_t'+\Sigma_t,$ applying lemma \ref{kalman-filter}, it follows that the filtering distribution is 
+by the linearity of the Gaussian distribution, we have that the predictive distribution is 
+\begin{equation}
+\P_{t-1}(dx_{t}\mid Y_{0:t-1}=y_{0:t-1})=\N(A_tm_{t-1},A_tQ_{t-1}A_t'+\Sigma_t).
+\end{equation}
+Letting $E_T=A_tQ_{t-1}A_t'+\Sigma_t,$ and applying lemma \ref{kalman-filter}, it follows that the filtering distribution is 
 \begin{align*}
-  \P_{t}(dx_{t}\mid Y_{0:t-1}&=y_{0:t-1})=\N(m_t,Q_t), \text{where} \\ Q_t&=E_t[I_{d_x} - B_t'(B_tE_tB_t'+R_t)^{-1} B_tE_t] \\
+  \P_{t}(X_t\in dx_{t}\mid Y_{0:t-1}&=y_{0:t-1})=\N(m_t,Q_t), \text{where} \\ Q_t&=E_t[I_{d_x} - B_t'(B_tE_tB_t'+R_t)^{-1} B_tE_t] \\
   m_t &= [I_{d_x} - E_tB_t'(B_tE_tB_t'+R_t)^{-1} B_t]A_tm_{t-1}+E_tB_t'(B_tE_tB_t'+R_t)^{-1}y_t.
 \end{align*}
 
@@ -466,7 +469,7 @@ In all the cases for which sampling takes place from a distribution different fr
 
 \subsection{Importance sampling}
 
-Let us consider two probability spaces: $(\X,\B(\X),\Q)$ and $(\X,\B(\X),\M)$ and let the measurable function $w:\X \rightarrow \R$ be proportional to the Radom-Nikodym derivative between $\Q$ and $\M$, i.e.,  $w(x)\propto\frac{\Q(dx)}{\M(dx)}$.\footnote{From the Radom-Nikodym theorem a sufficient condition for $w$ to exist is that $\Q$ is absolutely continuous with respect to $\M$: $\Q\ll \M$.} \
+Let us consider two probability spaces: $(\X,\B(\X),\Q)$ and $(\X,\B(\X),\M)$ and let the measurable function $w:\X \rightarrow \R$ be proportional to the Radom-Nikodym derivative between $\Q$ and $\M$, i.e.,  $w(x)\propto\frac{\Q(dx)}{\M(dx)}$. \
 The following result represents the starting point for the idea of importance sampling.
 
 \begin{lemma}\label{lemma_imp_sam_1}
