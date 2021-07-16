@@ -396,17 +396,17 @@ plot1<-Filtplot(dfsv,svbpf,"Bootstrap Particle Filter")
 plot2<-Filtplot(dfsv,svapf, "Auxiliary Particle Filter")
 plot3<-Filtplot(dfsv,svlw,"Liu and West Filter")
 plot4<-Filtplot(dfsv,svgpfopt,"Opt Ker Guided Particle Filter")
-plot5<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
-plot6<-Filtplot(dfsv,svsis,"No Resampling")
-plot7<-Filtplot(dfsv,svbapf,"Always Resampling")
-ggarrange(plot1,plot2)
-ggarrange(plot1)
-ggarrange(plot2)
-ggarrange(plot3)
-ggarrange(plot4)
-ggarrange(plot5)
-ggarrange(plot6,plot1)
-ggarrange(plot7)
+plot5<-Filtplot(dfsv,svsis,"No Resampling")
+plot6<-Filtplot(dfsv,svbapf,"Always Resampling")
+plot7<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
+ggarrange(plot1,plot2,plot3,plot4)
+plot1
+plot2
+plot3
+plot4
+plot5
+plot6
+plot7
 
 ## RMSE MAE comparison
 
