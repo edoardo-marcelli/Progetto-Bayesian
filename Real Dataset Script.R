@@ -411,7 +411,7 @@ ggarrange(plot7)
 ## RMSE MAE comparison
 
 realisedx<-x
-Errorvol<-matrix(NA,ncol=6,nrow=2)
+Errorvol<-matrix(NA,ncol=7,nrow=2)
 colnames(Errorvol)<-c("N","BPF", "GPFOPT", "APF","LWF", "SIS", "BAPF")
 rownames(Errorvol)<-c("RMSE","MAE")
 Errorvol[,1]<-c(10000)
