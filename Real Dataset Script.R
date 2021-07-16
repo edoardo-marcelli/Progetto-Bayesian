@@ -412,7 +412,7 @@ ggarrange(plot7)
 
 realisedx<-x
 Errorvol<-matrix(NA,ncol=6,nrow=2)
-colnames(Errorvol)<-c("N","BPF", "GPFOPT", "APF","LWF", "SIS", "PF")
+colnames(Errorvol)<-c("N","BPF", "GPFOPT", "APF","LWF", "SIS", "BAPF")
 rownames(Errorvol)<-c("RMSE","MAE")
 Errorvol[,1]<-c(10000)
 RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
