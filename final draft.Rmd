@@ -221,6 +221,34 @@ Note that  $X_t\mid X_{t-1}$ and $Y_t\mid X_t$ are both normally distributed.
     m_1&=[I_{d_x} - Q_0 B'(B Q_0 B'+ R)^{-1} B ]m_0 + Q_0 B'(B Q_0 B'+ R)^{-1}y.
   \end{align}
 \end{lemma}
+\begin{proof*}
+   The lemma can be proved using Bayes' Theorem. Suppose $X\thicksim\N(m_0, Q_0).$ It is easy to see that
+\begin{equation} \label{normal-distrib-rewrite}
+        p(x)\propto \text{exp}\Big(-\frac{1}{2}X'AX + X'B\Big),
+\end{equation}
+with $A=Q_0^{-1}$ and $B=Am_0.$
+Now, by Bayes' Theorem, 
+
+    \begin{align*}
+        p(x\mid Y=y)  &\propto p(x) p(y\mid x) \\
+                    &\propto \text{exp}\Big(-\frac{1}{2}X' Q_0^{-1}X + X' Q_0^{-1}m_0-\frac{1}{2}(y-BX)'R^{-1}(y-BX)) \\
+                    &\propto \text{exp}(-\frac{1}{2}X' Q_0^{-1}X + X' Q_0^{-1}m_0-\frac{1}{2}X' B' R^{-1}BX+X' B' R^{-1}y)\\
+                    &=\text{exp}(-\frac{1}{2}X'(Q_0^{-1}+B' R^{-1}B)X+
+                    X'(Q_0^{-1}m_0+B' R^{-1}y)\Big).
+    \end{align*}
+
+Hence, it follows that 
+\begin{equation*}
+    Q_1=Var(X\mid Y=y)= (Q_0^{-1}+ B' R^{-1} B)^{-1}=Q_0-Q_0 B'(B Q_0 B'+R)^{-1}B Q_0
+\end{equation*}
+and 
+    \begin{align*}
+        m_1 &=\E(X\mid Y=y) = Q_1^{-1}(Q_0^{-1}m_0+B' R^{-1}y)\\
+            &= (Q_0-Q_0B'(B Q_0B'+R)^{-1}B Q_0)(Q_0^{-1}m_0+B' R^{-1}y)\\
+            &= m_0-Q_0B'(B Q_0B'+R)^{-1}B m_0 + Q_0 B' R^{-1}y - Q_0B'(B Q_0B'+R)^{-1}B Q_0 B' R^{-1}y \\
+            &=[I_{d_x} - Q_0 B'(B Q_0 B'+ R)^{-1} B ]m_0 + Q_0 B'(B Q_0 B'+ R)^{-1}y.
+    \end{align*}
+\end{proof*}
 
 Assume that $\P_{t-1}(dx_{t-1}\mid Y_{0:t-1}=y_{0:t-1})=\N(m_{t-1},Q_{t-1}).$
 Then, using the transition equation of the latent variable, 
