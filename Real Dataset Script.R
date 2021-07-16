@@ -47,7 +47,7 @@ SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 
 # Basis Particle Filter (Resampling at each step)
 #---------------
-SVBAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+BAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
   ws<-NULL
@@ -78,7 +78,7 @@ SVBAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 
 # Bootstrap Particle Filter
 #---------------
-SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+BPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
   ws<-NULL
@@ -111,7 +111,7 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 #-----------------------
 #Guided Particle Filter Optimal Kernel
 #------------------------------
-SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+GPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
   ws<-NULL
@@ -143,7 +143,7 @@ SVPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 
 #Auxiliary Particle Filter
 #-------------------------
-SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+APFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
   ws<-NULL
@@ -213,7 +213,7 @@ SVAPFfun_2<-function(data,N,m0,C0,alpha,beta,tau,r){
 
 #Auxiliary Particle Filter Optimal Kernel
 #----------------------------------------
-SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+APFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
   ws<-NULL
@@ -252,7 +252,7 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 
 #Liu West
 #--------
-SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
+LWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
   
   xs = rnorm(N,m0,sqrt(C0))
   pars   = cbind(rnorm(N,ealpha,sqrt(valpha)),rnorm(N,ebeta,sqrt(vbeta)),
@@ -341,12 +341,12 @@ dfsv<-data.frame(timeframe,y,x)
 set.seed(12345)
 N=10000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
-svbapf<-SVBAPFfun(y,N,m0,C0,alpha,beta,tau)
-svpf<-SVPFfun(y,N,m0,C0,alpha,beta,tau)
-svapf<-SVAPFfun(y,N,m0,C0,alpha,beta,tau)
-svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
-svopt<-SVPFoptfun(y,N,m0,C0,alpha,beta,tau)
-svapfopt<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
+svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
+svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
+svapf<-APFfun(y,N,m0,C0,alpha,beta,tau)
+svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+svgpfopt<-GPFoptfun(y,N,m0,C0,alpha,beta,tau)
+svapfopt<-APFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 #Filtering Values and Plot
 #-------------------------
@@ -392,10 +392,10 @@ Filtplot<-function(dataframe,fun,title){
 #-----
 library(ggplot2)
 library(ggpubr)
-plot1<-Filtplot(dfsv,svpf,"Particle Filter")
+plot1<-Filtplot(dfsv,svbpf,"Bootstrap Particle Filter")
 plot2<-Filtplot(dfsv,svapf, "Auxiliary Particle Filter")
 plot3<-Filtplot(dfsv,svlw,"Liu and West Filter")
-plot4<-Filtplot(dfsv,svopt,"Opt Ker Particle Filter")
+plot4<-Filtplot(dfsv,svgpfopt,"Opt Ker Guided Particle Filter")
 plot5<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
 plot6<-Filtplot(dfsv,svsis,"No Resampling")
 plot7<-Filtplot(dfsv,svbapf,"Always Resampling")
@@ -418,14 +418,14 @@ Errorvol[,1]<-c(10000)
 RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
 MAE<-function(x,xhat){mean(abs(x-xhat))}
 comparablevol<-function(fun){exp((Filtervalues(fun)$mean)/2)}
-Errorvol[1,2]<-RMSE(realisedx,comparablevol(svpf))
-Errorvol[1,3]<-RMSE(realisedx,comparablevol(svopt))
+Errorvol[1,2]<-RMSE(realisedx,comparablevol(svbpf))
+Errorvol[1,3]<-RMSE(realisedx,comparablevol(svgpfopt))
 Errorvol[1,4]<-RMSE(realisedx,comparablevol(svapf))
 Errorvol[1,5]<-RMSE(realisedx,comparablevol(svlw))
 Errorvol[1,6]<-RMSE(realisedx,comparablevol(svsis))
 Errorvol[1,7]<-RMSE(realisedx,comparablevol(svbapf))
-Errorvol[2,2]<-MAE(realisedx,comparablevol(svpf))
-Errorvol[2,3]<-MAE(realisedx,comparablevol(svopt))
+Errorvol[2,2]<-MAE(realisedx,comparablevol(svbpf))
+Errorvol[2,3]<-MAE(realisedx,comparablevol(svgpfopt))
 Errorvol[2,4]<-MAE(realisedx,comparablevol(svapf))
 Errorvol[2,5]<-MAE(realisedx,comparablevol(svlw))
 Errorvol[2,6]<-MAE(realisedx,comparablevol(svsis))
