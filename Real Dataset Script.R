@@ -399,7 +399,9 @@ plot4<-Filtplot(dfsv,svgpfopt,"Opt Ker Guided Particle Filter")
 plot5<-Filtplot(dfsv,svsis,"No Resampling")
 plot6<-Filtplot(dfsv,svbapf,"Always Resampling")
 plot7<-Filtplot(dfsv,svapfopt,"Opt Ker Auxiliary Particle Filter")
-ggarrange(plot1,plot2,plot3,plot4)
+ggarrange(plot1,plot2)
+ggarrange(plot3,plot4)
+ggarrange(plot5,plot6)
 plot1
 plot2
 plot3
