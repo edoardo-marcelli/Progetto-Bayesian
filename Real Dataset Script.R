@@ -339,7 +339,7 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=5000
+N=10000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
