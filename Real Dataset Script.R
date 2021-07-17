@@ -307,7 +307,7 @@ LWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 #Set hyperparameters
 #-------------------
 #n     =  length(y)
-alpha = -0.0031
+alpha =  -0.0031
 beta  =  0.9951
 tau2  =  0.0074
 m0      = 0
@@ -339,7 +339,7 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=10000
+N=5000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)

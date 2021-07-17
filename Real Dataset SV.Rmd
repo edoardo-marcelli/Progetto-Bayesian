@@ -49,7 +49,7 @@ In order to accommodate for leverage effects, namely capture the increase in vol
     \begin{pmatrix}
        \epsilon_t \\
        \eta_t
-    \end{pmatrix} \Big|\rho,\tau & \overset{i.i.d.}{\sim}  N_2(\mathbf{0},\mathbf{\Sigma}), \ \mathbf{\Sigma}=
+    \end{pmatrix} \Big|\rho,\tau & \overset{i.i.d.}{\sim}  N_2(\mathbf{0},\Sigma), \ \Sigma=
     \begin{pmatrix}
        1 & \rho\tau \\
        \rho\tau & \tau^2
@@ -64,13 +64,13 @@ Assuming that $\epsilon_t$ follows a Student-$t$ distribution, and exploiting th
     \begin{pmatrix}
        \zeta_t \\
        \eta_t
-    \end{pmatrix} \Big|\rho,\tau & \overset{i.i.d.}{\sim}  N_2(\mathbf{0},\mathbf{\Sigma}), \ \mathbf{\Sigma}=
+    \end{pmatrix} \Big|\rho,\tau & \overset{i.i.d.}{\sim}  N_2(\mathbf{0},\Sigma), \ \Sigma=
     \begin{pmatrix}
        1 & \rho\tau \\
        \rho\tau & \tau^2
     \end{pmatrix}\\
     v\lambda_t & \sim \chi^2_v
-\end{align*} 
+\end{align*}
 To capture other elements of the behaviour of financial data, several other extensions have been proposed. For example, SV models have been extended to include conditional heteroskedasticity in the mean returns (Koopman and Hol Uspensky 2002) to capture potential volatility feedback effects, or to feature autoregressive moving average innovations (Chan 2013, Zhang et al. 2020), allowing better goodness of fit and out-of-sample forecasts.\footnote{Dimitrakopoulos and Kolossiatis (2020) note that "the moving average component, the leverage effect and the conditional heteroscedasticity in mean have been considered separately in the stochastic volatility literature" and provide two specifications, one featuring an MA component and leverage effects, the other an MA component and conditional heteroskedasticity in mean.} \footnote{Other extensions, though ones for which we do not report the specifications, feature modelling the latent volatility process $x_t$ as an ARFIMA process (Long Memory Stochastic Volatility model, Breidt et al. 1998) or as governed by a first-order Markov process (Markov Switching Stochastic Volatility model, So et al. 1998). Recently, Luo et al. (2018) incorporated neural networks in the stochastic volatility model (Neural Stochastic Volatility Model), while Xu and Chen (2021) employ deep learning models (Deep Stochastic Volatility Model).} The model proposed by Koopman and Hol Uspensky is specified as 
 \begin{align*}
     y_t & = \nu_t+\psi e^{\frac{x_t}{2}}\epsilon_t\\
@@ -113,10 +113,11 @@ As regards the series that we will employ in section \textit{fill with the numbe
 \subsection{Rescaling the data}
 
 When specifying the parameters of a stochastic volatility model, one should clarify whether the series of observed financial returns is one of log returns or of percentage log returns. Indeed, let $y_t$ denote the returns at time $t$, so that a basic SV specification would prescribe $y_t|x_t\sim N(0,e^{x_t})$: clearly, for each period $t$, $e^{x_t}$ needs to be higher to replicate the observed \textit{percentage} log return rather than the observed log return. This implies that the latent volatility $x$ should fluctuate around higher values when using percentage log returns as $y_t$.
-This feature, when adopting the aforementioned canonical SV model as defined in Kim et al. (1998), would be represented by a higher $\mu$. For example, as noted in Kastner (2019), daily log returns often have a variance of 0.0001 or less, which implies that $\mu$ should lie somewhere around $\ln(0.0001)\approx -9$; instead, when considering daily percentage log returns, one then has a variance of 1, so that $\mu=\ln(1)=0$. Note that when $\mu=0$, the canonical model boils down to the basic specification we employed on the simulated dataset, so that we prefer using percentage log returns for the 3 indices. In other terms, one might end up with the basic specification of the SV model when (roughly) calibrating the parameters of the canonical model on a wider set of financial returns.
+This feature, when adopting the aforementioned canonical SV model as defined in Kim et al. (1998), would be represented by a higher $\mu$. For example, as noted in Kastner (2019), daily log returns often have a variance of 0.0001 or less, which implies that $\mu$ should lie somewhere around $\ln(0.0001)\approx -9$; instead, when considering daily percentage log returns, one then has a variance of 1, so that $\mu=\ln(1)=0$. In other terms, one might end up with a basic specification of the SV model when (roughly) calibrating the parameters of the canonical model on a wider set of financial returns.
 
 Note that rescaling the log returns has analogous implications for the section in which we employ measures of realised volatility as a proxy for the latent volatility process.
-Let us denote by $rv5_t$ the daily realised variance at time $t$, which we obtain from the \textit{rv5} series provided in the Oxford-Man database. Now, note that in a SV framework one should not directly compare $rv5_t$ to $x_t$, as $rv5_t$ can be rather seen as an estimate of the variance of the log returns at time $t$, \textit{i.e.} of $e^{x_t}$ in the SV model. Moreover, by construction of $rv5_t$,\footnote{Nota sulla formula, che considera returns, non returns in percentuale. Spiegare qui perchè possa avere senso paragonare questa varianza a quella dei log returns} the comparison should feature a SV model where the log returns did \textit{not} undergo the percentage transformation. Thus, in order to achieve a common scale with the percentage log returns, we need to multiply $rv5$ by $100^2$. To ease the interpretation and representation of the comparison between differently approximated filtering distributions, we finally take the square root of the rescaled $rv5$, so that we compare it to $e^{x_t/2}$ (\textit{In realtà detto così è poco preciso, perchè in realtà andiamo a confrontare con la trasformazione della media dello stato filtrato}).
+Let us denote by $rv5_t$ the daily realised variance at time $t$, which we obtain from the \textit{rv5} series provided in the Oxford-Man database. Now, note that in a SV framework one should not directly compare $rv5_t$ to $x_t$, as $rv5_t$ can be rather seen as an estimate of the variance of the log returns at time $t$, \textit{i.e.} of $e^{x_t}$ in the SV model. Moreover, by construction of $rv5_t$,\footnote{Nota sulla formula, che considera returns, non returns in percentuale. Spiegare qui perchè possa avere senso paragonare questa varianza a quella dei log returns, come fa Guidolin} the comparison should feature a SV model where the log returns did \textit{not} undergo the percentage transformation. Thus, in order to achieve a common scale with the percentage log returns, we need to multiply $rv5$ by $100^2$. To ease the interpretation and representation of the comparison between differently approximated filtering distributions, we finally take the square root of the rescaled $rv5$, so that we compare it to $e^{x_t/2}$ (\textit{In realtà detto così è poco preciso, perchè in realtà andiamo a confrontare con la trasformazione della media dello stato filtrato}).
+
 
 
 \textbf{Bibliography}\
