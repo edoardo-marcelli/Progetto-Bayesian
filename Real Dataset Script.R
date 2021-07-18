@@ -339,7 +339,7 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=1000
+N=50000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
@@ -348,7 +348,7 @@ svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 svgpfopt<-GPFoptfun(y,N,m0,C0,alpha,beta,tau)
 svapfopt<-APFoptfun(y,N,m0,C0,alpha,beta,tau)
 
-#Filtering Values and Plot
+#Filtering Values
 #-------------------------
 Filtervalues<-function(fun){
   xhat<-sapply(1:n,function(i)
@@ -359,6 +359,8 @@ Filtervalues<-function(fun){
   return(list(mean=xhat,sd=sdhat))
   
 }
+
+#Graphical comparison of filtered volatility
 
 Filtplot<-function(dataframe,fun,title){
   
@@ -433,6 +435,77 @@ Errorvol[2,5]<-MAE(realisedx,comparablevol(svlw))
 Errorvol[2,6]<-MAE(realisedx,comparablevol(svsis))
 Errorvol[2,7]<-MAE(realisedx,comparablevol(svbapf))
 
+# Save mean and sd series of bootstrap with 50000 particles
+library(openxlsx)
+Filt<-Filtervalues(svbpf)
+mean<-Filt$mean
+sd<-Filt$sd
+list1<-list('mean'=mean,'sd'=sd)
+write.xlsx(list1,file="svbpf50000p.xlsx")
+
+#RMSE and MAE comparison of particle filters (but not LW) vs Bootstrap PF with 50000 particles
+
+library(openxlsx)
+bpf50000mean<-read.xlsx("svbpf50000p.xlsx", sheet = 1)
+bpf50000sd<-read.xlsx("svbpf50000p.xlsx", sheet = 2)
+zmean<-bpf50000mean[,1]
+zsd<-bpf50000sd[,1]
+dfsv1<-data.frame(timeframe,y,zmean,zsd)
+Errorcomp<-matrix(NA,ncol=6,nrow=2)
+colnames(Errorcomp)<-c("N","BPF", "GPFOPT", "APF", "SIS", "BAPF")
+rownames(Errorcomp)<-c("RMSE","MAE")
+Errorvol[,1]<-c(10000)
+RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
+MAE<-function(x,xhat){mean(abs(x-xhat))}
+comparablemean<-function(fun){Filtervalues(fun)$mean}
+Errorvol[1,2]<-RMSE(bpf50000mean,comparablemean(svbpf))
+Errorvol[1,3]<-RMSE(bpf50000mean,comparablemean(svgpfopt))
+Errorvol[1,4]<-RMSE(bpf50000mean,comparablemean(svapf))
+Errorvol[1,5]<-RMSE(bpf50000mean,comparablemean(svsis))
+Errorvol[1,6]<-RMSE(bpf50000mean,comparablemean(svbapf))
+Errorvol[2,2]<-MAE(bpf50000mean,comparablemean(svbpf))
+Errorvol[2,3]<-MAE(bpf50000mean,comparablemean(svgpfopt))
+Errorvol[2,4]<-MAE(bpf50000mean,comparablemean(svapf))
+Errorvol[2,5]<-MAE(bpf50000mean,comparablemean(svsis))
+Errorvol[2,6]<-MAE(bpf50000mean,comparablemean(svbapf))
+
+# Graphical comparison of filtered states
+
+Filtplot1<-function(dataframe,fun,title){
+  
+  Filt<-Filtervalues(fun)
+  mean<-Filt$mean
+  sd<-Filt$sd 
+  dataframe<-data.frame(dataframe,mean,sd)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=z, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
+    geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
+    geom_ribbon(aes(ymin = zmean -1.96*zsd, ymax = zmean +1.96*zsd),
+                fill="black",alpha=0.16) +
+    geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+                fill="red",alpha=0.16) +
+    scale_color_manual("",
+                       values=c("50000p BT Filtered States" = "black",
+                                "Filtered States"= "red"))+
+    scale_linetype_manual("",
+                          values=c("True States" = 1,
+                                   "Filtered States"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+plot8<-Filtplot1(dfsv1,svbpf,"Bootstrap Particle Filter")
+plot9<-Filtplot1(dfsv1,svapf,"Auxiliary Particle Filter")
+plot10<-Filtplot1(dfsv1,svgpfopt,"Opt Ker Guided Particle Filter")
+plot11<-Filtplot1(dfsv1,svbpf,svsis,"No Resampling")
+plot12<-Filtplot1(dfsv1,svbapf,"Always Resampling")
+
 #Kalman filter
 m00=0
 c00=100
@@ -498,13 +571,6 @@ ggplot(DLM.df,aes(x=timeframeKF))+
         legend.background = element_rect(fill = "white", colour = "gray30")) +
   theme(plot.title = element_text(hjust = 0.5))
 
-## Save mean and sd series
-library(openxlsx)
-Filt<-Filtervalues(svbpf)
-mean<-Filt$mean
-sd<-Filt$sd
-write.xlsx(mean,file="svbpf50000p.xlsx",sheet=1)
-write.xlsx(sd,file="svbpf50000p.xlsx",sheet=2)
 
 
 
