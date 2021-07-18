@@ -368,6 +368,7 @@ Filtplot<-function(dataframe,fun,title){
   mean<-Filt$mean
   mean1=exp(mean/2)
   sd<-Filt$sd ##qua c'è il problema che la sd si riferisca allo stato non trasformato...
+  ## un'idea potrebbe essere di trasformare prima tutte le particles, calcolando solo poi media e standard deviation
   dataframe<-data.frame(dataframe,mean1,sd)
   
   ggplot(dataframe,aes(x=timeframe))+
