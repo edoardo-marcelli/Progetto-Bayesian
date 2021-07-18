@@ -118,6 +118,7 @@ $$
     \mathbb{E}_{\mathbb{Q}}[\varphi(X)]=
     \int_{\mathcal{X}}\varphi(x)\mathbb{Q}(dx).
 $$
+Convergence in distribution is denoted with the symbol $\implies.$ So, $X\implies\N(0,1)$ means that the random variable $X$ converges in distribution to a normal Gaussian. 
 
 \section{Markov Processes}
 Let $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ and $(\mathcal{Y}, \mathcal{B}(\mathcal{Y}))$ be two (eventually equal) measurable spaces. 
