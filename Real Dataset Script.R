@@ -435,9 +435,9 @@ Errorvol[2,5]<-MAE(realisedx,comparablevol(svlw))
 Errorvol[2,6]<-MAE(realisedx,comparablevol(svsis))
 Errorvol[2,7]<-MAE(realisedx,comparablevol(svbapf))
 
-# Save mean and sd series of bootstrap with 50000 particles
+# Save mean and sd series of PF with 50000 particles
 library(openxlsx)
-Filt<-Filtervalues(svbpf)
+Filt<-Filtervalues(svapf)
 mean<-Filt$mean
 sd<-Filt$sd
 list1<-list('mean'=mean,'sd'=sd)
@@ -448,8 +448,12 @@ write.xlsx(list1,file="svbpf50000p.xlsx")
 library(openxlsx)
 bpf50000mean<-read.xlsx("svbpf50000p.xlsx", sheet = 1)
 bpf50000sd<-read.xlsx("svbpf50000p.xlsx", sheet = 2)
+apf50000mean<-read.xlsx("svapf50000p.xlsx", sheet = 1)
+apf50000sd<-read.xlsx("svapf50000p.xlsx", sheet = 2)
 zmean<-bpf50000mean[,1]
 zsd<-bpf50000sd[,1]
+wmean<-apf50000mean[,1]
+wsd<-apf50000mean[,1]
 dfsv1<-data.frame(timeframe,y,zmean,zsd)
 Errorcomp<-matrix(NA,ncol=6,nrow=2)
 colnames(Errorcomp)<-c("N","BPF", "GPFOPT", "APF", "SIS", "BAPF")
@@ -468,6 +472,8 @@ Errorcomp[2,3]<-MAE(zmean,comparablemean(svgpfopt))
 Errorcomp[2,4]<-MAE(zmean,comparablemean(svapf))
 Errorcomp[2,5]<-MAE(zmean,comparablemean(svsis))
 Errorcomp[2,6]<-MAE(zmean,comparablemean(svbapf))
+RDiff50000p<-RMSE(zmean,wmean)
+ADiff50000p<-MAE(zmean,wmean)
 
 # Graphical comparison of filtered states
 
