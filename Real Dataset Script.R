@@ -339,13 +339,13 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=50000
+N=10
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
 svapf<-APFfun(y,N,m0,C0,alpha,beta,tau)
-svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 svgpfopt<-GPFoptfun(y,N,m0,C0,alpha,beta,tau)
+svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 svapfopt<-APFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 #Filtering Values
@@ -454,20 +454,20 @@ dfsv1<-data.frame(timeframe,y,zmean,zsd)
 Errorcomp<-matrix(NA,ncol=6,nrow=2)
 colnames(Errorcomp)<-c("N","BPF", "GPFOPT", "APF", "SIS", "BAPF")
 rownames(Errorcomp)<-c("RMSE","MAE")
-Errorvol[,1]<-c(10000)
+Errorcomp[,1]<-c(10000)
 RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
 MAE<-function(x,xhat){mean(abs(x-xhat))}
 comparablemean<-function(fun){Filtervalues(fun)$mean}
-Errorvol[1,2]<-RMSE(bpf50000mean,comparablemean(svbpf))
-Errorvol[1,3]<-RMSE(bpf50000mean,comparablemean(svgpfopt))
-Errorvol[1,4]<-RMSE(bpf50000mean,comparablemean(svapf))
-Errorvol[1,5]<-RMSE(bpf50000mean,comparablemean(svsis))
-Errorvol[1,6]<-RMSE(bpf50000mean,comparablemean(svbapf))
-Errorvol[2,2]<-MAE(bpf50000mean,comparablemean(svbpf))
-Errorvol[2,3]<-MAE(bpf50000mean,comparablemean(svgpfopt))
-Errorvol[2,4]<-MAE(bpf50000mean,comparablemean(svapf))
-Errorvol[2,5]<-MAE(bpf50000mean,comparablemean(svsis))
-Errorvol[2,6]<-MAE(bpf50000mean,comparablemean(svbapf))
+Errorcomp[1,2]<-RMSE(zmean,comparablemean(svbpf))
+Errorcomp[1,3]<-RMSE(zmean,comparablemean(svgpfopt))
+Errorcomp[1,4]<-RMSE(zmean,comparablemean(svapf))
+Errorcomp[1,5]<-RMSE(zmean,comparablemean(svsis))
+Errorcomp[1,6]<-RMSE(zmean,comparablemean(svbapf))
+Errorcomp[2,2]<-MAE(zmean,comparablemean(svbpf))
+Errorcomp[2,3]<-MAE(zmean,comparablemean(svgpfopt))
+Errorcomp[2,4]<-MAE(zmean,comparablemean(svapf))
+Errorcomp[2,5]<-MAE(zmean,comparablemean(svsis))
+Errorcomp[2,6]<-MAE(zmean,comparablemean(svbapf))
 
 # Graphical comparison of filtered states
 
@@ -479,7 +479,7 @@ Filtplot1<-function(dataframe,fun,title){
   dataframe<-data.frame(dataframe,mean,sd)
   
   ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=z, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
+    geom_line(aes(y=zmean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
     geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
     geom_ribbon(aes(ymin = zmean -1.96*zsd, ymax = zmean +1.96*zsd),
                 fill="black",alpha=0.16) +
@@ -489,7 +489,7 @@ Filtplot1<-function(dataframe,fun,title){
                        values=c("50000p BT Filtered States" = "black",
                                 "Filtered States"= "red"))+
     scale_linetype_manual("",
-                          values=c("True States" = 1,
+                          values=c("50000p BT Filtered States" = 1,
                                    "Filtered States"=1))+
     labs(x="Time",
          y="")+
@@ -499,12 +499,18 @@ Filtplot1<-function(dataframe,fun,title){
           legend.background = element_rect(fill = "white", colour = "gray30")) +
     theme(plot.title = element_text(hjust = 0.5))
 }
-
+library(ggplot2)
+library(ggpubr)
 plot8<-Filtplot1(dfsv1,svbpf,"Bootstrap Particle Filter")
 plot9<-Filtplot1(dfsv1,svapf,"Auxiliary Particle Filter")
 plot10<-Filtplot1(dfsv1,svgpfopt,"Opt Ker Guided Particle Filter")
-plot11<-Filtplot1(dfsv1,svbpf,svsis,"No Resampling")
+plot11<-Filtplot1(dfsv1,svsis,"No Resampling")
 plot12<-Filtplot1(dfsv1,svbapf,"Always Resampling")
+plot8
+plot9
+plot10
+plot11
+plot12
 
 #Kalman filter
 m00=0
