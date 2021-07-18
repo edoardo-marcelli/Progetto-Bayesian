@@ -453,8 +453,8 @@ apf50000sd<-read.xlsx("svapf50000p.xlsx", sheet = 2)
 zmean<-bpf50000mean[,1]
 zsd<-bpf50000sd[,1]
 wmean<-apf50000mean[,1]
-wsd<-apf50000mean[,1]
-dfsv1<-data.frame(timeframe,y,zmean,zsd)
+wsd<-apf50000sd[,1]
+dfsv1<-data.frame(timeframe,y,zmean,zsd,wmean,zsd)
 Errorcomp<-matrix(NA,ncol=6,nrow=2)
 colnames(Errorcomp)<-c("N","BPF", "GPFOPT", "APF", "SIS", "BAPF")
 rownames(Errorcomp)<-c("RMSE","MAE")
@@ -505,6 +505,7 @@ Filtplot1<-function(dataframe,fun,title){
           legend.background = element_rect(fill = "white", colour = "gray30")) +
     theme(plot.title = element_text(hjust = 0.5))
 }
+
 library(ggplot2)
 library(ggpubr)
 plot8<-Filtplot1(dfsv1,svbpf,"Bootstrap Particle Filter")
@@ -517,6 +518,35 @@ plot9
 plot10
 plot11
 plot12
+
+# Plot the two 50000 particles benchmarks
+Filtplot2<-function(dataframe,title){
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=zmean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
+    geom_ribbon(aes(ymin = zmean-1.96*zsd, ymax = zmean+1.96*zsd),
+                fill="black",alpha=0.16) +
+    geom_line(aes(y=mean, col="50000p AP Filtered States", linetype="50000p AP Filtered States"))+
+    geom_ribbon(aes(ymin = wmean-1.96*wsd, ymax = wmean+1.96*wsd),
+                fill="red",alpha=0.16) +
+    scale_color_manual("",
+                       values=c("50000p BT Filtered States" = "black",
+                                "50000p AP Filtered States"= "red"))+
+    scale_linetype_manual("",
+                          values=c("50000p BT Filtered States" = 1,
+                                   "50000p AP Filtered States"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+plot13<-Filtplot2(dfsv1,"Benchmark comparison")
+plot13
+
 
 #Kalman filter
 m00=0
