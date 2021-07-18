@@ -339,7 +339,7 @@ dfsv<-data.frame(timeframe,y,x)
 #Filtering
 #---------
 set.seed(12345)
-N=10000
+N=1000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
@@ -365,7 +365,7 @@ Filtplot<-function(dataframe,fun,title){
   Filt<-Filtervalues(fun)
   mean<-Filt$mean
   mean1=exp(mean/2)
-  sd<-Filt$sd
+  sd<-Filt$sd ##qua c'è il problema che la sd si riferisca allo stato non trasformato...
   dataframe<-data.frame(dataframe,mean1,sd)
   
   ggplot(dataframe,aes(x=timeframe))+
@@ -497,6 +497,14 @@ ggplot(DLM.df,aes(x=timeframeKF))+
   theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
         legend.background = element_rect(fill = "white", colour = "gray30")) +
   theme(plot.title = element_text(hjust = 0.5))
+
+## Save mean and sd series
+library(openxlsx)
+Filt<-Filtervalues(svbpf)
+mean<-Filt$mean
+sd<-Filt$sd
+write.xlsx(mean,file="svbpf50000p.xlsx",sheet=1)
+write.xlsx(sd,file="svbpf50000p.xlsx",sheet=2)
 
 
 
