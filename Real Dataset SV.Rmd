@@ -106,10 +106,101 @@ The indices have been selected as representatives of the global economic trends 
 
 The three plots below represent the time series of the log returns calculated for the three indices during our period of interest. In particular, each series is a sequence of daily observations representing the logarithm of the ratio between the closing price of the index for a given day and the closing price of the day before.
 
+```{r echo=FALSE, fig.align='center', fig.cap="Close to close percentage log returns, 3 indices", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+library(openxlsx)
+library(ggplot2)
+library(ggpubr)
+data_SP500 <- read.xlsx("Dataset 17-21.xlsx", sheet = "SP500")
+data_STOXX50E <- read.xlsx("Dataset 17-21.xlsx", sheet = "STOXX50E")
+data_DJI <- read.xlsx("Dataset 17-21.xlsx", sheet = "DJI")
+
+# DOW JONES
+
+timestamp_DJI <- as.POSIXlt(data_DJI$Date, tz = "GMT", "%Y-%m-%d")
+data_DJI<-cbind(data_DJI, timestamp=timestamp_DJI)
+
+plot_DJI <- ggplot(data_DJI, aes(x=timestamp,y=log_close_to_close_return))+
+  geom_line()+
+  labs(x="Date",y="DJI")+
+  theme_bw()
+
+DJI_mean <- mean(data_DJI$log_close_to_close_return)
+DJI_sd <- sd(data_DJI$log_close_to_close_return)
+
+
+# S&P500
+
+timestamp_SP <- as.POSIXlt(data_SP500$Date, tz = "GMT", "%Y-%m-%d")
+data_SP500<-cbind(data_SP500, timestamp=timestamp_SP)
+
+plot_SP <- ggplot(data_SP500, aes(x=timestamp,y=log_close_to_close_return))+
+  geom_line()+
+  labs(x="Date",y="S&P500")+
+  theme_bw()
+
+
+SP_mean <- mean(data_SP500$log_close_to_close_return)
+SP_sd <- sd(data_SP500$log_close_to_close_return)
+
+# STOXX50E
+
+timestamp_STOXX <- as.POSIXlt(data_STOXX50E$Date, tz = "GMT", "%Y-%m-%d")
+data_STOXX50E<-cbind(data_STOXX50E, timestamp=timestamp_STOXX)
+
+plot_STOXX <- ggplot(data_STOXX50E, aes(x=timestamp,y=log_close_to_close_return))+
+  geom_line()+
+  labs(x="Date",y="STOXX50E")+
+  theme_bw()
+
+STOXX_mean <- mean(data_STOXX50E$log_close_to_close_return)
+STOXX_sd <- sd(data_STOXX50E$log_close_to_close_return)
+
+ggarrange(plot_DJI, plot_SP, plot_STOXX, nrow = 3, ncol = 1)
+
+SC<-matrix(nrow=2,ncol=3)
+rownames(SC)<-c("Mean","Standard Deviation")
+colnames(SC) <- c("Dow Jones", "S&P500", "STOXX50E")
+
+SC[1,1] = SP_mean
+SC[1,2] = DJI_mean
+SC[1,3] = STOXX_mean
+SC[2,1] = SP_sd
+SC[2,2] = DJI_sd
+SC[2,3] = STOXX_sd
+
+```
+
 At a first visual inspection, we can see a common behaviour in the volatility of all three indices. Especially, it is worth pointing out the similarity between the pattern of DJI and that of S&P500 (especially in terms of peaks), which both differ from the STOXX50E, presumably because the first two describe the US stock market, while the last index describes the European one. For example, a difference that can be seen by having a glance at the plots is that the US indices log returns displays differences in fluctuation magnitude across different periods that are more marked than for the EU index, for which log returns display, in general, wider fluctuations. Anyways, what stands out the most in all three plots is the very wide fluctuations present from February - March 2020 to around September 2020, which, very intuitively, are connected with the Covid-19 Pandemic Crisis.
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+library(kableExtra)
+kbl(SC, align="c", longtable = T, booktabs = T, caption="Summary statistics, close to close percentage log returns",digits=5)
+```
 
 As regards the series that we will employ in section \textit{fill with the number of the section}, namely the series of realised volatilities which we will employ as a proxy for the true latent volatilities, the data were retrieved from the Oxford-Man Institute's Realized Library, which provides several different daily non-parametric measures of past volatility.\footnote{Such class of measures will be better presented in section \textit{fill with the number of the section}, when reviewing the use of realised volatility estimators as proxies for latent volatilities.} We consider a proper rescaling of the \textit{rv5} series, \textit{i.e.} model-free daily volatility estimates based on 5 min intraday return intervals. Also in this case, the chosen interval spanned from June 1st, 2017 to May 30th, 2021. 
 The plots below represent the realized volatility in the period of interest for all the three indices. As usual, they show a rather similar pattern across all three indices, identifying peaks corresponding to periods of higher uncertainty (in particular referring to the 2020 Covid-19 Crisis outbreak and its impact over time). Once more, there is great similarity between the series for the DJI and the one for the S&P500, while the series of the STOXX50E appears slightly different, in terms of peaks.
+
+```{r echo=FALSE, fig.align='center', fig.cap="Close to close percentage log returns, 3 indices", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+
+# Realized Volatility Plots
+
+plotvolsp500<-ggplot(data_SP500, aes(x= timestamp, y=rv5))+
+  geom_line()+
+  labs(x="Date",y="SP")+
+  theme_bw()
+
+plotvoldji<-ggplot(data_DJI, aes(x= timestamp, y=rv5))+
+  geom_line()+
+  labs(x="Date",y="DJI")+
+  theme_bw()
+
+plotvolstoxx<-ggplot(data_STOXX50E, aes(x= timestamp, y=rv5))+
+  geom_line()+
+  labs(x="Date",y="STOXX")+
+  theme_bw()
+ggarrange(plotvolsp500,plotvoldji,plotvolstoxx,nrow = 3, ncol = 1)
+
+```
 
 \subsection{Rescaling the data}
 
@@ -220,6 +311,10 @@ Second, when the number of particles is set at 5000 or more, neither benchmark c
 Third, when the number of particles was set to 10, 100 or 1000, the Bootstrap particle filter and the Guided particle filter with optimal proposal kernel significantly emerged as the best performing algorithms for our SV model, suggesting that their computational cost is lower than that of the Auxiliary particle filter, which needed many more particles to "get rolling".\
 Finally, some discrepancy between different approximations persisted even when the number of particles was set to 50000. However, the narrow extent of the RMSEs and MAEs with respect to both benchmarks supports the idea that at N=10000 the best-performing algorithms have already entered the phase of convergence. Even in light of these markedly more computationally expensive benchmarks, we then choose N=10000 as the number of particles which we routinely employ in this empirical application.
 
+
+\section{Realised volatility as benchmark}
+
+...
 
 \section{Bibliography}\
 
