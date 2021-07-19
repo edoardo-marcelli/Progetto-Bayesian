@@ -105,6 +105,7 @@ ggplot(df,aes(x=timeframe))+
   theme(plot.title = element_text(hjust = 0.5))
 ```
 The Kalman Filter for this model is implemented as described below.
+
 \begin{algorithm} Kalman Filter for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $\theta_{0} \sim N(m_{0},C_{0})$
@@ -129,7 +130,9 @@ Our \code{DLM} function implement in \R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{DLM(data,sig2,tau2,m0,C0)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -209,6 +212,7 @@ The discussion of Kalman Filter will continue in Section XX where we compare it 
 \
 \section{Implementation}
 Consider again the random walk plus noise model of section XX,the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
+
 \begin{algorithm} SIS filter for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -224,7 +228,9 @@ Our \code{SISfun} function implemented in \R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{SISfun(data,N,m0,C0,tau,sigma)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -328,6 +334,7 @@ ggarrange(PlotSIS,ESS.SIS,labels=c("(a)","(b)"))
 
 \section{Implementation}
 In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section XX. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
+
 \begin{algorithm} BPF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -348,7 +355,9 @@ These steps are resumed in our \code{PFfun} function.
 \
 \hrule
 \hrule
+\
 \code{PFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -580,7 +589,9 @@ The \code{GPFfun} function resume this passages.
 \
 \hrule
 \hrule
+\
 \code{GPFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -767,6 +778,7 @@ ggarrange(p2,c2)
 \textbf{Implementation}
 
 For illustration purposes, we are going implement an auxiliary particle filter with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  
+
 \begin{algorithm} APF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -793,7 +805,9 @@ The \code{APFfun} function resume this passages.
 \
 \hrule
 \hrule
+\
 \code{APFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -1023,7 +1037,7 @@ ggarrange(FILT.APFopt,ESS.APFopt,labels=c("(a)","(b)"))
 
 
 \
-\textbf{Implementation}
+\section{Implementation}
 \
 Consider the linear Gaussian example of section XX, but this time with unknown variances $\tau^{2}$ and $\sigma^{2}$. Thus, let $\psi=(\sigma^{2},\tau^{2})$ be the unknown parameter vector and assign a gamma prior for its components,
 \begin{align*}

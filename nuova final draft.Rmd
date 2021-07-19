@@ -1,5 +1,17 @@
 ---
+title: "Final draft"
+
+documentclass: book
+
+output:
+  pdf_document: 
+   latex_engine: pdflatex
+   extra_dependencies: ["float"]
+   number_sections: true
+   
 header-includes:
+- \def\code#1{\texttt{#1}}
+- \usepackage{amssymb}
 - \usepackage{txfonts}
 - \usepackage{amsmath}
 - \usepackage[bindingoffset=1.5cm, left=3cm, right=3cm, top=3cm, bottom=3cm]{geometry}
@@ -11,7 +23,6 @@ header-includes:
 - \usepackage{enumitem}
 - \usepackage{ntheorem}
 - \usepackage{lipsum}
-- \usepackage{amssymb}
 - \usepackage{xcolor}
 - \theoremstyle{break}
 - \newtheorem{thm}{Theorem}% theorem counter resets every \subsection
@@ -22,7 +33,6 @@ header-includes:
 - \newtheorem{definition}{Definition}
 - \theoremstyle{nonumberplain}
 - \newtheorem{proof*}{Proof.}
-- \newtheorem{definition}{Definition}
 - \renewcommand{\P}{\mathbb{P}}
 - \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 - \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
@@ -32,7 +42,6 @@ header-includes:
 - \setlength{\topmargin}{-.1in}
 - \setlength{\textheight}{8.1in}
 - \renewcommand{\baselinestretch}{1.5}
-- \usepackage{amssymb}
 - \newcommand{\E}{\mathbb E}
 - \newcommand{\Q}{\mathbb Q}
 - \newcommand{\M}{\mathbb M}
@@ -42,23 +51,9 @@ header-includes:
 - \newcommand{\Y}{\mathcal Y}
 - \newcommand{\Pd}{\mathbb P}
 - \newcommand{\N}{\mathcal N}
-- \def\code#1{\texttt{#1}}
 - \newtheorem{algorithm}{Algorithm}[section]
 - \usepackage{float}
 - \floatplacement{figure}{}
-
-title: "Final draft"
-
-documentclass: book
-
-output:
-  pdf_document: 
-   latex_engine: xelatex
-   fig_width: 5
-   fig_height: 3.5
-   fig_caption: true
-   extra_dependencies: ["float"]
-   number_sections: true 
 
 ---
 ```{r, results= FALSE, message=FALSE, warning=FALSE, echo=FALSE}
@@ -122,6 +117,7 @@ Convergence in distribution is denoted with the symbol $\implies.$ So, $X\implie
 
 \section{Markov Processes}
 Let $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ and $(\mathcal{Y}, \mathcal{B}(\mathcal{Y}))$ be two (eventually equal) measurable spaces. 
+
 \begin{definition}
 A function $P(x,dy): (\mathcal{X}, \mathcal{B}(\mathcal{X}))\rightarrow [0,1]$ such that 
 \begin{itemize}
@@ -148,7 +144,9 @@ $$
     \mathbb{Q}(A)=\int_A w(x) \mathbb{M}(dx).
 $$
 
-Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ \begin{definition}
+Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ 
+
+\begin{definition}
 A discrete-time Markov process is a sequence $X_{0:T}$ of random variables whose joint distribution can be written as
 \begin{equation}
     \P_T(X_{0:T}\in dx_{0:T})=\P_0(dx_0)\prod\limits_{s=1}^T P_s(x_{s-1},dx_s).
@@ -188,15 +186,13 @@ Assume now that there exists a dominating measures $\nu(dy)$ such that
 $F_t(x_t,dy_t)=f_t(y_t\mid x_t)\nu(dy_t)$ for all $t.$
 Then by the last equality of definition \ref{state-space-def}, the joint distribution of $(X_{0:T},Y_{0:T})$ is 
 \begin{equation}\label{state-space-densities}
-   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\vu(dy_t).
+   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\nu(dy_t).
 \end{equation}
 Integrating away $X_{0:T},$ one gets the marginal density
-\begin{equation}\label{state-space-marginal-y}
-\begin{align*}
+\begin{align*}\label{state-space-marginal-y}
   \P_T(dy_{0:T}) &= \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\nu(dy_s) \\
                 &= p_t(y_{0:t})\prod\limits_{s=0}^t\nu(dy_s),
 \end{align*}                
-\end{equation}
 where $p_t(y_{0:t})$ is the likelihood function.
 Dividing the left-hand side of equation \ref{state-space-densities} by the left-hand side of equation \ref{state-space-marginal-y} and the right-hand side of equation \ref{state-space-densities} by the right-hand side of equation \ref{state-space-marginal-y}, one obtains the filtering distribution
 \begin{equation}
@@ -320,6 +316,7 @@ ggplot(df,aes(x=timeframe))+
 ```
 
 The Kalman Filter for this model is implemented as described below.
+
 \begin{algorithm} Kalman Filter for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $\theta_{0} \sim N(m_{0},C_{0})$
@@ -344,7 +341,9 @@ Our \code{DLM} function implement in R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{DLM(data,sig2,tau2,m0,C0)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -421,63 +420,6 @@ ggplot(DLM.df,aes(x=timeframe))+
 ```
 The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
 
-\textbf{Implementation}
-
-In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
-\begin{align}
-y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
-x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
-x_{0} & \sim N(m_{0},C_{0})
-\end{align}
-As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involved filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
-The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
-```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-
-set.seed(1991)
-dlm.sim = function(n,sigma,tau,x0){
-  x    = rep(0,n)  #state process
-  y    = rep(0,n)  #obs process
-  x[1] = rnorm(1,x0,tau)
-  y[1] = rnorm(1,x[1],sigma)
-  for (t in 2:n){
-    x[t] = rnorm(1,x[t-1],tau)
-    y[t] = rnorm(1,x[t],sigma)
-  }
-  return(list(x=x,y=y))
-}
-
-n=50
-tau2=1
-sigma2=1
-sigma=sqrt(sigma2)
-tau=sqrt(tau2)
-x0=0
-
-sim<-dlm.sim(n,sigma,tau,x0)
-y<-sim$y
-x<-sim$x
-truex<-x
-
-timeframe<-c(1:length(y))
-df<-data.frame(timeframe,y,x)
-
-ggplot(df,aes(x=timeframe))+
-  geom_line(aes(y=y, linetype="Observations"))+
-  geom_line(aes(y=x, linetype="True States"))+
-  coord_cartesian(ylim = c(-4, +12)) +
-  scale_linetype_manual(name="",
-                      values=c("Observations" = 1,
-                               "True States" = 3))+
-  labs(x="Time",
-       y="")+
-  #ggtitle("States and Observations")+
-  theme_bw()+
-  theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-```
-The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
-
 \chapter{Particle Filter}
 
 In the previous chapter we explained how the Kalman Filter is applied to the case of a linear model with Gaussian errors to find closed-form solution for the filtering and the predictive distributions. Nonetheless, the majority of time-series models have a non-linear structure and errors might follow non-Gaussian distributions.\
@@ -492,8 +434,8 @@ To estimate the expected value of $\varphi$ with respect to the density $q$, the
 \begin{equation*}
    \hat \varphi_{MC}=\frac{1}{N} \sum_{n=1}^N\varphi (X^n)\approx \E_q(\varphi)~~~X^n\thicksim q(\cdot)
 \end{equation*}
-However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces ``more efficient" estimates. 
-In all the cases for which sampling takes place from a distribution different from the ``correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
+However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces "more efficient" estimates. 
+In all the cases for which sampling takes place from a distribution different from the "correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
 
 
 \subsection{Importance sampling}
@@ -693,7 +635,9 @@ Our \code{SISfun} function implemented in R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{SISfun(data,N,m0,C0,tau,sigma)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -855,6 +799,7 @@ Finally, the BPF is able to generate the two key objects for inference in state-
 
 \section{Implementation}
 In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section XX. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
+
 \begin{algorithm} BPF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -875,7 +820,9 @@ These steps are resumed in our \code{PFfun} function.
 \
 \hrule
 \hrule
+\
 \code{PFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -1130,6 +1077,7 @@ The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model desc
 \sigma_{opt}^{2}=V(x_{t}|x_{t-1},y_{t})&=\frac{\tau^{2}\sigma^{2}}{\tau^{2}+\sigma^{2}}
 \end{align*}
 On the other hand, the incremental weights, using this importance transition density, are proportional to the conditional density of $y_{t}$ given $x_{t-1}=x_{t-1}^{(i)}$ , i.e $N(x_{t-1}^{(i)},\tau^{2}+\sigma^{2})$, evaluated at $y_{t}$. In other words the algorithm implemented in R is:
+
 \begin{algorithm} GPF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -1152,7 +1100,9 @@ The \code{GPFfun} function resume this passages.
 \
 \hrule
 \hrule
+\
 \code{GPFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -1408,6 +1358,7 @@ However, it is worth noting that the optimality results both for the kernel in t
 \end{itemize}
 
 For illustration purposes, we are going implement an auxiliary particle filter with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  
+
 \begin{algorithm} APF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -1434,8 +1385,11 @@ The \code{APFfun} function resume this passages.
 \
 \hrule
 \hrule
+\
 \code{APFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
+\
 \textbf{Arguments}
 
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
@@ -1668,7 +1622,7 @@ Let us consider a more general state-space model, where the state vector include
 However, being $\psi$ constant over time, it is meaningless to sample its values sequentially: the first extraction of $\psi$ at the initial stage 0 (i.e., $\psi_0^n$) generates a constant path of particles for the parameter ($\psi_t^n=\psi_0^n$). \footnote{To be more precise, at the resampling step, also $\psi^n$ is resampled, but the possible values that it may take are the $N$ ones obtained at the initial time 0 extraction.}\
 Therefore, Liu and West (2001) proposed a modified particle filter, called \textit{Liu and West filter} (LWF) that allows to resample the parameter over time from a continuous distribution. In this way, at every time, the support of $\psi$ is not limited to the initially sampled $N$ values. \
 Here, we describe the LWF that makes use of the normal distribution to sample sequentially the parameter. Moreover, consider the simpler version of the bootstrap filter.\footnote{Clearly, the LWF can be also used within the more general frameweorks of the GPF and the APF.}\
-Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot) $ be the prior distribution for the parameter $\psi$.\
+Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot)$ be the prior distribution for the parameter $\psi$.\
 The LWF can be described by the following algorithm.
 \begin{enumerate}
     \item \textbf{Inital stage: }For $n=1,...,N$, at time 0 sample: $X_0^n\thicksim\Pd_0(dx_0)$ and $\psi_0^n\thicksim \pi(\psi_0)$.
@@ -1915,7 +1869,7 @@ the one given $\mathcal{M}_{SV}$, obtained as $\log p(y_{1:t}|\mathcal{M}_{CV})-
 Notice that the first difference of this series is the relative log-likelihood
 of the incoming observation, $p(y_{t}|y_{1:t-1},\mathcal{M}_{CV})-p(y_{t}|y_{1:t-1},\mathcal{M}_{SV})$.
 
-```{r cll_plot, echo=F, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, results=F}
+```{r cll_plot, eval=FALSE, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, include=FALSE, results=F}
 load("SV/cll_plot.Rda")
 cll_plot+
   theme_bw()+
@@ -1926,4 +1880,3 @@ Overall, this analysis shows how a model with stochastic
 volatility is better at describing and predicting the considered time-frame of S&P500 returns. As can be seen from the graph and perhaps unsurprisingly,
 the density forecast given the stochastic volatility model represents
 a particularly significant improvement in the period of extreme values of returns in March 2020.
-
