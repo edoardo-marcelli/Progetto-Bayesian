@@ -117,6 +117,7 @@ Convergence in distribution is denoted with the symbol $\implies.$ So, $X\implie
 
 \section{Markov Processes}
 Let $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ and $(\mathcal{Y}, \mathcal{B}(\mathcal{Y}))$ be two (eventually equal) measurable spaces. 
+
 \begin{definition}
 A function $P(x,dy): (\mathcal{X}, \mathcal{B}(\mathcal{X}))\rightarrow [0,1]$ such that 
 \begin{itemize}
@@ -143,7 +144,9 @@ $$
     \mathbb{Q}(A)=\int_A w(x) \mathbb{M}(dx).
 $$
 
-Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ \begin{definition}
+Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ 
+
+\begin{definition}
 A discrete-time Markov process is a sequence $X_{0:T}$ of random variables whose joint distribution can be written as
 \begin{equation}
     \P_T(X_{0:T}\in dx_{0:T})=\P_0(dx_0)\prod\limits_{s=1}^T P_s(x_{s-1},dx_s).
@@ -313,6 +316,7 @@ ggplot(df,aes(x=timeframe))+
 ```
 
 The Kalman Filter for this model is implemented as described below.
+
 \begin{algorithm} Kalman Filter for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $\theta_{0} \sim N(m_{0},C_{0})$
@@ -337,7 +341,9 @@ Our \code{DLM} function implement in R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{DLM(data,sig2,tau2,m0,C0)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -629,7 +635,9 @@ Our \code{SISfun} function implemented in R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{SISfun(data,N,m0,C0,tau,sigma)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -791,6 +799,7 @@ Finally, the BPF is able to generate the two key objects for inference in state-
 
 \section{Implementation}
 In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section XX. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
+
 \begin{algorithm} BPF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -811,7 +820,9 @@ These steps are resumed in our \code{PFfun} function.
 \
 \hrule
 \hrule
+\
 \code{PFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -1066,6 +1077,7 @@ The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model desc
 \sigma_{opt}^{2}=V(x_{t}|x_{t-1},y_{t})&=\frac{\tau^{2}\sigma^{2}}{\tau^{2}+\sigma^{2}}
 \end{align*}
 On the other hand, the incremental weights, using this importance transition density, are proportional to the conditional density of $y_{t}$ given $x_{t-1}=x_{t-1}^{(i)}$ , i.e $N(x_{t-1}^{(i)},\tau^{2}+\sigma^{2})$, evaluated at $y_{t}$. In other words the algorithm implemented in R is:
+
 \begin{algorithm} GPF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -1088,7 +1100,9 @@ The \code{GPFfun} function resume this passages.
 \
 \hrule
 \hrule
+\
 \code{GPFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -1344,6 +1358,7 @@ However, it is worth noting that the optimality results both for the kernel in t
 \end{itemize}
 
 For illustration purposes, we are going implement an auxiliary particle filter with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  
+
 \begin{algorithm} APF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -1372,6 +1387,7 @@ The \code{APFfun} function resume this passages.
 \hrule
 \
 \code{APFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \
 \textbf{Arguments}
