@@ -1,14 +1,4 @@
 ---
-title: "Final draft"
-
-documentclass: book
-
-output:
-  pdf_document: 
-   latex_engine: pdflatex
-   extra_dependencies: ["float"]
-   number_sections: true
-   
 header-includes:
 - \def\code#1{\texttt{#1}}
 - \usepackage{amssymb}
@@ -55,6 +45,19 @@ header-includes:
 - \usepackage{float}
 - \floatplacement{figure}{}
 
+title: "Final draft"
+
+documentclass: book
+
+output:
+  pdf_document: 
+   latex_engine: xelatex
+   fig_width: 5
+   fig_height: 3.5
+   fig_caption: true
+   extra_dependencies: ["float"]
+   number_sections: true 
+
 ---
 ```{r, results= FALSE, message=FALSE, warning=FALSE, echo=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -68,6 +71,7 @@ Sys.setlocale("LC_TIME", "English")
 library(ggplot2)
 library(ggpubr)
 library(kableExtra)
+tinytex::tlmgr_install() 
 ```
 
 ```{r include=FALSE}
@@ -428,8 +432,8 @@ To estimate the expected value of $\varphi$ with respect to the density $q$, the
 \begin{equation*}
    \hat \varphi_{MC}=\frac{1}{N} \sum_{n=1}^N\varphi (X^n)\approx \E_q(\varphi)~~~X^n\thicksim q(\cdot)
 \end{equation*}
-However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces "more efficient" estimates. 
-In all the cases for which sampling takes place from a distribution different from the "correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
+However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces ``more efficient" estimates. 
+In all the cases for which sampling takes place from a distribution different from the ``correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
 
 
 \subsection{Importance sampling}
@@ -1606,7 +1610,7 @@ Let us consider a more general state-space model, where the state vector include
 However, being $\psi$ constant over time, it is meaningless to sample its values sequentially: the first extraction of $\psi$ at the initial stage 0 (i.e., $\psi_0^n$) generates a constant path of particles for the parameter ($\psi_t^n=\psi_0^n$). \footnote{To be more precise, at the resampling step, also $\psi^n$ is resampled, but the possible values that it may take are the $N$ ones obtained at the initial time 0 extraction.}\
 Therefore, Liu and West (2001) proposed a modified particle filter, called \textit{Liu and West filter} (LWF) that allows to resample the parameter over time from a continuous distribution. In this way, at every time, the support of $\psi$ is not limited to the initially sampled $N$ values. \
 Here, we describe the LWF that makes use of the normal distribution to sample sequentially the parameter. Moreover, consider the simpler version of the bootstrap filter.\footnote{Clearly, the LWF can be also used within the more general frameweorks of the GPF and the APF.}\
-Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot)$ be the prior distribution for the parameter $\psi$.\
+Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot) $ be the prior distribution for the parameter $\psi$.\
 The LWF can be described by the following algorithm.
 \begin{enumerate}
     \item \textbf{Inital stage: }For $n=1,...,N$, at time 0 sample: $X_0^n\thicksim\Pd_0(dx_0)$ and $\psi_0^n\thicksim \pi(\psi_0)$.
@@ -1853,7 +1857,7 @@ the one given $\mathcal{M}_{SV}$, obtained as $\log p(y_{1:t}|\mathcal{M}_{CV})-
 Notice that the first difference of this series is the relative log-likelihood
 of the incoming observation, $p(y_{t}|y_{1:t-1},\mathcal{M}_{CV})-p(y_{t}|y_{1:t-1},\mathcal{M}_{SV})$.
 
-```{r cll_plot, eval=FALSE, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, include=FALSE, results=F}
+```{r cll_plot, echo=F, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, results=F}
 load("SV/cll_plot.Rda")
 cll_plot+
   theme_bw()+

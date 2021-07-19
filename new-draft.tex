@@ -97,6 +97,8 @@
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 \setcounter{secnumdepth}{5}
+\def\code#1{\texttt{#1}}
+\usepackage{amssymb}
 \usepackage{txfonts}
 \usepackage{amsmath}
 \usepackage[bindingoffset=1.5cm, left=3cm, right=3cm, top=3cm, bottom=3cm]{geometry}
@@ -136,7 +138,6 @@
 \newcommand{\Y}{\mathcal Y}
 \newcommand{\Pd}{\mathbb P}
 \newcommand{\N}{\mathcal N}
-\def\code#1{\texttt{#1}}
 \newtheorem{algorithm}{Algorithm}[section]
 \usepackage{float}
 \floatplacement{figure}{}
@@ -314,19 +315,18 @@ Assume now that there exists a dominating measures \(\nu(dy)\) such that
 last equality of definition \ref{state-space-def}, the joint
 distribution of \((X_{0:T},Y_{0:T})\) is
 \begin{equation}\label{state-space-densities}
-   \mathbb{P}_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\mathbb{P}_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\vu(dy_t).
+   \mathbb{P}_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\mathbb{P}_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\nu(dy_t).
 \end{equation} Integrating away \(X_{0:T},\) one gets the marginal
-density \begin{equation}\label{state-space-marginal-y}
-\begin{align*}
+density \begin{align*}\label{state-space-marginal-y}
   \mathbb{P}_T(dy_{0:T}) &= \mathbb E_{\mathbb{P}_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\nu(dy_s) \\
                 &= p_t(y_{0:t})\prod\limits_{s=0}^t\nu(dy_s),
-\end{align*}                
-\end{equation} where \(p_t(y_{0:t})\) is the likelihood function.
-Dividing the left-hand side of equation \ref{state-space-densities} by
-the left-hand side of equation \ref{state-space-marginal-y} and the
-right-hand side of equation \ref{state-space-densities} by the
-right-hand side of equation \ref{state-space-marginal-y}, one obtains
-the filtering distribution \begin{equation}
+\end{align*}\\
+where \(p_t(y_{0:t})\) is the likelihood function. Dividing the
+left-hand side of equation \ref{state-space-densities} by the left-hand
+side of equation \ref{state-space-marginal-y} and the right-hand side of
+equation \ref{state-space-densities} by the right-hand side of equation
+\ref{state-space-marginal-y}, one obtains the filtering distribution
+\begin{equation}
 \mathbb{P}_t(X_{t}\in dx_{t}\mid Y_{0:t}=y_{0:t})=\frac{1}{p_t(y_{0:t})}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big]\mathbb{P}_t(dx_{0:t}).
 \end{equation}
 
@@ -424,7 +424,7 @@ process form Equation (1) with \(\sigma^{2}=1\).
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-5-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-5-1} 
 
 }
 
@@ -505,44 +505,11 @@ states. 95 percent credible intervals are computed as
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-7-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-7-1} 
 
 }
 
 \caption{Kalman Filtered States with credible interval (in red)}\label{fig:unnamed-chunk-7}
-\end{figure}
-
-The discussion of Kalman Filter will continue in Section XX where we
-compare it to the Particle Filter.
-
-\textbf{Implementation}
-
-In this section we present a practical illustration of the algorithms
-discussed. For the sake of simplicity we use a random walk plus noise
-model, i.e.~the most basic form of a linear Gaussian state-space model.
-\begin{align}
-y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
-x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
-x_{0} & \sim N(m_{0},C_{0})
-\end{align} As already mentioned before, in this case the filtering
-distribution can be computed in closed form solutions using the Kalman
-filter. However, this toy example will be used also to illustrate more
-involved filtering strategies described in this work. We believe indeed
-that it represents a useful starting point to understand the logic of
-the algorithms which may be eventually replicated when dealing with more
-complex models.\\
-The filtering strategy is applied to 50 simulated data. Figure XX shows
-the simulated true states sequence assuming as data generating process
-the Equation (2) with \(\tau^{2}=1\) and simulated observed sequence
-process form Equation (1) with \(\sigma^{2}=1\).
-
-\begin{figure}[H]
-
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-8-1} 
-
-}
-
-\caption{Simulated random walk plus noise model}\label{fig:unnamed-chunk-8}
 \end{figure}
 
 The discussion of Kalman Filter will continue in Section XX where we
@@ -971,11 +938,11 @@ filtered states with respect to the true values.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-11-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-10-1} 
 
 }
 
-\caption{a) SIS Filtered States with credible interval (in red). b) Effective sample size.}\label{fig:unnamed-chunk-11}
+\caption{a) SIS Filtered States with credible interval (in red). b) Effective sample size.}\label{fig:unnamed-chunk-10}
 \end{figure}
 
 \subsection{Bootstrap Particle Filter}
@@ -1151,11 +1118,11 @@ improving results.
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-14-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-13-1} 
 
 }
 
-\caption{a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-14}
+\caption{a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-13}
 \end{figure}
 
 Since the Random Walk plus Noise model allows for closed form solutions,
@@ -1169,7 +1136,7 @@ size increases the BPF decreases and, for large N, it reaches the
 accuracy of the Kalman Filter.
 
 \begin{longtable}[t]{cccc}
-\caption{\label{tab:unnamed-chunk-16}Root Mean Square Errors}\\
+\caption{\label{tab:unnamed-chunk-15}Root Mean Square Errors}\\
 \toprule
 N & Threshold & KF & BPF\\
 \midrule
@@ -1181,11 +1148,11 @@ N & Threshold & KF & BPF\\
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-17-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-16-1} 
 
 }
 
-\caption{Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)}\label{fig:unnamed-chunk-17}
+\caption{Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)}\label{fig:unnamed-chunk-16}
 \end{figure}
 
 \hfill\break
@@ -1376,11 +1343,11 @@ otherwise, if missing, the threshold is set equal to \(N/2\)
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-20-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-19-1} 
 
 }
 
-\caption{a) GPF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-20}
+\caption{a) GPF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-19}
 \end{figure}
 
 Let's provide directly a brief comparison between the Bootstrap Particle
@@ -1391,7 +1358,7 @@ confirmed by the Table showing the RMSE. Moreover, also the variance is
 better, suggesting for higher precision.
 
 \begin{longtable}[t]{cccc}
-\caption{\label{tab:unnamed-chunk-22}Root Mean Square Errors}\\
+\caption{\label{tab:unnamed-chunk-21}Root Mean Square Errors}\\
 \toprule
 N & Threshold & BPF & GPF\\
 \midrule
@@ -1403,11 +1370,11 @@ N & Threshold & BPF & GPF\\
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-23-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-22-1} 
 
 }
 
-\caption{Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000}\label{fig:unnamed-chunk-23}
+\caption{Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000}\label{fig:unnamed-chunk-22}
 \end{figure}
 
 \subsection{Auxiliary Particle Filter}
@@ -1542,9 +1509,13 @@ The \texttt{APFfun} function resume this passages.\\
 
 \hrule
 \hrule
+
+\hfill\break
 \texttt{APFfun(data,N,m0,C0,tau,sigma,r)}
+
 \hrule
 
+\hfill\break
 \textbf{Arguments}
 
 \texttt{data} ~~the observed process. It has to be a vector or a
@@ -1599,11 +1570,11 @@ otherwise, if missing, the threshold is set equal to \(N/2\)
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-26-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-25-1} 
 
 }
 
-\caption{a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-26}
+\caption{a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-25}
 \end{figure}
 
 Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap
@@ -1611,15 +1582,15 @@ Particle Filter (BPF).
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-27-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-26-1} 
 
 }
 
-\caption{Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000}\label{fig:unnamed-chunk-27}
+\caption{Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000}\label{fig:unnamed-chunk-26}
 \end{figure}
 
 \begin{longtable}[t]{cccc}
-\caption{\label{tab:unnamed-chunk-29}Root Mean Square Errors}\\
+\caption{\label{tab:unnamed-chunk-28}Root Mean Square Errors}\\
 \toprule
 N & Threshold & BPF & APF\\
 \midrule
@@ -1672,11 +1643,11 @@ N & Threshold & BPF & APF\\
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-32-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/unnamed-chunk-31-1} 
 
 }
 
-\caption{a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-32}
+\caption{a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-31}
 \end{figure}
 
 \section{Liu and West Filter}\label{pf_lui_west}
@@ -1993,7 +1964,7 @@ log-likelihood of the incoming observation,
 
 \begin{figure}[H]
 
-{\centering \includegraphics{final-draft_files/figure-latex/cll_plot-1} 
+{\centering \includegraphics{new-draft_files/figure-latex/cll_plot-1} 
 
 }
 

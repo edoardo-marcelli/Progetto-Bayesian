@@ -1,17 +1,5 @@
 ---
-title: "Final draft"
-
-documentclass: book
-
-output:
-  pdf_document: 
-   latex_engine: pdflatex
-   extra_dependencies: ["float"]
-   number_sections: true
-   
 header-includes:
-- \def\code#1{\texttt{#1}}
-- \usepackage{amssymb}
 - \usepackage{txfonts}
 - \usepackage{amsmath}
 - \usepackage[bindingoffset=1.5cm, left=3cm, right=3cm, top=3cm, bottom=3cm]{geometry}
@@ -51,50 +39,30 @@ header-includes:
 - \newcommand{\Y}{\mathcal Y}
 - \newcommand{\Pd}{\mathbb P}
 - \newcommand{\N}{\mathcal N}
+- \def\code#1{\texttt{#1}}
 - \newtheorem{algorithm}{Algorithm}[section]
 - \usepackage{float}
 - \floatplacement{figure}{}
 
+title: "Final draft"
+
+documentclass: book
+
+output:
+  pdf_document: 
+   latex_engine: xelatex
+   fig_width: 5
+   fig_height: 3.5
+   fig_caption: true
+   extra_dependencies: ["float"]
+   number_sections: true 
+
 ---
-```{r, results= FALSE, message=FALSE, warning=FALSE, echo=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_chunk$set(fig.pos = '')
-knitr::opts_chunk$set(out.extra='')
-```
-```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
-Sys.setlocale("LC_TIME", "English")
-```
-```{r include=FALSE}
-library(ggplot2)
-library(ggpubr)
-library(kableExtra)
-```
-
-```{r include=FALSE}
-#Quantiles functions
-#-------------------
-q025=function(x){quantile(x,0.025)}
-q975=function(x){quantile(x,0.975)}
 
 
-#Calcolo intevalli di credibilità
-#--------------------------------
-Coverage<-function(fun){
-  
-  Filt<-Filtervalues(fun)
-  mean<-Filt$mean
-  sd<-Filt$sd
-  vec<-NULL
-  for(t in 1:length(mean)){
-  if(mean[t]-1.96*sd[t]<truex[t] & truex[t]<mean[t]+1.96*sd[t]){vec[t]<-1}else{vec[t]<-0}
-  }
-  return(mean(vec))
-}
 
-#RMSE
-#----
-RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
-```
+
+
 
 
 
@@ -183,13 +151,15 @@ Assume now that there exists a dominating measures $\nu(dy)$ such that
 $F_t(x_t,dy_t)=f_t(y_t\mid x_t)\nu(dy_t)$ for all $t.$
 Then by the last equality of definition \ref{state-space-def}, the joint distribution of $(X_{0:T},Y_{0:T})$ is 
 \begin{equation}\label{state-space-densities}
-   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\nu(dy_t).
+   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\vu(dy_t).
 \end{equation}
 Integrating away $X_{0:T},$ one gets the marginal density
-\begin{align*}\label{state-space-marginal-y}
+\begin{equation}\label{state-space-marginal-y}
+\begin{align*}
   \P_T(dy_{0:T}) &= \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\nu(dy_s) \\
                 &= p_t(y_{0:t})\prod\limits_{s=0}^t\nu(dy_s),
 \end{align*}                
+\end{equation}
 where $p_t(y_{0:t})$ is the likelihood function.
 Dividing the left-hand side of equation \ref{state-space-densities} by the left-hand side of equation \ref{state-space-marginal-y} and the right-hand side of equation \ref{state-space-densities} by the right-hand side of equation \ref{state-space-marginal-y}, one obtains the filtering distribution
 \begin{equation}
@@ -266,51 +236,14 @@ x_{0} & \sim N(m_{0},C_{0})
 \end{align}
 As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involved filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
 The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
-```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+\begin{figure}[H]
 
-set.seed(1991)
-dlm.sim = function(n,sigma,tau,x0){
-  x    = rep(0,n)  #state process
-  y    = rep(0,n)  #obs process
-  x[1] = rnorm(1,x0,tau)
-  y[1] = rnorm(1,x[1],sigma)
-  for (t in 2:n){
-    x[t] = rnorm(1,x[t-1],tau)
-    y[t] = rnorm(1,x[t],sigma)
-  }
-  return(list(x=x,y=y))
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-5-1} 
+
 }
 
-n=50
-tau2=1
-sigma2=1
-sigma=sqrt(sigma2)
-tau=sqrt(tau2)
-x0=0
-
-sim<-dlm.sim(n,sigma,tau,x0)
-y<-sim$y
-x<-sim$x
-truex<-x
-
-timeframe<-c(1:length(y))
-df<-data.frame(timeframe,y,x)
-
-ggplot(df,aes(x=timeframe))+
-  geom_line(aes(y=y, linetype="Observations"))+
-  geom_line(aes(y=x, linetype="True States"))+
-  coord_cartesian(ylim = c(-4, +12)) +
-  scale_linetype_manual(name="",
-                      values=c("Observations" = 1,
-                               "True States" = 3))+
-  labs(x="Time",
-       y="")+
-  #ggtitle("States and Observations")+
-  theme_bw()+
-  theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-```
+\caption{Simulated random walk plus noise model}\label{fig:unnamed-chunk-5}
+\end{figure}
 
 The Kalman Filter for this model is implemented as described below.
 \begin{algorithm} Kalman Filter for Random Walk plus Noise Model
@@ -351,7 +284,8 @@ Our \code{DLM} function implement in R replicate this steps.
 \code{C0} \ \ variance of the normal prior state distribution
 \hrule
 \hrule
-```{r}
+
+```r
 DLM<-function(data,sig2,tau2,m0,C0){
   n  = length(data)
   m  = rep(0,n)
@@ -374,44 +308,34 @@ DLM<-function(data,sig2,tau2,m0,C0){
 In Figure XX below filtered states estimated using Kalman Filter with $x_{0} \sim N(0,100)$ and $\sigma^{2}=\tau^{2}=1$ are compared to the true states values.
 Notice how closely the filtered states follow the observations and the goodness of the approximation of the true states. 95 percent credible intervals are computed as
 \[[E(\theta_{t}|y_{1:t})-z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})},E(\theta_{t}|y_{1:t})+z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})}]\]
-```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-#Kalman Filter
-#-------------
-m0=0
-C0=100
-filtval<-DLM(y,sigma2,tau2,m0,C0)
-m<-filtval$m
-C<-filtval$C
-Low = m + qnorm(0.025)*sqrt(C)
-Up = m + qnorm(0.975)*sqrt(C)
+\begin{figure}[H]
 
-#Put everything in a data frate (for ggplot)
-timeframe<-c(1:length(y))
-DLM.df<-data.frame(timeframe,y,x,m,C,Low,Up)
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-7-1} 
 
-#Plots (observetions in black and filtered states in red)
-ggplot(DLM.df,aes(x=timeframe))+
-  geom_line(aes(y=y, col="Observations", linetype="Observations"))+
-  geom_line(aes(y=x, col="True States", linetype="True States"))+
-  geom_line(aes(y=m, col="Filtered States", linetype="Filtered States"))+
-  geom_ribbon(aes(ymin = Low, ymax = Up),
-              fill="red",alpha=0.16) +
-    scale_color_manual("",
-                      values=c("Observations" = "black",
-                               "True States" = "black",
-                               "Filtered States"= "red"))+
-  scale_linetype_manual("",
-                      values=c("Observations" = 1,
-                               "True States" = 3,
-                               "Filtered States"=1))+
-  labs(x="Time",
-       y="")+
-  #ggtitle("Kalman Filter")+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-```
+}
+
+\caption{Kalman Filtered States with credible interval (in red)}\label{fig:unnamed-chunk-7}
+\end{figure}
+The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
+
+\textbf{Implementation}
+
+In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
+\begin{align}
+y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
+x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
+x_{0} & \sim N(m_{0},C_{0})
+\end{align}
+As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involved filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
+The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
+\begin{figure}[H]
+
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-8-1} 
+
+}
+
+\caption{Simulated random walk plus noise model}\label{fig:unnamed-chunk-8}
+\end{figure}
 The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
 
 \chapter{Particle Filter}
@@ -428,8 +352,8 @@ To estimate the expected value of $\varphi$ with respect to the density $q$, the
 \begin{equation*}
    \hat \varphi_{MC}=\frac{1}{N} \sum_{n=1}^N\varphi (X^n)\approx \E_q(\varphi)~~~X^n\thicksim q(\cdot)
 \end{equation*}
-However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces "more efficient" estimates. 
-In all the cases for which sampling takes place from a distribution different from the "correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
+However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces ``more efficient" estimates. 
+In all the cases for which sampling takes place from a distribution different from the ``correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
 
 
 \subsection{Importance sampling}
@@ -645,7 +569,8 @@ Our \code{SISfun} function implemented in R replicate this steps.
 \code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
 \hrule
 \hrule
-```{r}
+
+```r
 SISfun<-function(data,N,m0,C0,tau,sigma){
   xs<-NULL
   ws<-NULL
@@ -668,68 +593,16 @@ SISfun<-function(data,N,m0,C0,tau,sigma){
 }
 ```
 We have already discussed the reasons why the SIS algorithm does not provide a good strategy in the filtering problem. We provide a graphical intuition of what happens when we use such filtering strategy on a simulated dataset. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. The results shown in the following two plots shows a clear degeneration of the effective sample size and bad fit of filtered states with respect to the true values.
-```{r echo=FALSE}
-N=1000
-sis<-SISfun(y,N,m0,C0,tau,sigma)
-sisxs<-sis$xs
-sisws<-sis$ws
-sisess<-sis$ess
-sis.data<-data.frame(df,sisxs,sisws,sisess)
 
-ESS.SIS<-ggplot(sis.data,aes(x=timeframe))+
-  geom_line(aes(y=sisess))+
-    labs(x="Time",
-       y="")+
-  ggtitle("Effective Sample size")+
-  theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5))
-```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) SIS Filtered States with credible interval (in red). b) Effective sample size.", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-Filtervalues<-function(fun){
-  xhat<-sapply(1:n,function(i)
-    weighted.mean(fun$xs[i,],fun$ws[i,]))
-  sdhat<-sapply(1:n,function(i)
-    sqrt(weighted.mean((fun$xs[i,]-xhat[i])^2,fun$ws[i,])))
-  
-  return(list(mean=xhat,sd=sdhat))
-  
+\begin{figure}[H]
+
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-11-1} 
+
 }
 
-Filtplot<-function(dataframe,fun,title){
-
-Filt<-Filtervalues(fun)
-mean<-Filt$mean
-sd<-Filt$sd
-dataframe<-data.frame(dataframe,mean,sd)
-  
-ggplot(dataframe,aes(x=timeframe))+
-  geom_line(aes(y=y, col="Observations", linetype="Observations"))+
-  geom_line(aes(y=x, col="True States", linetype="True States"))+
-  geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
-  geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
-              fill="red",alpha=0.16) +
-    scale_color_manual("",
-                      values=c("Observations" = "black",
-                               "True States" = "black",
-                               "Filtered States"= "red"))+
-  scale_linetype_manual("",
-                      values=c("Observations" = 1,
-                               "True States" = 3,
-                               "Filtered States"=1))+
-  labs(x="Time",
-       y="")+
-  ggtitle(title)+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-}
-
-PlotSIS<-Filtplot(df,sis,title="")
-
-ggarrange(PlotSIS,ESS.SIS,labels=c("(a)","(b)"))
-```
+\caption{a) SIS Filtered States with credible interval (in red). b) Effective sample size.}\label{fig:unnamed-chunk-11}
+\end{figure}
 
 
 \subsection{Bootstrap Particle Filter}
@@ -829,7 +702,8 @@ These steps are resumed in our \code{PFfun} function.
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
 \hrule
-```{r}
+
+```r
 PFfun<-function(data,N,m0,C0,tau,sigma,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
@@ -860,156 +734,41 @@ PFfun<-function(data,N,m0,C0,tau,sigma,r){
 }
 ```
 The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure XX. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
-```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-N=1000
 
-pf<-PFfun(y,N,m0,C0,tau,sigma)
 
-ESSplot<-function(dataframe,fun,threshold){
-if(missing(threshold)){threshold=T}else{}
-xs<-fun$xs
-ws<-fun$ws
-ess<-fun$ess
-dt<-data.frame(dataframe,xs,ws,ess)
+\begin{figure}[H]
 
-ggplot(dt,aes(x=timeframe))+
-  geom_line(aes(y=ess))+
-  geom_line(aes(y=500),col="orange")+
-  labs(x="Time",
-       y="")+
-  ggtitle("Effective Sample Size")+
-  theme_bw()+
-  theme(plot.title = element_text(hjust = 0.5))
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-14-1} 
+
 }
-ESS.PF<-ESSplot(df,pf)
 
-```
-
-```{r echo=FALSE, fig.align='center', fig.cap="a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-FILT.PF <- Filtplot(df,pf,"")
-ggarrange(FILT.PF,ESS.PF,labels=c("(a)","(b)"))
-```
+\caption{a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-14}
+\end{figure}
 
 Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure XX, when the number of particles generated at any interaction increases the results for both the estimated mean and the variance tend to converge [[SPIEGARE PERCHE']]. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
 
-```{r include=FALSE}
-truex<-x
-estimatedx<-matrix(NA,ncol=4,nrow=6)
-colnames(estimatedx)<-c("N","Threshold","KF","BPF")
-estimatedx[,1]<-c(100,1000,10000,1000,1000,1000)
-estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
 
 
-i=1
-for(N in c(100,1000,10000)){
 
-DLM1<-DLM(y,sigma2,tau2,m0,C0)
-pf1<-PFfun(y,N,m0,C0,tau,sigma)
+\begin{longtable}[t]{cccc}
+\caption{\label{tab:unnamed-chunk-16}Root Mean Square Errors}\\
+\toprule
+N & Threshold & KF & BPF\\
+\midrule
+100 & 0.5 & 0.879 & 0.888\\
+1000 & 0.5 & 0.879 & 0.886\\
+10000 & 0.5 & 0.879 & 0.878\\
+\bottomrule
+\end{longtable}
 
-estimatedx[i,3]<-RMSE(truex,DLM1$m)
-estimatedx[i,4]<-RMSE(truex,Filtervalues(pf1)$mean)
-i=i+1
+\begin{figure}[H]
 
-}
-
-i=4
-for(k in c(2,5,10)){
-  N=1000
-DLM2<-DLM(y,sigma2,tau2,m0,C0)
-pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
-
-estimatedx[i,3]<-RMSE(truex,DLM2$m)
-estimatedx[i,4]<-RMSE(truex,Filtervalues(pf2)$mean)
-i=i+1
-
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-17-1} 
 
 }
 
-
-
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
-kbl(estimatedx[1:3,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
-```
-
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='H', fig.width=10, message=FALSE, warning=FALSE, results=F}
-N1=100
-N2=1000
-N3=10000
-
-
-Combined<-data.frame(DLM.df,df)
-pf1<-PFfun(y,N1,m0,C0,tau,sigma)
-pf2<-PFfun(y,N2,m0,C0,tau,sigma)
-pf3<-PFfun(y,N3,m0,C0,tau,sigma)
-
-
-Compareplot<-function(dataframe,fun,title){
-
-Filt<-Filtervalues(fun)
-mean<-Filt$mean
-sd<-Filt$sd
-dataframe<-data.frame(dataframe,mean,sd)
-
-ggplot(dataframe,aes(x=timeframe))+
-  geom_line(aes(y=m, col="KF", linetype="KF"))+
-  geom_line(aes(y=x, col="True States", linetype="True States"))+
-  geom_line(aes(y=mean, col="BPF", linetype="BPF"))+
-  #geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
-   #           fill="red",alpha=0.16) +
-    scale_color_manual("",
-                      values=c("KF" = "red",
-                               "True States" = "black",
-                               "BPF"= "blue"))+
-  scale_linetype_manual("",
-                      values=c("KF" = 1,
-                               "True States" = 3,
-                               "BPF"=1))+
-  labs(x="Time",
-       y="")+
-  ggtitle(title)+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-}
-
-p1<-Compareplot(Combined,pf1,"Filtered States")
-p2<-Compareplot(Combined,pf2,"")
-p3<-Compareplot(Combined,pf3,"")
-
-
-CompareVarplot<-function(dataframe,fun,title){
-
-Filt<-Filtervalues(fun)
-mean<-Filt$mean
-sd<-Filt$sd
-dataframe<-data.frame(dataframe,mean,sd)
-
-ggplot(dataframe,aes(x=timeframe))+
-geom_line(aes(y=sqrt(C), col="KF"))+
-geom_line(aes(y=sd,col="BPF"))+
-  scale_color_manual("",
-                      values=c("KF" = "red",
-                               "BPF"= "blue"))+
-  labs(x="Time",
-       y="")+
-  ggtitle(title)+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30"))+
-  theme(plot.title = element_text(hjust = 0.5))
-
-}
-
-
-c1<-CompareVarplot(Combined,pf1,"Standard Deviation")
-c2<-CompareVarplot(Combined,pf2,"")
-c3<-CompareVarplot(Combined,pf3,"")
-
-ggarrange(p1,c1,p2,c2,p3,c3,nrow=3,ncol=2,labels=c("N=100","","N=1000","","N=10000",""))
-```
+\caption{Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)}\label{fig:unnamed-chunk-17}
+\end{figure}
 \
 
 \subsection{Guided Particle Filter}
@@ -1106,7 +865,8 @@ The \code{GPFfun} function resume this passages.
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
 \hrule
-```{r}
+
+```r
 GPFfun<-function(data,N,m0,C0,tau,sigma,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
@@ -1140,131 +900,41 @@ GPFfun<-function(data,N,m0,C0,tau,sigma,r){
 }
 ```
 
-```{r echo=FALSE}
-gpf<-GPFfun(y,N,m0,C0,tau,sigma)
-ESS.GPF<-ESSplot(df,gpf)
-```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) GPF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-FILT.GPF<-Filtplot(df,gpf,"")
-ggarrange(FILT.GPF,ESS.GPF,labels=c("(a)","(b)"))
-```
+
+\begin{figure}[H]
+
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-20-1} 
+
+}
+
+\caption{a) GPF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-20}
+\end{figure}
 Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure XX, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
 
-```{r include=FALSE}
-truex<-x
-estimatedx<-matrix(NA,ncol=4,nrow=3)
-colnames(estimatedx)<-c("N","Threshold","BPF","GPF")
-estimatedx[,1]<-c(1000,1000,1000)
-estimatedx[,2]<-c(0.5,0.25,0.1)
-
-
-i=1
-for(k in c(2,5,10)){
-  N=1000
-
-pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
-gpf2<-GPFfun(y,N,m0,C0,tau,sigma,r=k)
-
-estimatedx[i,3]<-RMSE(truex,Filtervalues(pf2)$mean)
-estimatedx[i,4]<-RMSE(truex,Filtervalues(gpf2)$mean)
-i=i+1
-
-
-}
 
 
 
-```
-
-```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
-kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
-```
-
-
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-N2=1000
-
-
-pf2<-PFfun(y,N2,m0,C0,tau,sigma)
-gpf2<-GPFfun(y,N2,m0,C0,tau,sigma)
+\begin{longtable}[t]{cccc}
+\caption{\label{tab:unnamed-chunk-22}Root Mean Square Errors}\\
+\toprule
+N & Threshold & BPF & GPF\\
+\midrule
+1000 & 0.50 & 0.916 & 0.880\\
+1000 & 0.25 & 0.895 & 0.862\\
+1000 & 0.10 & 0.869 & 0.881\\
+\bottomrule
+\end{longtable}
 
 
+\begin{figure}[H]
 
-Comparetwofunplot<-function(dataframe,fun1,fun2,title){
-
-Filt1<-Filtervalues(fun1)
-mean1<-Filt1$mean
-sd1<-Filt1$sd
-dataframe<-data.frame(dataframe,mean1,sd1)
-
-Filt2<-Filtervalues(fun2)
-mean2<-Filt2$mean
-sd2<-Filt2$sd
-dataframe<-data.frame(dataframe,mean2,sd2)
-
-ggplot(dataframe,aes(x=timeframe))+
-  geom_line(aes(y=mean1, col="GPF", linetype="GPF"))+
-  geom_line(aes(y=x, col="True States", linetype="True States"))+
-  geom_line(aes(y=mean2, col="BPF", linetype="BPF"))+
-  #geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
-   #           fill="red",alpha=0.16) +
-    scale_color_manual("",
-                      values=c("GPF" = "green",
-                               "True States" = "black",
-                               "BPF"= "blue"))+
-  scale_linetype_manual("",
-                      values=c("GPF" = 1,
-                               "True States" = 3,
-                               "BPF"=1))+
-  labs(x="Time",
-       y="")+
-  ggtitle(title)+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-}
-
-
-p2<-Comparetwofunplot(df,pf2,gpf2,"Filtered States")
-
-
-
-ComparetwoVarplot<-function(dataframe,fun1,fun2,title){
-
-Filt1<-Filtervalues(fun1)
-mean1<-Filt1$mean
-sd1<-Filt1$sd
-dataframe<-data.frame(dataframe,mean1,sd1)
-
-Filt2<-Filtervalues(fun2)
-mean2<-Filt2$mean
-sd2<-Filt2$sd
-dataframe<-data.frame(dataframe,mean2,sd2)
-
-ggplot(dataframe,aes(x=timeframe))+
-geom_line(aes(y=sd2, col="GPF"))+
-geom_line(aes(y=sd1,col="BPF"))+
-  scale_color_manual("",
-                      values=c("GPF" = "green",
-                               "BPF"= "blue"))+
-  labs(x="Time",
-       y="")+
-  ggtitle(title)+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30"))+
-  theme(plot.title = element_text(hjust = 0.5))
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-23-1} 
 
 }
 
-
-c2<-ComparetwoVarplot(Combined,pf2,gpf2,"Standard Deviation")
-
-
-ggarrange(p2,c2)
-```
+\caption{Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000}\label{fig:unnamed-chunk-23}
+\end{figure}
 
 \subsection{Auxiliary Particle Filter}
 
@@ -1370,10 +1040,8 @@ The \code{APFfun} function resume this passages.
 \
 \hrule
 \hrule
-\
 \code{APFfun(data,N,m0,C0,tau,sigma,r)}
 \hrule
-\
 \textbf{Arguments}
 
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
@@ -1391,7 +1059,8 @@ The \code{APFfun} function resume this passages.
 \hrule
 \hrule
 
-```{r}
+
+```r
 APFfun<-function(data,N,m0,C0,tau,sigma,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
@@ -1426,131 +1095,45 @@ APFfun<-function(data,N,m0,C0,tau,sigma,r){
 }
 ```
 
-```{r echo=FALSE}
-apf<-APFfun(y,N,m0,C0,tau,sigma)
-ESS.APF<-ESSplot(df,apf)
-```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-FILT.APF<-Filtplot(df,apf,"")
-ggarrange(FILT.APF,ESS.APF,labels=c("(a)","(b)"))
-```
+
+\begin{figure}[H]
+
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-26-1} 
+
+}
+
+\caption{a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-26}
+\end{figure}
 
 Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap Particle Filter (BPF).
 
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-N2=1000
+\begin{figure}[H]
 
-
-pf2<-PFfun(y,N2,m0,C0,tau,sigma)
-apf2<-APFfun(y,N2,m0,C0,tau,sigma)
-
-
-
-Comparetwofunplot<-function(dataframe,fun1,fun2,title){
-
-Filt1<-Filtervalues(fun1)
-mean1<-Filt1$mean
-sd1<-Filt1$sd
-dataframe<-data.frame(dataframe,mean1,sd1)
-
-Filt2<-Filtervalues(fun2)
-mean2<-Filt2$mean
-sd2<-Filt2$sd
-dataframe<-data.frame(dataframe,mean2,sd2)
-
-ggplot(dataframe,aes(x=timeframe))+
-  geom_line(aes(y=mean1, col="APF", linetype="APF"))+
-  geom_line(aes(y=x, col="True States", linetype="True States"))+
-  geom_line(aes(y=mean2, col="BPF", linetype="BPF"))+
-  #geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
-   #           fill="red",alpha=0.16) +
-    scale_color_manual("",
-                      values=c("APF" = "orange",
-                               "True States" = "black",
-                               "BPF"= "blue"))+
-  scale_linetype_manual("",
-                      values=c("APF" = 1,
-                               "True States" = 3,
-                               "BPF"=1))+
-  labs(x="Time",
-       y="")+
-  ggtitle(title)+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-}
-
-
-p2<-Comparetwofunplot(df,pf2,apf2,"Filtered States")
-
-
-
-ComparetwoVarplot<-function(dataframe,fun1,fun2,title){
-
-Filt1<-Filtervalues(fun1)
-mean1<-Filt1$mean
-sd1<-Filt1$sd
-dataframe<-data.frame(dataframe,mean1,sd1)
-
-Filt2<-Filtervalues(fun2)
-mean2<-Filt2$mean
-sd2<-Filt2$sd
-dataframe<-data.frame(dataframe,mean2,sd2)
-
-ggplot(dataframe,aes(x=timeframe))+
-geom_line(aes(y=sd2, col="APF"))+
-geom_line(aes(y=sd1,col="BPF"))+
-  scale_color_manual("",
-                      values=c("APF" = "orange",
-                               "BPF"= "blue"))+
-  labs(x="Time",
-       y="")+
-  ggtitle(title)+
-  theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30"))+
-  theme(plot.title = element_text(hjust = 0.5))
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-27-1} 
 
 }
 
-
-c2<-ComparetwoVarplot(Combined,pf2,apf2,"Standard Deviation")
-
-
-ggarrange(p2,c2)
-```
-
-```{r include=FALSE}
-truex<-x
-estimatedx<-matrix(NA,ncol=4,nrow=3)
-colnames(estimatedx)<-c("N","Threshold","BPF","APF")
-estimatedx[,1]<-c(1000,1000,1000)
-estimatedx[,2]<-c(0.5,0.25,0.1)
+\caption{Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000}\label{fig:unnamed-chunk-27}
+\end{figure}
 
 
-i=1
-for(k in c(2,5,10)){
-  N=1000
-
-pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
-apf2<-APFfun(y,N,m0,C0,tau,sigma,r=k)
-
-estimatedx[i,3]<-RMSE(truex,Filtervalues(pf2)$mean)
-estimatedx[i,4]<-RMSE(truex,Filtervalues(apf2)$mean)
-i=i+1
 
 
-}
-```
+\begin{longtable}[t]{cccc}
+\caption{\label{tab:unnamed-chunk-29}Root Mean Square Errors}\\
+\toprule
+N & Threshold & BPF & APF\\
+\midrule
+1000 & 0.50 & 0.885 & 0.875\\
+1000 & 0.25 & 0.893 & 0.892\\
+1000 & 0.10 & 0.855 & 0.870\\
+\bottomrule
+\end{longtable}
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
-kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
-```
 
 
-```{r}
+```r
 APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
   if(missing(r)){r=2}else{}
   xs<-NULL
@@ -1589,15 +1172,16 @@ APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
 }
 ```
 
-```{r echo=FALSE}
-apfopt<-APFoptfun(y,N,m0,C0,tau,sigma)
-ESS.APFopt<-ESSplot(df,apfopt)
-```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-FILT.APFopt<-Filtplot(df,apfopt,"")
-ggarrange(FILT.APFopt,ESS.APFopt,labels=c("(a)","(b)"))
-```
+
+\begin{figure}[H]
+
+{\centering \includegraphics{final-draft_files/figure-latex/unnamed-chunk-32-1} 
+
+}
+
+\caption{a) APF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).}\label{fig:unnamed-chunk-32}
+\end{figure}
 
 
 \section{Liu and West Filter}\label{pf_lui_west}
@@ -1606,7 +1190,7 @@ Let us consider a more general state-space model, where the state vector include
 However, being $\psi$ constant over time, it is meaningless to sample its values sequentially: the first extraction of $\psi$ at the initial stage 0 (i.e., $\psi_0^n$) generates a constant path of particles for the parameter ($\psi_t^n=\psi_0^n$). \footnote{To be more precise, at the resampling step, also $\psi^n$ is resampled, but the possible values that it may take are the $N$ ones obtained at the initial time 0 extraction.}\
 Therefore, Liu and West (2001) proposed a modified particle filter, called \textit{Liu and West filter} (LWF) that allows to resample the parameter over time from a continuous distribution. In this way, at every time, the support of $\psi$ is not limited to the initially sampled $N$ values. \
 Here, we describe the LWF that makes use of the normal distribution to sample sequentially the parameter. Moreover, consider the simpler version of the bootstrap filter.\footnote{Clearly, the LWF can be also used within the more general frameweorks of the GPF and the APF.}\
-Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot)$ be the prior distribution for the parameter $\psi$.\
+Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot) $ be the prior distribution for the parameter $\psi$.\
 The LWF can be described by the following algorithm.
 \begin{enumerate}
     \item \textbf{Inital stage: }For $n=1,...,N$, at time 0 sample: $X_0^n\thicksim\Pd_0(dx_0)$ and $\psi_0^n\thicksim \pi(\psi_0)$.
@@ -1730,7 +1314,8 @@ Our \code{LWfun} function goes through the illustrated steps.
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
 \hrule
-```{r}
+
+```r
 LWfun<-function(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif,r){
   if(missing(r)){r=2}else{}
   xs     = rnorm(N,m0,sqrt(C0))
@@ -1853,14 +1438,16 @@ the one given $\mathcal{M}_{SV}$, obtained as $\log p(y_{1:t}|\mathcal{M}_{CV})-
 Notice that the first difference of this series is the relative log-likelihood
 of the incoming observation, $p(y_{t}|y_{1:t-1},\mathcal{M}_{CV})-p(y_{t}|y_{1:t-1},\mathcal{M}_{SV})$.
 
-```{r cll_plot, eval=FALSE, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, include=FALSE, results=F}
-load("SV/cll_plot.Rda")
-cll_plot+
-  theme_bw()+
-  scale_x_date(date_breaks = "3 months",date_minor_breaks="1 month",date_labels = "%m/%y")+
-  labs(x="Time (month/year)",y="")
-```
+\begin{figure}[H]
+
+{\centering \includegraphics{final-draft_files/figure-latex/cll_plot-1} 
+
+}
+
+\caption{Relative log-likelihood}\label{fig:cll_plot}
+\end{figure}
 Overall, this analysis shows how a model with stochastic
 volatility is better at describing and predicting the considered time-frame of S&P500 returns. As can be seen from the graph and perhaps unsurprisingly,
 the density forecast given the stochastic volatility model represents
 a particularly significant improvement in the period of extreme values of returns in March 2020.
+

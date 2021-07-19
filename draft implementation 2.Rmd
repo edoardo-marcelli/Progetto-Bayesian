@@ -1023,7 +1023,7 @@ ggarrange(FILT.APFopt,ESS.APFopt,labels=c("(a)","(b)"))
 
 
 \
-\textbf{Implementation}
+\section{Implementation}
 \
 Consider the linear Gaussian example of section XX, but this time with unknown variances $\tau^{2}$ and $\sigma^{2}$. Thus, let $\psi=(\sigma^{2},\tau^{2})$ be the unknown parameter vector and assign a gamma prior for its components,
 \begin{align*}
