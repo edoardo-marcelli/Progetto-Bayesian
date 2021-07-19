@@ -341,11 +341,23 @@ dfsv<-data.frame(timeframe,y,x)
 set.seed(12345)
 N=10000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svapf<-APFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svgpfopt<-GPFoptfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+set.seed(12345)
+N=10000
 svapfopt<-APFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 #Filtering Values
