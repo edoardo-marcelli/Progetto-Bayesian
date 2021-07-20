@@ -1,7 +1,18 @@
 ---
-title: "Final draft"
+title: | 
+ \Huge State-Space Models and Particle Filters
+
+author:
+  - Edoardo Marcelli
+  - Roberto Colarieti
+  - Alexei Verkhovtsev
+  - Michele Bolla
+  - Gabriele Romano
+  - Benedetta Bruni
 
 documentclass: book
+
+date: "`r format(Sys.time(), '%d %B, %Y')`"
 
 output:
   pdf_document: 
@@ -682,6 +693,7 @@ SISfun<-function(data,N,m0,C0,tau,sigma){
 ```
 We have already discussed the reasons why the SIS algorithm does not provide a good strategy in the filtering problem. We provide a graphical intuition of what happens when we use such filtering strategy on a simulated dataset. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. The results shown in the following two plots shows a clear degeneration of the effective sample size and bad fit of filtered states with respect to the true values.
 ```{r echo=FALSE}
+set.seed(1991)
 N=1000
 sis<-SISfun(y,N,m0,C0,tau,sigma)
 sisxs<-sis$xs
@@ -877,6 +889,7 @@ PFfun<-function(data,N,m0,C0,tau,sigma,r){
 ```
 The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure XX. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
 ```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N=1000
 
 pf<-PFfun(y,N,m0,C0,tau,sigma)
@@ -909,6 +922,7 @@ ggarrange(FILT.PF,ESS.PF,labels=c("(a)","(b)"))
 Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure XX, when the number of particles generated at any interaction increases the results for both the estimated mean and the variance tend to converge [[SPIEGARE PERCHE']]. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
 
 ```{r include=FALSE}
+set.seed(1991)
 truex<-x
 estimatedx<-matrix(NA,ncol=4,nrow=6)
 colnames(estimatedx)<-c("N","Threshold","KF","BPF")
@@ -918,7 +932,7 @@ estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
 
 i=1
 for(N in c(100,1000,10000)){
-
+set.seed(1991)
 DLM1<-DLM(y,sigma2,tau2,m0,C0)
 pf1<-PFfun(y,N,m0,C0,tau,sigma)
 
@@ -931,6 +945,7 @@ i=i+1
 i=4
 for(k in c(2,5,10)){
   N=1000
+  set.seed(1991)
 DLM2<-DLM(y,sigma2,tau2,m0,C0)
 pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
 
@@ -950,6 +965,7 @@ kbl(estimatedx[1:3,], align="c", longtable = T, booktabs = T, caption="Root Mean
 ```
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='H', fig.width=10, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N1=100
 N2=1000
 N3=10000
@@ -1160,6 +1176,7 @@ GPFfun<-function(data,N,m0,C0,tau,sigma,r){
 ```
 
 ```{r echo=FALSE}
+set.seed(1991)
 gpf<-GPFfun(y,N,m0,C0,tau,sigma)
 ESS.GPF<-ESSplot(df,gpf)
 ```
@@ -1171,6 +1188,7 @@ ggarrange(FILT.GPF,ESS.GPF,labels=c("(a)","(b)"))
 Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure XX, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
 
 ```{r include=FALSE}
+set.seed(1991)
 truex<-x
 estimatedx<-matrix(NA,ncol=4,nrow=3)
 colnames(estimatedx)<-c("N","Threshold","BPF","GPF")
@@ -1181,7 +1199,7 @@ estimatedx[,2]<-c(0.5,0.25,0.1)
 i=1
 for(k in c(2,5,10)){
   N=1000
-
+set.seed(1991)
 pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
 gpf2<-GPFfun(y,N,m0,C0,tau,sigma,r=k)
 
@@ -1202,6 +1220,7 @@ kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Sq
 
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N2=1000
 
 
@@ -1450,6 +1469,7 @@ APFfun<-function(data,N,m0,C0,tau,sigma,r){
 ```
 
 ```{r echo=FALSE}
+set.seed(1991)
 apf<-APFfun(y,N,m0,C0,tau,sigma)
 ESS.APF<-ESSplot(df,apf)
 ```
@@ -1462,6 +1482,7 @@ ggarrange(FILT.APF,ESS.APF,labels=c("(a)","(b)"))
 Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap Particle Filter (BPF).
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N2=1000
 
 
@@ -1546,6 +1567,7 @@ ggarrange(p2,c2)
 ```
 
 ```{r include=FALSE}
+set.seed(1991)
 truex<-x
 estimatedx<-matrix(NA,ncol=4,nrow=3)
 colnames(estimatedx)<-c("N","Threshold","BPF","APF")
@@ -1556,7 +1578,7 @@ estimatedx[,2]<-c(0.5,0.25,0.1)
 i=1
 for(k in c(2,5,10)){
   N=1000
-
+set.seed(1991)
 pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
 apf2<-APFfun(y,N,m0,C0,tau,sigma,r=k)
 
@@ -1657,6 +1679,7 @@ APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
 
 
 ```{r echo=FALSE}
+set.seed(1991)
 apfopt<-APFoptfun(y,N,m0,C0,tau,sigma)
 ESS.APFopt<-ESSplot(df,apfopt)
 ```
@@ -1865,6 +1888,7 @@ We provide an example of Liu and West filter fixing $\delta=0.7$ and drawing $\a
 
 ```{r echo=FALSE}
 delta=0.7
+set.seed(1991)
 lwf<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T)
 ESS.lwf<-ESSplot(df,lwf)
 ```
@@ -1873,6 +1897,65 @@ ESS.lwf<-ESSplot(df,lwf)
 FILT.lwf<-Filtplot(df,lwf,"")
 ggarrange(FILT.lwf,ESS.lwf,labels=c("(a)","(b)"))
 ```
+
+Finally, we compare the performances of the Liu and West filter and the other filtering strategies discussed so far. As we expect, in the linear Gaussian case, Kalman filter outperforms the other strategies. On the other hand, the Liu and West, with hyperparameters setted as described above, provides the worst estimates in terms of RMSE. This is not necessarily due to an overall weakness of the LWF with respect to the other filters, but simply to a not accurate choice of the hyperparameters. Moreover, while increasing the number of particles improves the accuracy, notice that the threshold for ESS-based resampling is not strictly related to better performances. 
+
+
+
+
+
+
+```{r include=FALSE}
+set.seed(1991)
+truex<-x
+estimatedx<-matrix(NA,ncol=6,nrow=6)
+colnames(estimatedx)<-c("N","Threshold","KF","BPF","APF","LWF")
+estimatedx[,1]<-c(100,1000,10000,1000,1000,1000)
+estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
+
+
+i=1
+for(N in c(100,1000,10000)){
+set.seed(1991)
+DLM1<-DLM(y,sigma2,tau2,m0,C0)
+pf1<-PFfun(y,N,m0,C0,tau,sigma)
+apf1<-APFfun(y,N,m0,C0,tau,sigma)
+lwf1<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T)
+
+estimatedx[i,3]<-RMSE(truex,DLM1$m)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(pf1)$mean)
+estimatedx[i,5]<-RMSE(truex,Filtervalues(apf1)$mean)
+estimatedx[i,6]<-RMSE(truex,Filtervalues(lwf1)$mean)
+i=i+1
+
+}
+
+i=4
+for(k in c(2,5,10)){
+  set.seed(1991)
+  N=10
+DLM2<-DLM(y,sigma2,tau2,m0,C0)
+pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
+apf2<-APFfun(y,N,m0,C0,tau,sigma,r=k)
+lwf2<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T,r=k)
+
+estimatedx[i,3]<-RMSE(truex,DLM2$m)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(pf2)$mean)
+estimatedx[i,5]<-RMSE(truex,Filtervalues(apf2)$mean)
+estimatedx[i,6]<-RMSE(truex,Filtervalues(lwf2)$mean)
+i=i+1
+
+
+}
+
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
+```
+
 
 \section{Convergence}\label{pf_converg}
 
