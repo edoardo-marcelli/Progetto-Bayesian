@@ -314,7 +314,42 @@ Finally, some discrepancy between different approximations persisted even when t
 
 \section{Realised volatility as benchmark}
 
-...
+
+
+```{r include=FALSE}
+Errorcomp3<-matrix(NA,ncol=7,nrow=6)
+colnames(Errorcomp3)<-c("N","BPF", "GPFOPT", "APF", "BAPF","LW", "SIS")
+rownames(Errorcomp3)<-c("RMSE SP500","MAE SP500","RMSE STOXX50E","MAE STOXX50E","RMSE DJI","MAE DJI")
+Errorcomp3[,1]<-c(10000,10000,10000,10000,10000,10000)
+Errorcomp3[,2]<-c(0.508642137861919,0.353767519133916,0.463584874517798,0.301898325469172,0.507624385776376,0.337543646258033)
+Errorcomp3[,3]<-c(0.509256032254369,0.35314674168209,0.463446053320389,0.304178601158929,0.506222076244991,0.338268970683459)
+Errorcomp3[,4]<-c(0.509943715852212,0.351738603428736,0.475708272485282,0.30422270387141,0.509343139732461,0.337449244130176)
+Errorcomp3[,5]<-c(0.510334461444389,0.35305864294958,0.46783471248187,0.304213895457104,0.505360139532104,0.3361502165818)
+Errorcomp3[,6]<-c(0.428716693039206,0.291557534456417,0.344065170120452,0.237159281665533,0.440832171188778,0.280952286978564)
+Errorcomp3[,7]<-c(0.602883459334495,0.431972177956328,0.652533564914959,0.440767074642285,0.604672122750974,0.415631855223678)
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+library(kableExtra)
+kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, realised volatility as benchmark",digits=5)
+```
+
+```{r include=FALSE}
+Errorcomp4<-matrix(NA,ncol=3,nrow=2)
+colnames(Errorcomp4)<-c("N","BPF", "APF")
+rownames(Errorcomp4)<-c("RMSE","MAE")
+Errorcomp4[,1]<-c(50000,50000)
+Errorcomp4[,2]<-c(0.511700619467058,0.354186384429001)
+Errorcomp4[,3]<-c(0.514888164962505,0.355336840861771)
+```
+
+Il fatto che con 50000 particles si performi peggio conferma che il problema sia il SV sotto, che è chiaramente battuto dal modello che sta sotto Liu West
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+library(kableExtra)
+kbl(Errorcomp4, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, realised volatility as benchmark (SP500)",digits=5)
+```
 
 \section{Bibliography}\
 
