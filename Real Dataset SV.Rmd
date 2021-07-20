@@ -305,7 +305,7 @@ library(kableExtra)
 kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="Bootstrap vs Auxiliary PF, 50000 particles",digits=5)
 ```
 
-Nevertheless, we should not overplay tiny differences. Rather, we prefer to stress the points that emerged from both benchmark analyses and we can therefore support quite confidently.\
+Nevertheless, we should not overplay tiny differences.\footnote{Indeed, the mere extent of such difference also depends on the real dataset which is used for the comparison. For example, running the same experiment using the STOXX50E dataset, we have even smaller differences between the filters at N=50000, with RMS difference between the Bootstrap and the Auxiliary equal to 0.01236279 and mean absolute difference equal to 0.008028818.} Rather, we prefer to stress the points that emerged from both benchmark analyses and we can therefore support quite confidently.\
 First, if on the one hand it is clear that some degree of resampling is essential, on the other we found no gains from resampling at each period.\
 Second, when the number of particles is set at 5000 or more, neither benchmark could single out an algorithm that clearly outperformed the others, when restricting the analysis to procedures that feature adaptive resampling rules.\
 Third, when the number of particles was set to 10, 100 or 1000, the Bootstrap particle filter and the Guided particle filter with optimal proposal kernel significantly emerged as the best performing algorithms for our SV model, suggesting that their computational cost is lower than that of the Auxiliary particle filter, which needed many more particles to "get rolling".\
@@ -346,21 +346,23 @@ library(kableExtra)
 kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, realised volatility as benchmark",digits=4)
 ```
 
-Finally, we can see from Table XX the RMSE and MAE obtained with a number of particles equal to 50000 for the SP500 index (\textit{we will consider whether it is worth it to include other indexes: for the moment, I would stick to the SP500, as when considering N=10000 we are already in the convergence phase}). In this case, although the number of particles increases, the RMSE and MAE increase (although by very small amounts). This is evidence supporting the idea that the model we have selected underlying for the first two filters is inappropriate for describing this specific data. Indeed, as widely discussed in SECTION XX, it is obsolete and surpassed by more advanced and precise models.
+Finally, we can see from Table XX the RMSE and MAE obtained with a number of particles equal to 50000 for the SP500 index and the EuroStoxx50. In this case, although the number of particles increases, the RMSE and MAE increase (although by very small amounts). This is evidence supporting the idea that the model we have selected underlying for the first two filters is inappropriate for describing this specific data. Indeed, as widely discussed in SECTION XX, it is obsolete and surpassed by more advanced and precise models.
 
 ```{r include=FALSE}
-Errorcomp4<-matrix(NA,ncol=4,nrow=2)
+Errorcomp4<-matrix(NA,ncol=4,nrow=4)
 colnames(Errorcomp4)<-c("N","BPF", "APF","LWF")
-rownames(Errorcomp4)<-c("RMSE","MAE")
-Errorcomp4[,1]<-c(50000,50000)
-Errorcomp4[,2]<-c(0.511700619467058,0.354186384429001)
-Errorcomp4[,3]<-c(0.514888164962505,0.355336840861771)
-Errorcomp4[,4]<-c(0.4242305,0.2906932)
+rownames(Errorcomp4)<-c("RMSE SP500","MAE SP500","RMSE STOXX","MAE STOXX")
+Errorcomp4[,1]<-c(50000,50000,50000,50000)
+Errorcomp4[,2]<-c(0.511700619467058,0.354186384429001,0.4650284,0.3034359)
+Errorcomp4[,3]<-c(0.514888164962505,0.355336840861771,0.4670426,0.3040741)
+Errorcomp4[,4]<-c(0.4242305,0.2906932,0.3422955,0.2395650)
+
+
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
 library(kableExtra)
-kbl(Errorcomp4, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, realised volatility as benchmark (SP500)",digits=5)
+kbl(Errorcomp4, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, realised volatility as benchmark (SP500 and STOXX50E)",digits=5)
 ```
 
 \section{Bibliography}\
