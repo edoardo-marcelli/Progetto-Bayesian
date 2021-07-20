@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  20 JUL 2021 21:28
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  20 JUL 2021 23:16
 entering extended mode
 **./nuova-final-draft.tex
 (nuova-final-draft.tex
@@ -1421,7 +1421,21 @@ aft_files/figure-latex/unnamed-chunk-35-1.pdf>]
 Chapter 4.
 [51
 
-] [52]
+]
+<nuova-final-draft_files/figure-latex/cll_plot-1.pdf, id=587, 722.7pt x 216.81p
+t>
+File: nuova-final-draft_files/figure-latex/cll_plot-1.pdf Graphic file (type pd
+f)
+<use nuova-final-draft_files/figure-latex/cll_plot-1.pdf>
+Package pdftex.def Info: nuova-final-draft_files/figure-latex/cll_plot-1.pdf  u
+sed on input line 2045.
+(pdftex.def)             Requested size: 433.62334pt x 130.08699pt.
+[52pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2059 \backmatter
+                   <./nuova-final-draft_files/figure-latex/cll_plot-1.pdf>]
 \tf@thm=\write5
 \openout5 = `nuova-final-draft.thm'.
 
@@ -1434,10 +1448,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 19735 strings out of 478870
- 294061 string characters out of 2848836
+ 19746 strings out of 478870
+ 294566 string characters out of 2848836
  733836 words of memory out of 3000000
- 36388 multiletter control sequences out of 15000+600000
+ 36397 multiletter control sequences out of 15000+600000
  532334 words of font info for 577 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  74i,24n,80p,877b,696s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1471,9 +1485,9 @@ ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/edoar/AppD
 ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppD
 ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppD
 ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on nuova-final-draft.pdf (54 pages, 515884 bytes).
+Output written on nuova-final-draft.pdf (54 pages, 526532 bytes).
 PDF statistics:
- 848 PDF objects out of 1000 (max. 8388607)
- 257 named destinations out of 1000 (max. 500000)
- 139528 words of extra memory for PDF output out of 154059 (max. 10000000)
+ 855 PDF objects out of 1000 (max. 8388607)
+ 258 named destinations out of 1000 (max. 500000)
+ 139533 words of extra memory for PDF output out of 154059 (max. 10000000)
 
