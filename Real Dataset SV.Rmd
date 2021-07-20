@@ -293,16 +293,16 @@ Interestingly, this time the performance of the Bootstrap filter worsens when N 
 Indeed, by comparing the two benchmark approximations with N=50000, we can see that, for example, the Bootstrap PF run with N=5000 is closer to the benchmark APF than the benchmark BT is.\footnote{According to the RMSE, also the Bootstrap with N=10000 is closer than the Bootstrap benchmark; however, in this occasion the MAE disagrees. Similarly, while according to the RMSE the APF with N=10000 is closer to the benchmark BT than the benchmark APF is, the MAE is lowest for the benchmark APF.}
 
 ```{r include=FALSE}
-Errorcomp3<-matrix(NA,ncol=2,nrow=1,byrow=TRUE)
+Errorcomp3<-matrix(NA,ncol=2,nrow=2)
 colnames(Errorcomp3)<-c("RMSE", "MAE")
-rownames(Errorcomp3)<-("Discrepancy")
+rownames(Errorcomp3)<-c("N=50000", "N=100000")
 Errorcomp3[1,]<-c(0.04407704,0.01667898)
-
+Errorcomp3[2,]<-c(0.03575915,0.01476220)
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
 library(kableExtra)
-kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="Bootstrap vs Auxiliary PF, 50000 particles",digits=5)
+kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="Discrepancy between Bootstrap and Auxiliary PFs",digits=5)
 ```
 
 Nevertheless, we should not overplay tiny differences.\footnote{Indeed, the mere extent of such difference also depends on the real dataset which is used for the comparison. For example, running the same experiment using the STOXX50E dataset, we have even smaller differences between the filters at N=50000, with RMS difference between the Bootstrap and the Auxiliary equal to 0.01236279 and mean absolute difference equal to 0.008028818.} Rather, we prefer to stress the points that emerged from both benchmark analyses and we can therefore support quite confidently.\
@@ -314,7 +314,7 @@ Finally, some discrepancy between different approximations persisted even when t
 
 \section{Realised volatility as benchmark}
 
-In section XX we compared such distributions already, pointing out three main behaviours, namely that of the SIS algorithm, that of the Liu and West particle filter and that of the remaining filters; however, we did not have metrics that could help us clearly point at one behaviour as the closest to reality. We will now use a realised volatility measure as one such metric.
+In section XX we compared several filtered distributions, pointing out three main behaviours, namely that of the SIS algorithm, that of the Liu and West particle filter and that of the remaining filters. However, we did not have metrics that could help us clearly point at one behaviour as the closest to reality. In this section, we will employ a realised volatility measure as one such metric.
 
 \subsection{Comparing the filters}
 
