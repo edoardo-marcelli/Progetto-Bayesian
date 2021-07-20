@@ -1931,7 +1931,7 @@ the one given $\mathcal{M}_{SV}$, obtained as $\log p(y_{1:t}|\mathcal{M}_{CV})-
 Notice that the first difference of this series is the relative log-likelihood
 of the incoming observation, $p(y_{t}|y_{1:t-1},\mathcal{M}_{CV})-p(y_{t}|y_{1:t-1},\mathcal{M}_{SV})$.
 
-```{r cll_plot, eval=FALSE, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, include=FALSE, results=F}
+```{r cll_plot, echo=FALSE, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, results=F}
 load("SV/cll_plot.Rda")
 cll_plot+
   theme_bw()+
