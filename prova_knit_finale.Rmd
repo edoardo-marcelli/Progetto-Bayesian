@@ -34,6 +34,7 @@ header-includes:
 - \usepackage{MnSymbol} %allows to insert the QED at the end of the proofs
 - \usepackage{hyperref} %set the hyperlink to cite sections, equations...
 - \urlstyle{same}
+- \usepackage[toc,page]{appendix}
 - \usepackage{comment}
 - \usepackage{enumitem}
 - \usepackage{ntheorem}
@@ -682,13 +683,13 @@ SISfun<-function(data,N,m0,C0,tau,sigma){
   x  = rnorm(N,m0,sqrt(C0))
   w  = rep(1/N,N)
   for(t in 1:length(data)){
-    x    = rnorm(N,x,tau)                   #sample from N(x_{t-1},tau)
-    w    = w*dnorm(data[t],x,sigma)         #update weight
+    x    = rnorm(N,x,tau)                   
+    w    = w*dnorm(data[t],x,sigma)         
     xs = rbind(xs,x)
     ws = rbind(ws,w)
     
-    wnorm= w/sum(w)                         #normalized weight
-    ESS  = 1/sum(wnorm^2)                   #effective sample size
+    wnorm= w/sum(w)                         
+    ESS  = 1/sum(wnorm^2)                   
     
     ess =rbind(ess,ESS)
   }
@@ -1484,9 +1485,9 @@ FILT.APF<-Filtplot(df,apf,"")
 ggarrange(FILT.APF,ESS.APF,labels=c("(a)","(b)"))
 ```
 
-Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap Particle Filter (BPF).
+Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap Particle Filter (BPF). From Figure \ref{fig:myfig6} it is difficult to say which of the two is better and the tables does not help much since the APF apparently outperforms the BPF in two cases over three. For this reason we can conclude that for this model the Auxiliary Particle Filtering strategy does not provide any serious improvement to a the basic one.
 
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r myfig6, echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 set.seed(1991)
 N2=1000
 
@@ -1964,9 +1965,8 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 \section{Convergence}\label{pf_converg}
 
-\chapter{Implementations for Stochastic Volatility Models}
+\section{Implementations for Stochastic Volatility Models}
 
-\section{}
 
 \chapter{Applications to Stochastic Volatility Models}
 
@@ -2487,3 +2487,329 @@ So, M. E. P., Lam, K., & Li, W. K. (1998). A stochastic volatility model with Ma
 Xu, X., & Chen, Y. (2021). Deep Stochastic Volatility Model. arXiv preprint arXiv:2102.12658.\
 
 Zhang, B., Chan, J. C., & Cross, J. L. (2020). Stochastic volatility models with ARMA innovations: An application to G7 inflation forecasts. International Journal of Forecasting, 36(4), 1318-1328.
+
+\chapter{Appendix}
+
+\section{The Stochastic Volatility Model}
+
+We decide to organise this Appendix as an R package. All the R functions described in this Appendix take as reference a basic specification of Stochastic Volatility Model. 
+
+\begin{align*}
+    y_t|x_t & \sim N(0,e^{x_t})\\
+    x_t|x_{t-1},\alpha,\beta,\tau^2 & \sim N(\alpha+\beta x_{t-1},\tau^2)
+\end{align*}
+
+All the plots and tables of this work concerning stochastic volatility models use this functions.
+
+\hrule
+\hrule
+\
+\code{SVPFfun(data,N,m0,C0,alpha,beta,tau,r)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
+\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alpha} \ \ intercept $\alpha$ in the state equation
+\
+\code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+\
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+\
+\hrule
+\hrule
+\
+\code{SVGPFfun(data,N,m0,C0,alpha,beta,tau,r)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
+\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alpha} \ \ intercept $\alpha$ in the state equation
+\
+\code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+
+
+
+```{r}
+SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+\
+\hrule
+\hrule
+\
+\code{SVAPFfun(data,N,m0,C0,alpha,beta,tau,r)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
+\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alpha} \ \ intercept $\alpha$ in the state equation
+\
+\code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+
+
+```{r}
+SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    weight = w*dnorm(data[t],0,exp(x/2))
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    x1   = rnorm(N,alpha+beta*x[k],tau)
+    lw  = dnorm(data[t],0,exp(x1/2),log=TRUE)-dnorm(data[t],0,exp(x[k]/2),log=TRUE)
+    w   = exp(lw)
+    w   = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+\hrule
+\hrule
+\
+\code{SVAPFoptfun(data,N,m0,C0,alpha,beta,tau,r)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
+\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alpha} \ \ intercept $\alpha$ in the state equation
+\
+\code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+
+
+```{r}
+SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    x_prev=x
+    x_hat = alpha+beta*x #means of the transition from the previous particle 
+    I_k = sample(1:N,prob=w*dnorm(data[t],0,sqrt(exp((x_hat)/2))))
+    for(k in 1:N){
+      x[k]=rnorm(size=1,mean=alpha+beta*x_prev[I_k],sd=tau)
+      w[k]=dnorm(data[t],0,sqrt(exp((x[k])/2)))/dnorm(data[t],0,sqrt(exp((x_hat)/2)))
+    }
+    w = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+\hrule
+\hrule
+\
+\code{SVLWfun(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
+\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alpha} \ \ intercept $\alpha$ in the state equation
+\
+\code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+
+```{r}
+SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
+  
+  xs = rnorm(N,m0,sqrt(C0))
+  pars   = cbind(rnorm(N,ealpha,sqrt(valpha)),rnorm(N,ebeta,sqrt(vbeta)),
+                 log(1/rgamma(N,nu/2,nu*lambda/2)))
+  delta  = 0.75
+  a      = (3*delta-1)/(2*delta)
+  h2     = 1-a^2
+  parss  = array(0,c(N,3,n))
+  xss    = NULL
+  ws     = NULL
+  ESS    = NULL
+  w      = rep(1/N,N)
+  vpars   = NULL
+  for (t in 1:length(data)){
+    
+    #mpar        = apply(pars,2,mean) #alternatively use this 
+    mpar<-c()
+    for(i in 1:3){
+      mpar[i]    = weighted.mean(pars[,i],w)
+    }
+    
+    vpar     = var(pars)
+    ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
+    mus         = pars[,1]+pars[,2]*xs 
+    weight      = w*dnorm(data[t],0,exp(mus/2))
+    k           = sample(1:N,size=N,replace=T,prob=weight)
+    ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
+    xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
+    w           = dnorm(data[t],0,exp(xt/2))/dnorm(data[t],0,exp(mus[k]/2))
+    w           = w/sum(w)
+    ESS         = 1/sum(w^2)
+    
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      xs<-xt[index]
+      pars<-ms1[index,]
+      w<-rep(1/N,N)
+    }else{
+      xs<-xt
+      pars<-ms1
+    }
+    
+    vpars        = rbind(vpars,vpar)
+    xss         = rbind(xss,xs)
+    parss[,,t]  = pars 
+    ws          = rbind(ws,w)
+  }
+  return(list(xs=xss,pars=parss,ws=ws,vpars=vpars))
+}
+```
+
+
