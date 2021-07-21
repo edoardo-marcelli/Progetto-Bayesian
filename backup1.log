@@ -1,7 +1,7 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  21 JUL 2021 00:21
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  21 JUL 2021 20:46
 entering extended mode
-**./nuova-final-draft.tex
-(nuova-final-draft.tex
+**./backup1.tex
+(backup1.tex
 LaTeX2e <2021-06-01> patch level 1
 L3 programming layer <2021-07-12> (C:\Users\edoar\AppData\Local\Programs\MiKTeX
 \tex/latex/base\book.cls
@@ -758,12 +758,12 @@ LaTeX Font Info:    Trying to load font information for T1+txr on input line 16
 9.
 (C:\Users\edoar\AppData\Local\Programs\MiKTeX\tex/latex/txfonts\t1txr.fd
 File: t1txr.fd 2000/12/15 v3.1
-) (nuova-final-draft.aux
+) (backup1.aux
 
 LaTeX Warning: Label `sis_update' multiply defined.
 
 )
-\openout1 = `nuova-final-draft.aux'.
+\openout1 = `backup1.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/txmi/m/it on input line 169.
 LaTeX Font Info:    Trying to load font information for OML+txmi on input line 
@@ -1086,13 +1086,11 @@ Underfull \hbox (badness 10000) in paragraph at lines 409--413
  []
 
 [8]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-5-1.pdf, id=91, 578.16pt x 
-289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (
-type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-5-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-5-1
-.pdf  used on input line 431.
+<backup1_files/figure-latex/unnamed-chunk-5-1.pdf, id=91, 578.16pt x 289.08pt>
+File: backup1_files/figure-latex/unnamed-chunk-5-1.pdf Graphic file (type pdf)
+<use backup1_files/figure-latex/unnamed-chunk-5-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-5-1.pdf  used
+ on input line 431.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
 put line 440.
@@ -1101,8 +1099,7 @@ put line 440.
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.446 \begin{align*}
-                     <./nuova-final-draft_files/figure-latex/unnamed-chunk-5-1.
-pdf>]
+                     <./backup1_files/figure-latex/unnamed-chunk-5-1.pdf>]
 LaTeX Font Info:    Trying to load font information for T1+txtt on input line 4
 61.
 (C:\Users\edoar\AppData\Local\Programs\MiKTeX\tex/latex/txfonts\t1txtt.fd
@@ -1120,21 +1117,20 @@ Underfull \hbox (badness 10000) in paragraph at lines 466--468
 LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <10> not available
 (Font)              Font shape `T1/txtt/bx/n' tried instead on input line 485.
 [10]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-7-1.pdf, id=114, 578.16pt x
- 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (
-type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-7-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-7-1
-.pdf  used on input line 515.
+<backup1_files/figure-latex/unnamed-chunk-7-1.pdf, id=114, 578.16pt x 289.08pt>
+
+File: backup1_files/figure-latex/unnamed-chunk-7-1.pdf Graphic file (type pdf)
+<use backup1_files/figure-latex/unnamed-chunk-7-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-7-1.pdf  used
+ on input line 515.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 [11pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.525 \chapter
-              {Particle Filter} <./nuova-final-draft_files/figure-latex/unnamed
--chunk-7-1.pdf>] [12
+              {Particle Filter} <./backup1_files/figure-latex/unnamed-chunk-7-1
+.pdf>] [12
 
 ]
 Chapter 3.
@@ -1151,13 +1147,13 @@ Underfull \hbox (badness 10000) in paragraph at lines 900--902
 [20]
 LaTeX Font Info:    Font shape `T1/txtt/m/it' in size <10> not available
 (Font)              Font shape `T1/txtt/m/sl' tried instead on input line 927.
-<nuova-final-draft_files/figure-latex/unnamed-chunk-10-1.pdf, id=233, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-10-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-10-
-1.pdf  used on input line 953.
+<backup1_files/figure-latex/unnamed-chunk-10-1.pdf, id=233, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-10-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-10-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-10-1.pdf  use
+d on input line 953.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1167,8 +1163,8 @@ e.3.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.978 \end{enumerate}
-                      <./nuova-final-draft_files/figure-latex/unnamed-chunk-10-
-1.pdf>] [23]
+                      <./backup1_files/figure-latex/unnamed-chunk-10-1.pdf>] [2
+3]
 Underfull \hbox (badness 10000) in paragraph at lines 1070--1071
 
  []
@@ -1186,28 +1182,27 @@ Underfull \vbox (badness 10000) detected at line 1126
 Underfull \vbox (badness 7116) has occurred while \output is active []
 
 [25]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-13-1.pdf, id=294, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-13-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-13-
-1.pdf  used on input line 1136.
+<backup1_files/figure-latex/unnamed-chunk-13-1.pdf, id=294, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-13-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-13-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-13-1.pdf  use
+d on input line 1136.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 [26pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.1162 \end{longtable}
-                       <./nuova-final-draft_files/figure-latex/unnamed-chunk-13
--1.pdf>]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-16-1.pdf, id=310, 722.7pt x
- 939.51pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-16-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-16-
-1.pdf  used on input line 1166.
+                       <./backup1_files/figure-latex/unnamed-chunk-13-1.pdf>]
+<backup1_files/figure-latex/unnamed-chunk-16-1.pdf, id=310, 722.7pt x 939.51pt>
+
+File: backup1_files/figure-latex/unnamed-chunk-16-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-16-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-16-1.pdf  use
+d on input line 1166.
 (pdftex.def)             Requested size: 433.62334pt x 563.71036pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1220,7 +1215,7 @@ Overfull \vbox (26.48792pt too high) has occurred while \output is active []
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.1172 
-        <./nuova-final-draft_files/figure-latex/unnamed-chunk-16-1.pdf>]
+        <./backup1_files/figure-latex/unnamed-chunk-16-1.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 1173--1174
 
  []
@@ -1248,28 +1243,27 @@ Underfull \vbox (badness 10000) detected at line 1360
 Underfull \vbox (badness 6592) has occurred while \output is active []
 
 [32]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-19-1.pdf, id=375, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-19-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-19-
-1.pdf  used on input line 1364.
+<backup1_files/figure-latex/unnamed-chunk-19-1.pdf, id=375, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-19-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-19-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-19-1.pdf  use
+d on input line 1364.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 [33pdfTeX warning (ext4): destination with the same identifier (name{figure.3.4
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.1387 \end{longtable}
-                       <./nuova-final-draft_files/figure-latex/unnamed-chunk-19
--1.pdf>]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-22-1.pdf, id=391, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-22-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-22-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-22-
-1.pdf  used on input line 1391.
+                       <./backup1_files/figure-latex/unnamed-chunk-19-1.pdf>]
+<backup1_files/figure-latex/unnamed-chunk-22-1.pdf, id=391, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-22-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-22-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-22-1.pdf  use
+d on input line 1391.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 1314) has occurred while \output is active []
@@ -1280,7 +1274,7 @@ Underfull \vbox (badness 1314) has occurred while \output is active []
                                                   \__shipout_drop_firstpage_...
 l.1414 \end{equation}
                       Note that the computation of the auxiliary weights is <./
-nuova-final-draft_files/figure-latex/unnamed-chunk-22-1.pdf>]
+backup1_files/figure-latex/unnamed-chunk-22-1.pdf>]
 Underfull \hbox (badness 10000) in paragraph at lines 1422--1424
 
  []
@@ -1303,21 +1297,21 @@ Underfull \vbox (badness 2635) detected at line 1589
 Underfull \vbox (badness 2119) has occurred while \output is active []
 
 [38]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-25-1.pdf, id=456, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-25-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-25-
-1.pdf  used on input line 1593.
+<backup1_files/figure-latex/unnamed-chunk-25-1.pdf, id=456, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-25-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-25-1.pdf  use
+d on input line 1593.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-<nuova-final-draft_files/figure-latex/unnamed-chunk-26-1.pdf, id=457, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-26-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-26-
-1.pdf  used on input line 1605.
+<backup1_files/figure-latex/unnamed-chunk-26-1.pdf, id=457, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-26-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-26-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-26-1.pdf  use
+d on input line 1605.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1327,7 +1321,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.1611 
-        <./nuova-final-draft_files/figure-latex/unnamed-chunk-25-1.pdf>]
+        <./backup1_files/figure-latex/unnamed-chunk-25-1.pdf>]
 Overfull \vbox (0.2484pt too high) detected at line 1667
  []
 
@@ -1336,8 +1330,7 @@ Overfull \vbox (0.2484pt too high) detected at line 1667
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.1667 \end{Shaded}
-                    <./nuova-final-draft_files/figure-latex/unnamed-chunk-26-1.
-pdf>]
+                    <./backup1_files/figure-latex/unnamed-chunk-26-1.pdf>]
 LaTeX Font Info:    Font shape `T1/txtt/b/it' in size <10> not available
 (Font)              Font shape `T1/txtt/bx/it' tried instead on input line 1671
 .
@@ -1367,21 +1360,20 @@ Underfull \vbox (badness 10000) detected at line 1709
  []
 
 [42]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-32-1.pdf, id=494, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-32-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-32-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-32-
-1.pdf  used on input line 1713.
+<backup1_files/figure-latex/unnamed-chunk-32-1.pdf, id=494, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-32-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-32-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-32-1.pdf  use
+d on input line 1713.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 [43pdfTeX warning (ext4): destination with the same identifier (name{figure.3.8
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.1746 
-        <./nuova-final-draft_files/figure-latex/unnamed-chunk-32-1.pdf>] [44] [
-45] [46]
+        <./backup1_files/figure-latex/unnamed-chunk-32-1.pdf>] [44] [45] [46]
 Underfull \hbox (badness 10000) in paragraph at lines 1877--1878
 
  []
@@ -1400,13 +1392,13 @@ Underfull \vbox (badness 10000) detected at line 1970
  []
 
 [48]
-<nuova-final-draft_files/figure-latex/unnamed-chunk-35-1.pdf, id=562, 578.16pt 
-x 289.08pt>
-File: nuova-final-draft_files/figure-latex/unnamed-chunk-35-1.pdf Graphic file 
-(type pdf)
-<use nuova-final-draft_files/figure-latex/unnamed-chunk-35-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/unnamed-chunk-35-
-1.pdf  used on input line 1979.
+<backup1_files/figure-latex/unnamed-chunk-35-1.pdf, id=562, 578.16pt x 289.08pt
+>
+File: backup1_files/figure-latex/unnamed-chunk-35-1.pdf Graphic file (type pdf)
+
+<use backup1_files/figure-latex/unnamed-chunk-35-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/unnamed-chunk-35-1.pdf  use
+d on input line 1979.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1416,30 +1408,28 @@ e.3.9}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.2010 \end{longtable}
-                       <./nuova-final-draft_files/figure-latex/unnamed-chunk-35
--1.pdf>] [51] [52
+                       <./backup1_files/figure-latex/unnamed-chunk-35-1.pdf>] [
+51] [52
 
 ]
 Chapter 4.
 [53]
-<nuova-final-draft_files/figure-latex/cll_plot-1.pdf, id=597, 722.7pt x 216.81p
-t>
-File: nuova-final-draft_files/figure-latex/cll_plot-1.pdf Graphic file (type pd
-f)
-<use nuova-final-draft_files/figure-latex/cll_plot-1.pdf>
-Package pdftex.def Info: nuova-final-draft_files/figure-latex/cll_plot-1.pdf  u
-sed on input line 2074.
+<backup1_files/figure-latex/cll_plot-1.pdf, id=597, 722.7pt x 216.81pt>
+File: backup1_files/figure-latex/cll_plot-1.pdf Graphic file (type pdf)
+<use backup1_files/figure-latex/cll_plot-1.pdf>
+Package pdftex.def Info: backup1_files/figure-latex/cll_plot-1.pdf  used on inp
+ut line 2074.
 (pdftex.def)             Requested size: 433.62334pt x 130.08699pt.
 [54pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
 l.2088 \backmatter
-                   <./nuova-final-draft_files/figure-latex/cll_plot-1.pdf>]
+                   <./backup1_files/figure-latex/cll_plot-1.pdf>]
 \tf@thm=\write5
-\openout5 = `nuova-final-draft.thm'.
+\openout5 = `backup1.thm'.
 
-(nuova-final-draft.aux)
+(backup1.aux)
 
 LaTeX Warning: There were undefined references.
 
@@ -1449,12 +1439,12 @@ LaTeX Warning: There were multiply-defined labels.
  ) 
 Here is how much of TeX's memory you used:
  19761 strings out of 478870
- 294695 string characters out of 2848836
- 734693 words of memory out of 3000000
+ 293605 string characters out of 2848836
+ 734673 words of memory out of 3000000
  36399 multiletter control sequences out of 15000+600000
  533850 words of font info for 583 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 74i,24n,80p,877b,696s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 74i,24n,80p,867b,696s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/Users/edoar/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/mnsymbol/MnSymb
 olC.enc}{C:/Users/edoar/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/mnsymbol/
 MnSymbolD.enc}{C:/Users/edoar/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/mns
@@ -1485,7 +1475,7 @@ ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/edoar/AppD
 ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppD
 ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppD
 ata/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on nuova-final-draft.pdf (56 pages, 530260 bytes).
+Output written on backup1.pdf (56 pages, 530140 bytes).
 PDF statistics:
  866 PDF objects out of 1000 (max. 8388607)
  261 named destinations out of 1000 (max. 500000)

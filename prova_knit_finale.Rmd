@@ -14,6 +14,7 @@ documentclass: book
 
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 
+
 output:
   pdf_document: 
    latex_engine: pdflatex
@@ -278,17 +279,17 @@ Letting $E_T=A_tQ_{t-1}A_t'+\Sigma_t,$ and applying lemma \ref{kalman-filter}, i
   m_t &= [I_{d_x} - E_tB_t'(B_tE_tB_t'+R_t)^{-1} B_t]A_tm_{t-1}+E_tB_t'(B_tE_tB_t'+R_t)^{-1}y_t.
 \end{align*}
 
-\subsection{Implementation}
+\subsection{Implementation}\label{implementation}
 
-In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model.  
+The aim of this subsection is to provide a practical illustration of the algorithms discussed in the main chapters. For the sake of simplicity we use for implementations a random walk plus noise model, i.e. the most basic form of linear Gaussian state-space model.  
 \begin{align}
-y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
-x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
+y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \label{eq:1} \\
+x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \label{eq:2} \\
 x_{0} & \sim N(m_{0},C_{0})
 \end{align}
 As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involved filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
-The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
-```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+The filtering strategy is applied to 50 simulated data. Figure \ref{fig:myfig} shows the simulated true states sequence assuming as data generating process the Equation \eqref{eq:2} with $\tau^{2}=1$ and simulated observed sequence process form Equation \eqref{eq:1} with $\sigma^{2}=1$.
+```{r myfig, echo=FALSE, fig.align='center', fig.cap=" Simulated random walk plus noise model", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 
 set.seed(1991)
 dlm.sim = function(n,sigma,tau,x0){
@@ -366,10 +367,11 @@ Our \code{DLM} function implement in R replicate this steps.
 \hrule
 \textbf{Arguments}
 
-\code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
-\code{sig2} \ \ the variance $\sigma^{2}$ in Equation (1)
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
 \
-\code{tau2} \ \ the variance $\tau^{2}$ in Equation (2)
+\code{sig2} \ \ the variance $\sigma^{2}$ in observation equation
+\
+\code{tau2} \ \ the variance $\tau^{2}$ in state equation
 \
 \code{m0} \ \ central value of the normal prior state distribution
 \
@@ -396,10 +398,10 @@ DLM<-function(data,sig2,tau2,m0,C0){
   return(list(m=m,C=C))
 }
 ```
-In Figure XX below filtered states estimated using Kalman Filter with $x_{0} \sim N(0,100)$ and $\sigma^{2}=\tau^{2}=1$ are compared to the true states values.
+In Figure \ref{fig:myfig2} below filtered states estimated using Kalman Filter with $x_{0} \sim N(0,100)$ and $\sigma^{2}=\tau^{2}=1$ are compared to the true states values.
 Notice how closely the filtered states follow the observations and the goodness of the approximation of the true states. 95 percent credible intervals are computed as
 \[[E(\theta_{t}|y_{1:t})-z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})},E(\theta_{t}|y_{1:t})+z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})}]\]
-```{r echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r myfig2, echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 #Kalman Filter
 #-------------
 m0=0
@@ -437,7 +439,7 @@ ggplot(DLM.df,aes(x=timeframe))+
         legend.background = element_rect(fill = "white", colour = "gray30")) +
   theme(plot.title = element_text(hjust = 0.5))
 ```
-The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
+The discussion of Kalman Filter will continue in the next sections where we compare it to the Particle Filter.
 
 \chapter{Particle Filter}
 
@@ -638,7 +640,7 @@ Lastly, it is now common practice to use a mixed approach with respect to resamp
 \end{equation}
 
 \subsection{Implementation}
-Consider again the random walk plus noise model of section XX,the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
+Consider again the random walk plus noise model of section \ref{implementation},the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
 \begin{algorithm} SIS filter for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -667,9 +669,9 @@ Our \code{SISfun} function implemented in R replicate this steps.
 \
 \code{C0} \ \ variance of the normal prior state distribution
 \
-\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\code{tau} \ \ the standard deviation $\tau$ in state equation
 \
-\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\code{sigma} \ \ the standard deviation $\sigma$ in observation equation
 \hrule
 \hrule
 ```{r}
@@ -818,7 +820,7 @@ Finally, the BPF is able to generate the two key objects for inference in state-
 \end{itemize}
 
 \subsection{Implementation}
-In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section XX. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
+In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section \ref{implementation}. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
 
 \begin{algorithm} BPF for Random Walk plus Noise Model
 \begin{itemize}
@@ -853,9 +855,9 @@ These steps are resumed in our \code{PFfun} function.
 \
 \code{C0} \ \ variance of the normal prior state distribution
 \
-\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\code{tau} \ \ the standard deviation $\tau$ in state equation
 \
-\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\code{sigma} \ \ the standard deviation $\sigma$ in observation equation
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
@@ -890,7 +892,7 @@ PFfun<-function(data,N,m0,C0,tau,sigma,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 ```
-The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure XX. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
+The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure \ref{fig:myfig3}. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
 ```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 set.seed(1991)
 N=1000
@@ -917,12 +919,12 @@ ESS.PF<-ESSplot(df,pf)
 
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r myfig3, echo=FALSE, fig.align='center', fig.cap="a) PF Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 FILT.PF <- Filtplot(df,pf,"")
 ggarrange(FILT.PF,ESS.PF,labels=c("(a)","(b)"))
 ```
 
-Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure XX, when the number of particles generated at any interaction increases the results for both the estimated mean and the variance tend to converge [[SPIEGARE PERCHE']]. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
+Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure \ref{fig:myfig4}, when the number of particles generated at any interaction increases the results for both the estimated mean and the variance tend to converge [[SPIEGARE PERCHE']]. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
 
 ```{r include=FALSE}
 set.seed(1991)
@@ -967,7 +969,7 @@ i=i+1
 kbl(estimatedx[1:3,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
 ```
 
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='H', fig.width=10, message=FALSE, warning=FALSE, results=F}
+```{r myfig4, echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='H', fig.width=10, message=FALSE, warning=FALSE, results=F}
 set.seed(1991)
 N1=100
 N2=1000
@@ -1095,7 +1097,7 @@ To conclude, one of the issues related to the BPF is the fact that new states in
 
 \subsection{Implementation}
 \
-The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model described in Section XX can be improved accounting for the observations in the importance transition density and it consists of generating $x_{t}$ from its conditional distribution given $x_{t-1}$ and $y_{t}$. In the Normal model we are considering, the optimal proposal will be a Normal density as well with mean and variance given by 
+The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model described in Section \ref{implementation} can be improved accounting for the observations in the importance transition density and it consists of generating $x_{t}$ from its conditional distribution given $x_{t-1}$ and $y_{t}$. In the Normal model we are considering, the optimal proposal will be a Normal density as well with mean and variance given by 
 \begin{align*}
 \mu_{opt}=E(x_{t}|x_{t-1},y_{t})&=x_{t-1}+\frac{\tau^{2}}{\tau^{2}+\sigma^{2}}(y_{t}-x_{t-1})\\
 \sigma_{opt}^{2}=V(x_{t}|x_{t-1},y_{t})&=\frac{\tau^{2}\sigma^{2}}{\tau^{2}+\sigma^{2}}
@@ -1137,9 +1139,9 @@ The \code{GPFfun} function resume this passages.
 \
 \code{C0} \ \ variance of the normal prior state distribution
 \
-\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\code{tau} \ \ the standard deviation $\tau$ in state equation
 \
-\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\code{sigma} \ \ the standard deviation $\sigma$ in observation equation
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
@@ -1188,7 +1190,7 @@ ESS.GPF<-ESSplot(df,gpf)
 FILT.GPF<-Filtplot(df,gpf,"")
 ggarrange(FILT.GPF,ESS.GPF,labels=c("(a)","(b)"))
 ```
-Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure XX, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
+Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure \ref{fig:myfig5}, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
 
 ```{r include=FALSE}
 set.seed(1991)
@@ -1222,7 +1224,7 @@ kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Sq
 ```
 
 
-```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r myfig5, echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 set.seed(1991)
 N2=1000
 
@@ -1428,9 +1430,9 @@ The \code{APFfun} function resume this passages.
 \
 \code{C0} \ \ variance of the normal prior state distribution
 \
-\code{tau} \ \ the standard deviation $\tau$ in Equation (2)
+\code{tau} \ \ the standard deviation $\tau$ in state equation
 \
-\code{sigma} \ \ the standard deviation $\sigma$ in Equation (1)
+\code{sigma} \ \ the standard deviation $\sigma$ in observation equation
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
@@ -1760,7 +1762,7 @@ To conclude, it is worth noting that the LWF produces, together with the usual f
 
 \subsection{Implementation}
 \
-Consider the linear Gaussian example of section XX, but this time with unknown variances $\tau^{2}$ and $\sigma^{2}$. Thus, let $\psi=(\sigma^{2},\tau^{2})$ be the unknown parameter vector and assign a gamma prior for its components,
+Consider the linear Gaussian example of section \ref{implementation}, but this time with unknown variances $\tau^{2}$ and $\sigma^{2}$. Thus, let $\psi=(\sigma^{2},\tau^{2})$ be the unknown parameter vector and assign a gamma prior for its components,
 \begin{align*}
 \sigma^{2}  & \sim G(\alpha_{v},\beta_{v}) \\
 \tau^{2}  & \sim G(\alpha_{w},\beta_{w})
@@ -1961,6 +1963,10 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 
 \section{Convergence}\label{pf_converg}
+
+\chapter{Implementations for Stochastic Volatility Models}
+
+\section{}
 
 \chapter{Applications to Stochastic Volatility Models}
 
