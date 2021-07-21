@@ -315,15 +315,13 @@ Finally, some discrepancy between different approximations persisted even when t
 
 \section{Realised volatility as benchmark}
 
-In section XX we compared several filtered distributions, briefly pointing out three main behaviours, namely that of the SIS algorithm, that of the Liu and West particle filter and that of the remaining filters. However, we did not have metrics that could help us clearly point at one behaviour as the closest to reality. In this section, we will employ a realised volatility measure as one such metric.\
-A realised volatility measure - the realised variance based on 5 min intraday return intervals ($rv5$ series in the Oxford-Man Realized Library) - will be used as a proxy for the latent volatility process driving the log returns on the 3 indices presented in the earlier sections. As we previously mentioned, a transformation is needed as to compare filtered states and realised volatility, namely one turning both into estimates of the standard deviation of the percentage log returns. For each $t$, $rv5_t$ is then turned into $rv5_t^{0.5}*100$, while $e^{x_t/2}$ (where $x_t$ is the filtered state) is computed by computing the mean of the generated particles and then applying the $exp(\cdot /2)$ transformation.\
+In section XX we compared several filtered distributions, briefly pointing out three main behaviours, namely that of the SIS algorithm, that of the Liu and West particle filter and that of the remaining filters. However, we did not have metrics that could help us clearly point at one behaviour as the closest to reality. In this section, we will employ realised volatility as one such metric.\
+A realised volatility measure - the realised variance based on 5 min intraday return intervals ($rv5$ series in the Oxford-Man Realized Library) - will be used as a proxy for the latent volatility process driving the log returns on the 3 indices presented in the earlier sections. As we previously mentioned, a transformation is needed as to compare filtered states and realised volatility, namely one turning both into estimates of the standard deviation of the percentage log returns. For each $t$, $rv5_t$ is then turned into $rv5_t^{0.5}*100$, while $e^{x_t/2}$ (where $x_t$ is the filtered state) is computed by taking the mean of the generated particles and then applying the $exp(\cdot /2)$ transformation.\
 Throughout this section, we will deem as the best performing algorithm that coming closest to the proxy, either "literally" in a graphical framework or in a Root Mean Squared Error or Mean Absolute Error sense. Clearly enough, this approach builds on the assumption that realised variance is indeed a good proxy for latent volatility in real financial series.\
 
 A considerable amount of research in the 1990s and 2000s has focused on the properties of realised volatility measures, let them be realised variances or realised kernels. A thorough review of such literature can be found on the Oxford-Man Institute Realized volatility website, as their database specifically focuses these two measures.\footnote{Here we would mention the work by Barndorff‐Nielsen and Shephard (2002), who focus on the asymptotic properties of the realised volatility error in stochastic volatility models, namely the difference between realized volatility and the "discretised integrated volatility", also called "actual volatility".}\
-As Shephard and Sheppard (2010) themselves put it, in a paper that also presents the methodology that backs their Library, "such statistics are based on a variety of theoretically sound non-parametric estimators of the daily variation of prices"
-
-Clear assumptions
-Uses as proxy
+As Shephard and Sheppard (2010) themselves put it, in a paper that also presents the methodology that backs their Library, "such statistics are based on a variety of theoretically sound non-parametric estimators of the daily variation of prices". Thanks to their theoretical justification and their being model-free estimates, in recent years realised volatility measures have been frequently used in financial applications as proxies for different types of latent volatility, providing a valuable (and arguably) preferable alternative to using squared returns (Hansen and Lunde, 2006).\footnote{See for example Kambouroudis et al. (2016), Buncic and Gisler (2016), Gatheral et al.(2018), Allen and McAleer (2020), Guidolin and Pedio (2021).}\
+Nevertheless, we shall not indulge into forgetting the inherent limitations of using a proxy for a latent process. In particular, realised volatility should not be seen as a perfect proxy of latent volatility (as, for example, realised measures ignore overnight price variations), but rather as a comparatively solid one. Therefore, in this section conclusions will be drawn and put forward only when supported by large differences between models and filters, while we will keep a neutral stance when such support turns out to be mild.
 
 \subsection{Comparing the filters}
 
@@ -396,6 +394,8 @@ Bollerslev, T. (1986). Generalized autoregressive conditional heteroskedasticity
 
 Breidt, F. J., Crato, N., & De Lima, P. (1998). The detection and estimation of long memory in stochastic volatility. Journal of econometrics, 83(1-2), 325-348.\
 
+Buncic, D., & Gisler, K. I. (2016). Global equity market volatility spillovers: A broader role for the United States. International Journal of Forecasting, 32(4), 1317-1339.\
+
 Chan, J. C. (2013). Moving average stochastic volatility models with application to inflation forecast. Journal of Econometrics, 176(2), 162-172.\
 
 Chib, S., Nardari, F., & Shephard, N. (2002). Markov chain Monte Carlo methods for stochastic volatility models. Journal of Econometrics, 108(2), 281-316.\
@@ -422,6 +422,8 @@ Gatheral, J., Jaisson, T., & Rosenbaum, M. (2018). Volatility is rough. Quantita
 
 Guidolin, M., & Pedio, M. (2021). Media Attention vs. Sentiment as Drivers of Conditional Volatility Predictions: An Application to Brexit. Finance Research Letters, 101943.\
 
+Hansen, P. R., & Lunde, A. (2006). Consistent ranking of volatility models. Journal of Econometrics, 131(1-2), 97-121.\
+
 Harvey, A. C., & Shephard, N. (1996). Estimation of an asymmetric stochastic volatility model for asset returns. Journal of Business & Economic Statistics, 14(4), 429-434.\
 
 Harvey, A., Ruiz, E., & Shephard, N. (1994). Multivariate stochastic variance models. The Review of Economic Studies, 61(2), 247-264.\
@@ -437,6 +439,8 @@ Jacquier, E., Polson, N. G., & Rossi, P. (1994). Bayesian analysis of stochastic
 Jacquier, E., Polson, N. G., & Rossi, P. E. (2004). Bayesian analysis of stochastic volatility models with fat-tails and correlated errors. Journal of Econometrics, 122(1), 185-212.\
 
 Johannes, M., Korteweg, A., & Polson, N. (2014). Sequential learning, predictability, and optimal portfolio returns. The Journal of Finance, 69(2), 611-644.\
+
+Kambouroudis, D. S., McMillan, D. G., & Tsakou, K. (2016). Forecasting stock return volatility: a comparison of GARCH, Implied volatility, and realized volatility models. Journal of Futures Markets, 36(12), 1127-1163.\
 
 Kastner, G. (2019). Dealing with stochastic volatility in time series using the R package stochvol. arXiv preprint arXiv:1906.12134.\
 
