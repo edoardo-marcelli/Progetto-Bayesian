@@ -837,14 +837,16 @@ In this section, Bootstrap Particle Filter will be used to estimate filtered sta
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item For $t=1,...,n$:
 \begin{enumerate}
-\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
 \begin{enumerate}
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
-\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\item Set $p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
@@ -1121,14 +1123,16 @@ On the other hand, the incremental weights, using this importance transition den
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Compute $\mu_{opt}$
-\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma_{opt}^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2+\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma_{opt}^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2+\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
 \begin{enumerate}
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
-\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\item Set $p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
@@ -1407,7 +1411,7 @@ For illustration purposes, we are going implement an auxiliary particle filter f
 \begin{enumerate}
 \item For $k=1,...,N$:
 \begin{enumerate}
-\item Draw $I_{k}$ with $P(I_{k}) \propto w_{t-1}^{(i)}f(y_{t}|g(x_{t-1}^{(i)})) $
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f(y_{t}|g(x_{t-1}^{(i)})) $
 \item Draw $x_{t}^{(k)} \sim N(x_{t-1}^{(I_{k})},\tau^2)$
 \item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})}))}$
 \end{enumerate}
@@ -1610,8 +1614,32 @@ kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Sq
 ```
 
 We also implement the auxiliary particle filter with optimal transition kernel. Therfore the algorithm is similiar to the one discussed above with the difference that:
-\
-[[[[Inserire l'algoritmo]]]]
+
+\begin{algorithm}APF with optimal transition kernel for Random Walk plus Noise Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Compute $\sigma_{opt}^{2}$ 
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),\sigma^{2}+\tau^{2}) $
+\item Compute $\mu_{opt}=\mu(x_{t-1}^{(I_{k})})$
+\item Draw $x_{t}^{(k)} \sim N(\mu_{opt},\sigma^{2}_{opt})$
+\item Set  $\tilde{w}^{(i)}_{t} = N^{-1}$ for $i=1,...,N$
+\end{enumerate}
+\item otherwise
+\begin{enumerate}
+\item Compute $\mu_{opt}=\mu(x_{t-1})$
+\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma^{2}_{opt})$ for $i=1,...N$
+\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}f_{N}(y_{t};x_{t}^{(i)},\sigma^{2}+\tau^{2})$ for $i=1,...,N$
+\end{enumerate}
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+
 
 ```{r}
 APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
