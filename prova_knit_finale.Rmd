@@ -342,7 +342,7 @@ The Kalman Filter for this model is implemented as described below.
 
 \begin{algorithm} Kalman Filter for Random Walk plus Noise Model
 \begin{itemize}
-\item Initialize $\theta_{0} \sim N(m_{0},C_{0})$
+\item Initialize $x_{0} \sim N(m_{0},C_{0})$
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Compute the one-step-ahead state predictive distribution at time $t-1$, notice that if $t=1$ no data have been observed yet and therefore $x_{1}|x_{0}\sim N(a_{1},R_{1})$ otherwise
@@ -403,7 +403,7 @@ DLM<-function(data,sig2,tau2,m0,C0){
 ```
 In Figure \ref{fig:myfig2} below filtered states estimated using Kalman Filter with $x_{0} \sim N(0,100)$ and $\sigma^{2}=\tau^{2}=1$ are compared to the true states values.
 Notice how closely the filtered states follow the observations and the goodness of the approximation of the true states. 95 percent credible intervals are computed as
-\[[E(\theta_{t}|y_{1:t})-z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})},E(\theta_{t}|y_{1:t})+z_{1-\alpha/2}\sqrt{V(\theta_{t}|y_{1:t})}]\]
+\[[E(x_{t}|y_{1:t})-z_{1-\alpha/2}\sqrt{V(x_{t}|y_{1:t})},E(x_{t}|y_{1:t})+z_{1-\alpha/2}\sqrt{V(x_{t}|y_{1:t})}]\]
 ```{r myfig2, echo=FALSE, fig.align='center', fig.cap="Kalman Filtered States with credible interval (in red)", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 #Kalman Filter
 #-------------
@@ -448,7 +448,7 @@ The discussion of Kalman Filter will continue in the next sections where we comp
 
 In the previous chapter we explained how the Kalman Filter is applied to the case of a linear model with Gaussian errors to find closed-form solution for the filtering and the predictive distributions. Nonetheless, the majority of time-series models have a non-linear structure and errors might follow non-Gaussian distributions.\
 In this chapter we describe \textit{particle filter} as an algorithm that allows to update sequentially the filtering and the predictive distributions in the non-linear and non-Gaussian case. Additionally, the Kalman Filter can be seen as a special case of the more general particle filter.\
-In section \ref{pf_intro} we introduce the fundamental notions of \textit{importance sampling}, \textit{sequential importance sampling} and \textit{resampling}. Then, in section \ref{pf_main} we describe three particle filtering algorithms: the \textit{bootstrap}, the \textit{guided} and the {auxiliary particle filters}. Instead, in section \ref{pf_lui_west} we describe the {Liu and West filter}, when particle filtering is used to estimate model's parameters. Finally, in section \ref{pf_converg} we establish some general convergence results for Particle Filter - Monte Carlo estimators.
+In section \ref{pf_intro} we introduce the fundamental notions of \textit{importance sampling}, \textit{sequential importance sampling} and \textit{resampling}. Then, in section \ref{pf_main} we describe three particle filtering algorithms: the \textit{bootstrap}, the \textit{guided} and the \textit{auxiliary particle filters}. Instead, in section \ref{pf_lui_west} we describe the \textit{Liu and West filter}, when particle filtering is used to estimate model's parameters. Finally, in section \ref{pf_converg} we establish some general convergence results for Particle Filter - Monte Carlo estimators.
 
 \section{Introductory notions: sampling and resampling}\label{pf_intro}
 
@@ -728,6 +728,11 @@ Filtervalues<-function(fun){
   return(list(mean=xhat,sd=sdhat))
   
 }
+
+
+
+
+
 
 Filtplot<-function(dataframe,fun,title){
 
@@ -1193,7 +1198,7 @@ ESS.GPF<-ESSplot(df,gpf)
 FILT.GPF<-Filtplot(df,gpf,"")
 ggarrange(FILT.GPF,ESS.GPF,labels=c("(a)","(b)"))
 ```
-Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure \ref{fig:myfig5}, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
+Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure \ref{fig:myfig5}, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, the variance is lower, suggesting for higher precision.
 
 ```{r include=FALSE}
 set.seed(1991)
@@ -1623,15 +1628,17 @@ APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
     if(ESS<(N/r)){
     weight = w*dnorm(data[t],x,predsd)
     k   = sample(1:N,size=N,replace=TRUE,prob=weight)
-    }else{
-    weight = rep(1/N,N)
-    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
-    }
-    
     means<-x[k]+(tau/(tau+sigma))*(data[t]-x[k])
     x1   = rnorm(N,means,importancesd)
-    lw  = dnorm(data[t],x1,predsd,log=TRUE)-dnorm(data[t],x[k],predsd,log=TRUE)
-    w   = exp(lw)
+    w   = rep(1/N,N)
+    }else{
+    weight = rep(1/N,N)
+    k   = sample(1:N,size=N,replace=FALSE,prob=weight)
+    means<-x[k]+(tau/(tau+sigma))*(data[t]-x[k])
+    x1   = rnorm(N,means,importancesd)
+    w   <-  w*dnorm(data[t],x1,predsd)
+    }
+    
     w   = w/sum(w)
     x <- x1
    
@@ -1644,47 +1651,6 @@ APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 ```
-
-```{r}
-###################
-## Per roberto:::::: cambia molto se usiamo l'uno o l'altro!!!!!! perchè??
-APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
-  if(missing(r)){r=2}else{}
-  xs<-NULL
-  ws<-NULL
-  ess<-NULL
-  x  = rnorm(N,m0,sqrt(C0))
-  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
-  predsd <- sqrt(sigma+tau)
-  w  = rep(1/N,N)
-  
-  for(t in 1:length(data)){
-    
-    weight = w*dnorm(data[t],x,predsd)
-    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
-    means<-x[k]+(tau/(tau+sigma))*(data[t]-x[k])
-    x1   = rnorm(N,means,importancesd)
-    lw  = dnorm(data[t],x1,predsd,log=TRUE)-dnorm(data[t],x[k],predsd,log=TRUE)
-    w   = exp(lw)
-    w   = w/sum(w)
-    ESS  = 1/sum(w^2)
-    
-    if(ESS<(N/r)){
-      index<-sample(N,size=N,replace=T,prob=w)
-      x1<-x1[index]
-      w<-rep(1/N,N)
-    }else{}
-    
-    x <- x1
-    xs = rbind(xs,x)
-    ws = rbind(ws,w)
-    ess =rbind(ess,ESS)
-
-  }
-  return(list(xs=xs,ws=ws,ess=ess))
-}
-```
-
 
 ```{r echo=FALSE}
 set.seed(1991)
@@ -1969,6 +1935,7 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 \section{Implementations for Stochastic Volatility Models}
 
+So far we have seen Sequential Monte Carlo methods applied to the linear Gaussian case, however, as already mentioned, for this class of state space models, Kalman Filter provides a closed form solution
 
 \chapter{Applications to Stochastic Volatility Models}
 
@@ -2495,12 +2462,10 @@ Zhang, B., Chan, J. C., & Cross, J. L. (2020). Stochastic volatility models with
 \section{The Stochastic Volatility Model}
 
 We decide to organise this Appendix as an R package. All the R functions described in this Appendix take as reference a basic specification of Stochastic Volatility Model. 
-
 \begin{align*}
     y_t|x_t & \sim N(0,e^{x_t})\\
     x_t|x_{t-1},\alpha,\beta,\tau^2 & \sim N(\alpha+\beta x_{t-1},\tau^2)
 \end{align*}
-
 All the plots and tables of this work concerning stochastic volatility models use this functions.
 
 \hrule
@@ -2815,3 +2780,46 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 ```
 
 
+
+
+
+
+```{r}
+###################
+## Per roberto:::::: cambia molto se usiamo l'uno o l'altro!!!!!! perchè??
+APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
+  predsd <- sqrt(sigma+tau)
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    weight = w*dnorm(data[t],x,predsd)
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    means<-x[k]+(tau/(tau+sigma))*(data[t]-x[k])
+    x1   = rnorm(N,means,importancesd)
+    lw  = dnorm(data[t],x1,predsd,log=TRUE)-dnorm(data[t],x[k],predsd,log=TRUE)+log(w)-log(weight)
+    w   = exp(lw)
+    w   = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x1<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
