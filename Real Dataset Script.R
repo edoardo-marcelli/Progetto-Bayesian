@@ -341,14 +341,26 @@ dfsv<-data.frame(timeframe,y,x)
 set.seed(12345)
 N=10000
 svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
 svapf<-APFfun(y,N,m0,C0,alpha,beta,tau)
-svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+set.seed(12345)
+N=10000
 svgpfopt<-GPFoptfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=10000
+svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+set.seed(12345)
+N=10000
 svapfopt<-APFoptfun(y,N,m0,C0,alpha,beta,tau)
 
-#Filtering Values and Plot
+#Filtering Values
 #-------------------------
 Filtervalues<-function(fun){
   xhat<-sapply(1:n,function(i)
@@ -360,12 +372,15 @@ Filtervalues<-function(fun){
   
 }
 
+#Graphical comparison of filtered volatility
+
 Filtplot<-function(dataframe,fun,title){
   
   Filt<-Filtervalues(fun)
   mean<-Filt$mean
   mean1=exp(mean/2)
-  sd<-Filt$sd
+  sd<-Filt$sd ##qua c'è il problema che la sd si riferisca allo stato non trasformato...
+  ## un'idea potrebbe essere di trasformare prima tutte le particles, calcolando solo poi media e standard deviation...ma questo porta a una diversa media
   dataframe<-data.frame(dataframe,mean1,sd)
   
   ggplot(dataframe,aes(x=timeframe))+
@@ -433,6 +448,119 @@ Errorvol[2,5]<-MAE(realisedx,comparablevol(svlw))
 Errorvol[2,6]<-MAE(realisedx,comparablevol(svsis))
 Errorvol[2,7]<-MAE(realisedx,comparablevol(svbapf))
 
+# Save mean and sd series of PF with 50000 particles
+library(openxlsx)
+Filt<-Filtervalues(svapf)
+mean<-Filt$mean
+sd<-Filt$sd
+list1<-list('mean'=mean,'sd'=sd)
+write.xlsx(list1,file="svbpf50000p.xlsx")
+
+#RMSE and MAE comparison of particle filters (but not LW) vs Bootstrap PF with 50000 particles
+
+library(openxlsx)
+bpf50000mean<-read.xlsx("svbpf50000p.xlsx", sheet = 1)
+bpf50000sd<-read.xlsx("svbpf50000p.xlsx", sheet = 2)
+apf50000mean<-read.xlsx("svapf50000p.xlsx", sheet = 1)
+apf50000sd<-read.xlsx("svapf50000p.xlsx", sheet = 2)
+zmean<-bpf50000mean[,1]
+zsd<-bpf50000sd[,1]
+wmean<-apf50000mean[,1]
+wsd<-apf50000sd[,1]
+dfsv1<-data.frame(timeframe,y,zmean,zsd,wmean,zsd)
+Errorcomp<-matrix(NA,ncol=6,nrow=2)
+colnames(Errorcomp)<-c("N","BPF", "GPFOPT", "APF", "SIS", "BAPF")
+rownames(Errorcomp)<-c("RMSE","MAE")
+Errorcomp[,1]<-c(10000)
+RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
+MAE<-function(x,xhat){mean(abs(x-xhat))}
+comparablemean<-function(fun){Filtervalues(fun)$mean}
+Errorcomp[1,2]<-RMSE(zmean,comparablemean(svbpf))
+Errorcomp[1,3]<-RMSE(zmean,comparablemean(svgpfopt))
+Errorcomp[1,4]<-RMSE(zmean,comparablemean(svapf))
+Errorcomp[1,5]<-RMSE(zmean,comparablemean(svsis))
+Errorcomp[1,6]<-RMSE(zmean,comparablemean(svbapf))
+Errorcomp[2,2]<-MAE(zmean,comparablemean(svbpf))
+Errorcomp[2,3]<-MAE(zmean,comparablemean(svgpfopt))
+Errorcomp[2,4]<-MAE(zmean,comparablemean(svapf))
+Errorcomp[2,5]<-MAE(zmean,comparablemean(svsis))
+Errorcomp[2,6]<-MAE(zmean,comparablemean(svbapf))
+RDiff50000p<-RMSE(zmean,wmean)
+ADiff50000p<-MAE(zmean,wmean)
+
+# Graphical comparison of filtered states
+
+Filtplot1<-function(dataframe,fun,title){
+  
+  Filt<-Filtervalues(fun)
+  mean<-Filt$mean
+  sd<-Filt$sd 
+  dataframe<-data.frame(dataframe,mean,sd)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=zmean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
+    geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
+    geom_ribbon(aes(ymin = zmean -1.96*zsd, ymax = zmean +1.96*zsd),
+                fill="black",alpha=0.16) +
+    geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+                fill="red",alpha=0.16) +
+    scale_color_manual("",
+                       values=c("50000p BT Filtered States" = "black",
+                                "Filtered States"= "red"))+
+    scale_linetype_manual("",
+                          values=c("50000p BT Filtered States" = 1,
+                                   "Filtered States"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+library(ggplot2)
+library(ggpubr)
+plot8<-Filtplot1(dfsv1,svbpf,"Bootstrap Particle Filter")
+plot9<-Filtplot1(dfsv1,svapf,"Auxiliary Particle Filter")
+plot10<-Filtplot1(dfsv1,svgpfopt,"Opt Ker Guided Particle Filter")
+plot11<-Filtplot1(dfsv1,svsis,"No Resampling")
+plot12<-Filtplot1(dfsv1,svbapf,"Always Resampling")
+plot8
+plot9
+plot10
+plot11
+plot12
+
+# Plot the two 50000 particles benchmarks
+Filtplot2<-function(dataframe,title){
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=zmean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
+    geom_ribbon(aes(ymin = zmean-1.96*zsd, ymax = zmean+1.96*zsd),
+                fill="black",alpha=0.16) +
+    geom_line(aes(y=mean, col="50000p AP Filtered States", linetype="50000p AP Filtered States"))+
+    geom_ribbon(aes(ymin = wmean-1.96*wsd, ymax = wmean+1.96*wsd),
+                fill="red",alpha=0.16) +
+    scale_color_manual("",
+                       values=c("50000p BT Filtered States" = "black",
+                                "50000p AP Filtered States"= "red"))+
+    scale_linetype_manual("",
+                          values=c("50000p BT Filtered States" = 1,
+                                   "50000p AP Filtered States"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+plot13<-Filtplot2(dfsv1,"Benchmark comparison")
+plot13
+
+
 #Kalman filter
 m00=0
 c00=100
@@ -497,6 +625,7 @@ ggplot(DLM.df,aes(x=timeframeKF))+
   theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
         legend.background = element_rect(fill = "white", colour = "gray30")) +
   theme(plot.title = element_text(hjust = 0.5))
+
 
 
 

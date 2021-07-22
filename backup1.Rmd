@@ -1,5 +1,28 @@
 ---
+title: | 
+ \Huge State-Space Models and Particle Filters
+
+author:
+  - Edoardo Marcelli
+  - Roberto Colarieti
+  - Alexei Verkhovtsev
+  - Michele Bolla
+  - Gabriele Romano
+  - Benedetta Bruni
+
+documentclass: book
+
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+
+output:
+  pdf_document: 
+   latex_engine: pdflatex
+   extra_dependencies: ["float"]
+   number_sections: true
+   
 header-includes:
+- \def\code#1{\texttt{#1}}
+- \usepackage{amssymb}
 - \usepackage{txfonts}
 - \usepackage{amsmath}
 - \usepackage[bindingoffset=1.5cm, left=3cm, right=3cm, top=3cm, bottom=3cm]{geometry}
@@ -11,7 +34,6 @@ header-includes:
 - \usepackage{enumitem}
 - \usepackage{ntheorem}
 - \usepackage{lipsum}
-- \usepackage{amssymb}
 - \usepackage{xcolor}
 - \theoremstyle{break}
 - \newtheorem{thm}{Theorem}% theorem counter resets every \subsection
@@ -22,7 +44,6 @@ header-includes:
 - \newtheorem{definition}{Definition}
 - \theoremstyle{nonumberplain}
 - \newtheorem{proof*}{Proof.}
-- \newtheorem{definition}{Definition}
 - \renewcommand{\P}{\mathbb{P}}
 - \newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
 - \def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
@@ -32,7 +53,6 @@ header-includes:
 - \setlength{\topmargin}{-.1in}
 - \setlength{\textheight}{8.1in}
 - \renewcommand{\baselinestretch}{1.5}
-- \usepackage{amssymb}
 - \newcommand{\E}{\mathbb E}
 - \newcommand{\Q}{\mathbb Q}
 - \newcommand{\M}{\mathbb M}
@@ -42,23 +62,9 @@ header-includes:
 - \newcommand{\Y}{\mathcal Y}
 - \newcommand{\Pd}{\mathbb P}
 - \newcommand{\N}{\mathcal N}
-- \def\code#1{\texttt{#1}}
 - \newtheorem{algorithm}{Algorithm}[section]
 - \usepackage{float}
 - \floatplacement{figure}{}
-
-title: "Final draft"
-
-documentclass: book
-
-output:
-  pdf_document: 
-   latex_engine: xelatex
-   fig_width: 5
-   fig_height: 3.5
-   fig_caption: true
-   extra_dependencies: ["float"]
-   number_sections: true 
 
 ---
 ```{r, results= FALSE, message=FALSE, warning=FALSE, echo=FALSE}
@@ -106,6 +112,7 @@ RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
 \chapter*{Introduction}
 
 \chapter{Markov Processes and State-Space Models}
+
 \section{Notation}
 Let us fix the basic notation that will be employed henceforth. Upper case letters, e.g. $X_t, Y_t,$ denote random variables, while lower case letters 
 denote the realizations. Finite sequences are made compact using the semi-colon notation, e.g. $x_{0:t}=(x_0, x_1, \dots, x_t)$ for some $t \geq 0.$ The sets of outcomes are denoted by upper case calligraphic letters, e.g. $\mathcal{X}, \mathcal{Y}.$  The $\sigma$-algebra
@@ -122,6 +129,7 @@ Convergence in distribution is denoted with the symbol $\implies.$ So, $X\implie
 
 \section{Markov Processes}
 Let $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ and $(\mathcal{Y}, \mathcal{B}(\mathcal{Y}))$ be two (eventually equal) measurable spaces. 
+
 \begin{definition}
 A function $P(x,dy): (\mathcal{X}, \mathcal{B}(\mathcal{X}))\rightarrow [0,1]$ such that 
 \begin{itemize}
@@ -148,7 +156,9 @@ $$
     \mathbb{Q}(A)=\int_A w(x) \mathbb{M}(dx).
 $$
 
-Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ \begin{definition}
+Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ 
+\
+\begin{definition}
 A discrete-time Markov process is a sequence $X_{0:T}$ of random variables whose joint distribution can be written as
 \begin{equation}
     \P_T(X_{0:T}\in dx_{0:T})=\P_0(dx_0)\prod\limits_{s=1}^T P_s(x_{s-1},dx_s).
@@ -162,6 +172,7 @@ $$
 $$
 The first equality implies conditional independence. The second equality implies that it is possible to identify conditional distributions with transition kernels. 
 Assume $\P_t,$ with $t\leq T,$ is a sequence of probability measures. Then, the following proposition holds.
+\
 \begin{proposition}
 For all $t\leq T,$ 
 $$
@@ -174,6 +185,7 @@ This means that the marginal distribution of $X_{0:t}$ with respect to $\P_T$ is
 \section{State-Space Models}
 We now define \textit{State-Space models} as Markov processes that are partially observed. Let $X_t\in\X$ and $Y_t\in\Y$ and let $\{(X_t,Y_t)\}$ be a stochastic process. To help intuition, suppose that $\{Y_t\}$ is observable, i.e., coincides with a sequence of observations, while $\{X_t\}$ is latent. Consider the initial distribution $\P_0(dx_0)$ and the probability kernels
 $P_t(x_{t-1},dx_t)$ and $F_t(x_t,d_t)$, where $t=1,2,\dots$.
+\
 \begin{definition}\label{state-space-def}
 The process $\{(X_t,Y_t)\}$ is a State-Space model if the joint distribution of $(X_{0:T},Y_{0:T})$ is 
 \begin{align*}
@@ -188,15 +200,13 @@ Assume now that there exists a dominating measures $\nu(dy)$ such that
 $F_t(x_t,dy_t)=f_t(y_t\mid x_t)\nu(dy_t)$ for all $t.$
 Then by the last equality of definition \ref{state-space-def}, the joint distribution of $(X_{0:T},Y_{0:T})$ is 
 \begin{equation}\label{state-space-densities}
-   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\vu(dy_t).
+   \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\nu(dy_t).
 \end{equation}
 Integrating away $X_{0:T},$ one gets the marginal density
-\begin{equation}\label{state-space-marginal-y}
-\begin{align*}
+\begin{align*}\label{state-space-marginal-y}
   \P_T(dy_{0:T}) &= \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\nu(dy_s) \\
                 &= p_t(y_{0:t})\prod\limits_{s=0}^t\nu(dy_s),
 \end{align*}                
-\end{equation}
 where $p_t(y_{0:t})$ is the likelihood function.
 Dividing the left-hand side of equation \ref{state-space-densities} by the left-hand side of equation \ref{state-space-marginal-y} and the right-hand side of equation \ref{state-space-densities} by the right-hand side of equation \ref{state-space-marginal-y}, one obtains the filtering distribution
 \begin{equation}
@@ -204,6 +214,7 @@ Dividing the left-hand side of equation \ref{state-space-densities} by the left-
 \end{equation}
 
 \chapter{Linear-Gaussian case}
+
 \textit{Linear Gaussian models} are a class of popular state-space models. A notable property of such models is that the filtering and predictive distributions are analytically tractable, which makes such models very convenient in applications. 
 
 Suppose that $\X=\R^{d_x}$ and $\Y=\R^{d_y}.$ Let $U_t\thicksim\N(0,\Sigma_t)$ and $V_t\thicksim\N(0,R_t)$ be two independent white-noise errors and assume the initial distribution 
@@ -213,6 +224,7 @@ X_t &= A_tX_{t-1}+U_t \\
 Y_t &= B_tX_t + V_t.
 \end{align}
 Note that  $X_t\mid X_{t-1}$ and $Y_t\mid X_t$ are both normally distributed. 
+\
 \begin{lemma}\label{kalman-filter}
   Let $X\thicksim\N(m_0,Q_0)$ and $Y\mid X\thicksim\N(BX,R)$, where $R$ and $Q_0$ are positive semi-definite matrices. 
   Then, it holds that
@@ -263,7 +275,7 @@ Letting $E_T=A_tQ_{t-1}A_t'+\Sigma_t,$ and applying lemma \ref{kalman-filter}, i
   m_t &= [I_{d_x} - E_tB_t'(B_tE_tB_t'+R_t)^{-1} B_t]A_tm_{t-1}+E_tB_t'(B_tE_tB_t'+R_t)^{-1}y_t.
 \end{align*}
 
-\section{Implementation}
+\subsection{Implementation}
 
 In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model.  
 \begin{align}
@@ -320,6 +332,7 @@ ggplot(df,aes(x=timeframe))+
 ```
 
 The Kalman Filter for this model is implemented as described below.
+
 \begin{algorithm} Kalman Filter for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $\theta_{0} \sim N(m_{0},C_{0})$
@@ -344,7 +357,9 @@ Our \code{DLM} function implement in R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{DLM(data,sig2,tau2,m0,C0)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -421,63 +436,6 @@ ggplot(DLM.df,aes(x=timeframe))+
 ```
 The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
 
-\textbf{Implementation}
-
-In this section we present a practical illustration of the algorithms discussed. For the sake of simplicity we use a random walk plus noise model, i.e. the most basic form of a linear Gaussian state-space model. 
-\begin{align}
-y_{t}|x_{t} & \sim N(x_{t},\sigma^{2}) \\
-x_{t}|x_{t-1} & \sim N(x_{t-1},\tau^{2}) \\
-x_{0} & \sim N(m_{0},C_{0})
-\end{align}
-As already mentioned before, in this case the filtering distribution can be computed in closed form solutions using the Kalman filter. However, this toy example will be used also to illustrate more involved filtering strategies described in this work. We believe indeed that it represents a useful starting point to understand the logic of the algorithms which may be eventually replicated when dealing with more complex models. \
-The filtering strategy is applied to 50 simulated data. Figure XX shows the simulated true states sequence assuming as data generating process the Equation (2) with $\tau^{2}=1$ and simulated observed sequence process form Equation (1) with $\sigma^{2}=1$.
-```{r echo=FALSE, fig.align='center', fig.cap="Simulated random walk plus noise model", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-
-set.seed(1991)
-dlm.sim = function(n,sigma,tau,x0){
-  x    = rep(0,n)  #state process
-  y    = rep(0,n)  #obs process
-  x[1] = rnorm(1,x0,tau)
-  y[1] = rnorm(1,x[1],sigma)
-  for (t in 2:n){
-    x[t] = rnorm(1,x[t-1],tau)
-    y[t] = rnorm(1,x[t],sigma)
-  }
-  return(list(x=x,y=y))
-}
-
-n=50
-tau2=1
-sigma2=1
-sigma=sqrt(sigma2)
-tau=sqrt(tau2)
-x0=0
-
-sim<-dlm.sim(n,sigma,tau,x0)
-y<-sim$y
-x<-sim$x
-truex<-x
-
-timeframe<-c(1:length(y))
-df<-data.frame(timeframe,y,x)
-
-ggplot(df,aes(x=timeframe))+
-  geom_line(aes(y=y, linetype="Observations"))+
-  geom_line(aes(y=x, linetype="True States"))+
-  coord_cartesian(ylim = c(-4, +12)) +
-  scale_linetype_manual(name="",
-                      values=c("Observations" = 1,
-                               "True States" = 3))+
-  labs(x="Time",
-       y="")+
-  #ggtitle("States and Observations")+
-  theme_bw()+
-  theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-        legend.background = element_rect(fill = "white", colour = "gray30")) +
-  theme(plot.title = element_text(hjust = 0.5))
-```
-The discussion of Kalman Filter will continue in Section XX where we compare it to the Particle Filter.
-
 \chapter{Particle Filter}
 
 In the previous chapter we explained how the Kalman Filter is applied to the case of a linear model with Gaussian errors to find closed-form solution for the filtering and the predictive distributions. Nonetheless, the majority of time-series models have a non-linear structure and errors might follow non-Gaussian distributions.\
@@ -492,8 +450,8 @@ To estimate the expected value of $\varphi$ with respect to the density $q$, the
 \begin{equation*}
    \hat \varphi_{MC}=\frac{1}{N} \sum_{n=1}^N\varphi (X^n)\approx \E_q(\varphi)~~~X^n\thicksim q(\cdot)
 \end{equation*}
-However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces ``more efficient" estimates. 
-In all the cases for which sampling takes place from a distribution different from the ``correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
+However, in many circumstances either it is impossible to sample from the target density or there exist another density - call it $m(\cdot)$ - different from $q$ that produces "more efficient" estimates. 
+In all the cases for which sampling takes place from a distribution different from the "correct" (i.e., the true) one, importance sampling and resampling methods can be applied (as augmented versions of the standard MC algorithm).
 
 
 \subsection{Importance sampling}
@@ -670,13 +628,13 @@ We will analyse three different types of particle filtering procedures: \textit{
 \subsection{Degeneracy of the SIS in Particle Filter}
 
 Usually, PF requires a resampling step at each stage of the algorithm. Recall that, in general, resampling determines a trade-off between the increase in the variance at the resampling stage and a decrease in the variance when future states are sampled from the transition kernel.\
-``Dead" particles (i.e., those with small weights) are  likely to be removed when resampling takes place and past weights get ``reset" (usually, they are set to be equal to $1/N$). Otherwise, the \textit{curse of dimensionality} problem will emerge and the variance of the weights will diverge over time as the variance of past weights increases as new updates occur period-by-period. Figure ***** shows an example of a PF where SIS is used: note that the $ESS$ drops dramatically after few periods, meaning that the variance of the importance weights diverges. This motivates the use of a SIR structure for the PF algorithm.\ \
+"Dead" particles (i.e., those with small weights) are  likely to be removed when resampling takes place and past weights get ``reset" (usually, they are set to be equal to $1/N$). Otherwise, the \textit{curse of dimensionality} problem will emerge and the variance of the weights will diverge over time as the variance of past weights increases as new updates occur period-by-period. Figure ***** shows an example of a PF where SIS is used: note that the $ESS$ drops dramatically after few periods, meaning that the variance of the importance weights diverges. This motivates the use of a SIR structure for the PF algorithm.\ \
 Lastly, it is now common practice to use a mixed approach with respect to resampling (recall that resampling has an additional computational cost). Generally, resampling is done \textit{adaptively}, when some condition is met. A standard criterion that is used (and that we adopt in our implementations of the PF) is to resample when the $ESS$ drops below some threshold $ESS_{min}\in [1,N]$:
 \begin{equation}
     ESS(W_{t-1}^{1:N})<ESS_{min}
 \end{equation}
 
-\section{Implementation}
+\subsection{Implementation}
 Consider again the random walk plus noise model of section XX,the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
 \begin{algorithm} SIS filter for Random Walk plus Noise Model
 \begin{itemize}
@@ -693,7 +651,9 @@ Our \code{SISfun} function implemented in R replicate this steps.
 \
 \hrule
 \hrule
+\
 \code{SISfun(data,N,m0,C0,tau,sigma)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -733,6 +693,7 @@ SISfun<-function(data,N,m0,C0,tau,sigma){
 ```
 We have already discussed the reasons why the SIS algorithm does not provide a good strategy in the filtering problem. We provide a graphical intuition of what happens when we use such filtering strategy on a simulated dataset. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. The results shown in the following two plots shows a clear degeneration of the effective sample size and bad fit of filtered states with respect to the true values.
 ```{r echo=FALSE}
+set.seed(1991)
 N=1000
 sis<-SISfun(y,N,m0,C0,tau,sigma)
 sisxs<-sis$xs
@@ -853,8 +814,9 @@ Finally, the BPF is able to generate the two key objects for inference in state-
     \end{equation}
 \end{itemize}
 
-\section{Implementation}
+\subsection{Implementation}
 In this section, Bootstrap Particle Filter will be used to estimate filtered states of the Random Walk plus Noise introduced in section XX. The overall strategy replicate the SIS filter with the addition of a ESS-based resampling step that applies when the effective sample size is smaller than a predetermined threshold opportunely chosen (in our example we decide to follow a common rule of thumb consisting in setting the threshold at $N/2$). The steps are presented in the following algorithm.
+
 \begin{algorithm} BPF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -875,7 +837,9 @@ These steps are resumed in our \code{PFfun} function.
 \
 \hrule
 \hrule
+\
 \code{PFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -925,6 +889,7 @@ PFfun<-function(data,N,m0,C0,tau,sigma,r){
 ```
 The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure XX. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
 ```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N=1000
 
 pf<-PFfun(y,N,m0,C0,tau,sigma)
@@ -957,6 +922,7 @@ ggarrange(FILT.PF,ESS.PF,labels=c("(a)","(b)"))
 Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure XX, when the number of particles generated at any interaction increases the results for both the estimated mean and the variance tend to converge [[SPIEGARE PERCHE']]. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
 
 ```{r include=FALSE}
+set.seed(1991)
 truex<-x
 estimatedx<-matrix(NA,ncol=4,nrow=6)
 colnames(estimatedx)<-c("N","Threshold","KF","BPF")
@@ -966,7 +932,7 @@ estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
 
 i=1
 for(N in c(100,1000,10000)){
-
+set.seed(1991)
 DLM1<-DLM(y,sigma2,tau2,m0,C0)
 pf1<-PFfun(y,N,m0,C0,tau,sigma)
 
@@ -979,6 +945,7 @@ i=i+1
 i=4
 for(k in c(2,5,10)){
   N=1000
+  set.seed(1991)
 DLM2<-DLM(y,sigma2,tau2,m0,C0)
 pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
 
@@ -998,6 +965,7 @@ kbl(estimatedx[1:3,], align="c", longtable = T, booktabs = T, caption="Root Mean
 ```
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Kalman Filter (KF) for increasing number of generated particles (N)", fig.height=13, fig.pos='H', fig.width=10, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N1=100
 N2=1000
 N3=10000
@@ -1122,7 +1090,7 @@ The GPF can be resumed by the following steps.
 Note that $\M_0(dx_0)$ is the initial sampling distribution, that could differ from the correct one $\Pd_0(dx_0)$.\ \
 To conclude, one of the issues related to the BPF is the fact that new states in $t$ are sampled ignoring their likelihood given the future observation $y_t$. Hence, extractions from the ``correct" transition kernel may be associated to low weights (small value for the likelihood). Instead, the GPF allows to solve for this problem, defining a proposal kernel that depends on the likelihood itself. Therefore, the extraction of future states already incorporates the information given by the data resulting in a more efficient procedure.
 
-\section{Implementation}
+\subsection{Implementation}
 \
 The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model described in Section XX can be improved accounting for the observations in the importance transition density and it consists of generating $x_{t}$ from its conditional distribution given $x_{t-1}$ and $y_{t}$. In the Normal model we are considering, the optimal proposal will be a Normal density as well with mean and variance given by 
 \begin{align*}
@@ -1130,6 +1098,7 @@ The Bootstrap Particle Filter Approach for the Random Walk plus Noise Model desc
 \sigma_{opt}^{2}=V(x_{t}|x_{t-1},y_{t})&=\frac{\tau^{2}\sigma^{2}}{\tau^{2}+\sigma^{2}}
 \end{align*}
 On the other hand, the incremental weights, using this importance transition density, are proportional to the conditional density of $y_{t}$ given $x_{t-1}=x_{t-1}^{(i)}$ , i.e $N(x_{t-1}^{(i)},\tau^{2}+\sigma^{2})$, evaluated at $y_{t}$. In other words the algorithm implemented in R is:
+
 \begin{algorithm} GPF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -1152,7 +1121,9 @@ The \code{GPFfun} function resume this passages.
 \
 \hrule
 \hrule
+\
 \code{GPFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
 \textbf{Arguments}
 
@@ -1205,6 +1176,7 @@ GPFfun<-function(data,N,m0,C0,tau,sigma,r){
 ```
 
 ```{r echo=FALSE}
+set.seed(1991)
 gpf<-GPFfun(y,N,m0,C0,tau,sigma)
 ESS.GPF<-ESSplot(df,gpf)
 ```
@@ -1216,6 +1188,7 @@ ggarrange(FILT.GPF,ESS.GPF,labels=c("(a)","(b)"))
 Let's provide directly a brief comparison between the Bootstrap Particle Filter (BPF) and the Guided Particle Filter (GPF). As we can see from the Figure XX, the Guided Particle Filter provides point estimates that are slightly better with respect to the ones of the BPF, and this is confirmed by the Table showing the RMSE. Moreover, also the variance is better, suggesting for higher precision.
 
 ```{r include=FALSE}
+set.seed(1991)
 truex<-x
 estimatedx<-matrix(NA,ncol=4,nrow=3)
 colnames(estimatedx)<-c("N","Threshold","BPF","GPF")
@@ -1226,7 +1199,7 @@ estimatedx[,2]<-c(0.5,0.25,0.1)
 i=1
 for(k in c(2,5,10)){
   N=1000
-
+set.seed(1991)
 pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
 gpf2<-GPFfun(y,N,m0,C0,tau,sigma,r=k)
 
@@ -1247,6 +1220,7 @@ kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Sq
 
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N2=1000
 
 
@@ -1407,7 +1381,10 @@ However, it is worth noting that the optimality results both for the kernel in t
     \item both the choice of $M_t$ and of $\eta_t$ affect the way in which weights are computed and, indirectly, the decision to resample in the future. It is difficult to take also this indirect effect into account when evaluating the  overall efficiency of the algorithm.
 \end{itemize}
 
-For illustration purposes, we are going implement an auxiliary particle filter with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  
+\subsection{Implementation}
+
+For illustration purposes, we are going implement an auxiliary particle filter for the linear Gaussian model with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  
+
 \begin{algorithm} APF for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -1434,8 +1411,11 @@ The \code{APFfun} function resume this passages.
 \
 \hrule
 \hrule
+\
 \code{APFfun(data,N,m0,C0,tau,sigma,r)}
+\
 \hrule
+\
 \textbf{Arguments}
 
 \code{data} \ \ the observed process. It has to be a vector or a univariate time series.\
@@ -1489,6 +1469,7 @@ APFfun<-function(data,N,m0,C0,tau,sigma,r){
 ```
 
 ```{r echo=FALSE}
+set.seed(1991)
 apf<-APFfun(y,N,m0,C0,tau,sigma)
 ESS.APF<-ESSplot(df,apf)
 ```
@@ -1501,6 +1482,7 @@ ggarrange(FILT.APF,ESS.APF,labels=c("(a)","(b)"))
 Let's compare the Auxiliary Particle Filter (APF) and the Bootstrap Particle Filter (BPF).
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison Bootstrap Particle Filter(BPF) and Guided Particle Filter (GPF), number of generated particles N=1000", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+set.seed(1991)
 N2=1000
 
 
@@ -1585,6 +1567,7 @@ ggarrange(p2,c2)
 ```
 
 ```{r include=FALSE}
+set.seed(1991)
 truex<-x
 estimatedx<-matrix(NA,ncol=4,nrow=3)
 colnames(estimatedx)<-c("N","Threshold","BPF","APF")
@@ -1595,7 +1578,7 @@ estimatedx[,2]<-c(0.5,0.25,0.1)
 i=1
 for(k in c(2,5,10)){
   N=1000
-
+set.seed(1991)
 pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
 apf2<-APFfun(y,N,m0,C0,tau,sigma,r=k)
 
@@ -1611,6 +1594,9 @@ i=i+1
 kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
 ```
 
+We also implement the auxiliary particle filter with optimal transition kernel. Therfore the algorithm is similiar to the one discussed above with the difference that:
+\
+[[[[Inserire l'algoritmo]]]]
 
 ```{r}
 APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
@@ -1651,7 +1637,49 @@ APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
 }
 ```
 
+```{r}
+###################
+## Per roberto:::::: cambia molto se usiamo l'uno o l'altro!!!!!! perchè??
+APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
+  predsd <- sqrt(sigma+tau)
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    weight = w*dnorm(data[t],x,predsd)
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    means<-x[k]+(tau/(tau+sigma))*(data[t]-x[k])
+    x1   = rnorm(N,means,importancesd)
+    lw  = dnorm(data[t],x1,predsd,log=TRUE)-dnorm(data[t],x[k],predsd,log=TRUE)
+    w   = exp(lw)
+    w   = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x1<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+
+
 ```{r echo=FALSE}
+set.seed(1991)
 apfopt<-APFoptfun(y,N,m0,C0,tau,sigma)
 ESS.APFopt<-ESSplot(df,apfopt)
 ```
@@ -1668,7 +1696,7 @@ Let us consider a more general state-space model, where the state vector include
 However, being $\psi$ constant over time, it is meaningless to sample its values sequentially: the first extraction of $\psi$ at the initial stage 0 (i.e., $\psi_0^n$) generates a constant path of particles for the parameter ($\psi_t^n=\psi_0^n$). \footnote{To be more precise, at the resampling step, also $\psi^n$ is resampled, but the possible values that it may take are the $N$ ones obtained at the initial time 0 extraction.}\
 Therefore, Liu and West (2001) proposed a modified particle filter, called \textit{Liu and West filter} (LWF) that allows to resample the parameter over time from a continuous distribution. In this way, at every time, the support of $\psi$ is not limited to the initially sampled $N$ values. \
 Here, we describe the LWF that makes use of the normal distribution to sample sequentially the parameter. Moreover, consider the simpler version of the bootstrap filter.\footnote{Clearly, the LWF can be also used within the more general frameweorks of the GPF and the APF.}\
-Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot) $ be the prior distribution for the parameter $\psi$.\
+Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot)$ be the prior distribution for the parameter $\psi$.\
 The LWF can be described by the following algorithm.
 \begin{enumerate}
     \item \textbf{Inital stage: }For $n=1,...,N$, at time 0 sample: $X_0^n\thicksim\Pd_0(dx_0)$ and $\psi_0^n\thicksim \pi(\psi_0)$.
@@ -1727,7 +1755,7 @@ To conclude, it is worth noting that the LWF produces, together with the usual f
     \pi^N_{t}(\psi)=\pi^N(\psi|y_{1:t})=\sum_{n=1}^NW_{t}^n\delta_{\psi^n}(\psi)
 \end{equation}
 
-\section{Implementation}
+\subsection{Implementation}
 \
 Consider the linear Gaussian example of section XX, but this time with unknown variances $\tau^{2}$ and $\sigma^{2}$. Thus, let $\psi=(\sigma^{2},\tau^{2})$ be the unknown parameter vector and assign a gamma prior for its components,
 \begin{align*}
@@ -1856,6 +1884,77 @@ LWfun<-function(data,N,m0,C0,alphav,betav,alphaw,betaw,delta,unif,r){
 }
 ```
 
+We provide an example of Liu and West filter fixing $\delta=0.7$ and drawing $\alpha_{v}$, $\beta_{v}$, $\alpha_{w}$ and $\beta_{w}$ from a Uniform $U(0,10)$. The results are shown in the following figure.
+
+```{r echo=FALSE}
+delta=0.7
+set.seed(1991)
+lwf<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T)
+ESS.lwf<-ESSplot(df,lwf)
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="a) LW Filtered States with credible interval (in red). b) Effective sample size (in black) with threshold (in yellow).", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+FILT.lwf<-Filtplot(df,lwf,"")
+ggarrange(FILT.lwf,ESS.lwf,labels=c("(a)","(b)"))
+```
+
+Finally, we compare the performances of the Liu and West filter and the other filtering strategies discussed so far. As we expect, in the linear Gaussian case, Kalman filter outperforms the other strategies. On the other hand, the Liu and West, with hyperparameters setted as described above, provides the worst estimates in terms of RMSE. This is not necessarily due to an overall weakness of the LWF with respect to the other filters, but simply to a not accurate choice of the hyperparameters. Moreover, while increasing the number of particles improves the accuracy, notice that the threshold for ESS-based resampling is not strictly related to better performances. 
+
+
+
+
+
+
+```{r include=FALSE}
+set.seed(1991)
+truex<-x
+estimatedx<-matrix(NA,ncol=6,nrow=6)
+colnames(estimatedx)<-c("N","Threshold","KF","BPF","APF","LWF")
+estimatedx[,1]<-c(100,1000,10000,1000,1000,1000)
+estimatedx[,2]<-c(0.5,0.5,0.5,0.5,0.25,0.1)
+
+
+i=1
+for(N in c(100,1000,10000)){
+set.seed(1991)
+DLM1<-DLM(y,sigma2,tau2,m0,C0)
+pf1<-PFfun(y,N,m0,C0,tau,sigma)
+apf1<-APFfun(y,N,m0,C0,tau,sigma)
+lwf1<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T)
+
+estimatedx[i,3]<-RMSE(truex,DLM1$m)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(pf1)$mean)
+estimatedx[i,5]<-RMSE(truex,Filtervalues(apf1)$mean)
+estimatedx[i,6]<-RMSE(truex,Filtervalues(lwf1)$mean)
+i=i+1
+
+}
+
+i=4
+for(k in c(2,5,10)){
+  set.seed(1991)
+  N=10
+DLM2<-DLM(y,sigma2,tau2,m0,C0)
+pf2<-PFfun(y,N,m0,C0,tau,sigma,r=k)
+apf2<-APFfun(y,N,m0,C0,tau,sigma,r=k)
+lwf2<-LWfun(y,N,m0,C0,1,1,1,1,delta,unif=T,r=k)
+
+estimatedx[i,3]<-RMSE(truex,DLM2$m)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(pf2)$mean)
+estimatedx[i,5]<-RMSE(truex,Filtervalues(apf2)$mean)
+estimatedx[i,6]<-RMSE(truex,Filtervalues(lwf2)$mean)
+i=i+1
+
+
+}
+
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
+```
 
 
 \section{Convergence}\label{pf_converg}
@@ -1915,7 +2014,7 @@ the one given $\mathcal{M}_{SV}$, obtained as $\log p(y_{1:t}|\mathcal{M}_{CV})-
 Notice that the first difference of this series is the relative log-likelihood
 of the incoming observation, $p(y_{t}|y_{1:t-1},\mathcal{M}_{CV})-p(y_{t}|y_{1:t-1},\mathcal{M}_{SV})$.
 
-```{r cll_plot, echo=F, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, results=F}
+```{r cll_plot, echo=FALSE, fig.align='center', fig.cap="Relative log-likelihood", fig.height=3, fig.pos='H', fig.width=10, results=F}
 load("SV/cll_plot.Rda")
 cll_plot+
   theme_bw()+
@@ -1926,4 +2025,3 @@ Overall, this analysis shows how a model with stochastic
 volatility is better at describing and predicting the considered time-frame of S&P500 returns. As can be seen from the graph and perhaps unsurprisingly,
 the density forecast given the stochastic volatility model represents
 a particularly significant improvement in the period of extreme values of returns in March 2020.
-
