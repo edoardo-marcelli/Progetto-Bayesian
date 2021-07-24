@@ -187,7 +187,7 @@ $$
 This means that the marginal distribution of $X_{0:t}$ with respect to $\P_T$ is $\P_t.$
 
 
-\section{State-Space Models}
+\section{State-Space Models}\label{sec_state_space}
 We now define \textit{State-Space models} as Markov processes that are partially observed. Let $X_t\in\X$ and $Y_t\in\Y$ and let $\{(X_t,Y_t)\}$ be a stochastic process. To help intuition, suppose that $\{Y_t\}$ is observable, i.e., coincides with a sequence of observations, while $\{X_t\}$ is latent. Consider the initial distribution $\P_0(dx_0)$ and the probability kernels
 $P_t(x_{t-1},dx_t)$ and $F_t(x_t,d_t)$, where $t=1,2,\dots$.
 \
@@ -464,7 +464,7 @@ In all the cases for which sampling takes place from a distribution different fr
 
 Let us consider two probability spaces: $(\X,\B(\X),\Q)$ and $(\X,\B(\X),\M)$ and let the measurable function $w:\X \rightarrow \R$ be proportional to the Radom-Nikodym derivative between $\Q$ and $\M$, i.e.,  $w(x)\propto\frac{\Q(dx)}{\M(dx)}$. \
 The following result represents the starting point for the idea of importance sampling.
-
+\bigskip
 \begin{lemma}\label{lemma_imp_sam_1}
 For any measurable, integrable and bounded function $\varphi: \X \rightarrow \R$, the following holds:
 \begin{equation}
@@ -587,7 +587,7 @@ Therefore, the particle approximation of $\Q_{1}(dx_{0:1})$ is:
 \subsection{Sequential Importance Resampling}
 
 A second approach can be used when sampling has to be done sequentially: \textit{sequential importance resampling} (SIR). Differently from SIS, an intermediate resampling stage takes place, in which time 0 values are sampled with replacement according to a given resampling strategy (usually, sampling indexes from a multinomial distribution with probabilities equal to the weights computed through IS at time 0).\
-While in the SIS all the particles (i.e., the sampled values) ``survive", with the ``risk" that particles associated with small weights are carried-over (in the sense that sampling in period 1 occurs from the kernel $M_1(X_0^n,dx_1)$), the same does not occur in SIR. In this second algorithm, particles with larger weights are more likely to be resampled and be used to ``generate" the particles in the next period.\
+While in the SIS all the particles (i.e., the sampled values) "survive", with the "risk" that particles associated with small weights are carried-over (in the sense that sampling in period 1 occurs from the kernel $M_1(X_0^n,dx_1)$), the same does not occur in SIR. In this second algorithm, particles with larger weights are more likely to be resampled and be used to ``generate" the particles in the next period.\
 We describe the SIR more formally, focusing on the previous two-period case.
 \begin{enumerate}
     \item Sample $N$ values $X_0$ from the proposal measure $\M_0$: $X_0^n\thicksim \M_0$ for $n=1,...,N$.
@@ -604,14 +604,14 @@ Note that, after resampling occurred, each particle $\tilde X_{0:1}^n:=(X_0^{A_1
 To understand the reason of the previous statement, let us assume that both $\Q_0$ and $\M_0$ admit densities $q_0$, $m_0$ with respect to the same dominating measure $\nu(dx_0)$ and that the transition kernel $M_1$ also admits the density $m_1$. 
 Consider the sequential updating for the weights:
 \begin{equation}
-    w^n_1=\frac{\Q_1(\tilde dx_{0:1})}{\M_1(dx_{0:1})}\propto \frac{q_0(x_0^{A_1^n})}{Pr(A_1^n)\cdot m_0(x_0^{A_1^n})}\cdot \frac{m_1(x_1^n|x_0^{A_1^n})}{m_1(x_1^n|x_0^{A_1^n})}
+    w^n_1=\frac{\Q_1(dx_{0:1})}{\M_1(dx_{0:1})}\propto \frac{q_0(x_0^{A_1^n})}{Pr(A_1^n)\cdot m_0(x_0^{A_1^n})}\cdot \frac{m_1(x_1^n|x_0^{A_1^n})}{m_1(x_1^n|x_0^{A_1^n})}
 =\underbrace{\frac{q_0(x_0^{A_1^n})}{ m_0(x_0^{A_1^n})}}_{W_0^n}\cdot \underbrace{\frac{1}{Pr(A_1^n)}}_{1/W_0^n}=1\label{sis_update}
 \end{equation}
 where $\M_1$ denotes the probability measure for the extraction of the particle $\tilde x_{0:1}^n$ according to SIR. $\M_1$ (second equality sign in the previous formula) can be rewritten as the product between the kernel for $x_1^n$ given $x_0^{A_1^n}$ and the probability of $x_0^{A_1^n}$ itself. This last probability can also be rewritten as the product between the proposal density $m_0$ from which $X_0$ is extracted and the probability that it is sampled again when resampling occurs.
 
 \subsection{SIS vs SIR}
 The choice between the two sequential sampling strategies (SIS and SIR) has significant implications in terms of computational cost and variance of the importance weights. In fact, it is clear that SIR is more costly computationally since it requires an intermediate resampling step. Nonetheless, SIS suffers from the problem knonw as \textit{curse of dimensionality}, i.e., the fact that the $ESS$ collapses over time as the variance of the weights diverges.\
-Consider an extension of SIS to a $T$-period model and let us assume that the target and the proposal kernels admit densities, respectively, $q_t$ and $m_t$ with respect to the same dominating measures (this implies that the joint distributions\footnote{Let us denote the joint distributions with $q_t$ and $m_t$ too, with some abuse of notation} admit a density too). Then, weights, for every $t=1,...,T$, are updated according to:
+Consider an extension of SIS to a $T$-period model and let us assume that the target and the proposal kernels admit densities, respectively, $q_t$ and $m_t$ with respect to the same dominating measures (this implies that the joint distributions\footnote{Let us denote the joint distributions with $q_t$ and $m_t$ too, with some abuse of notation.} admit a density too). Then, weights, for every $t=1,...,T$, are updated according to:
 \begin{equation}
     w_t^n\propto \frac{q_t(x_{0:t}^n)}{m_t(x_{0:t}^n)}\propto \underbrace{\frac{q_{t-1}( x_{0:t-1}^n)}{m_{t-1}(x_{0:t-1}^n)}}_{\propto w_{t-1}^n}\cdot \frac{q_t( x_t|x_{t-1}^n)}{m_t(x_t|x_{t-1}^n)}\propto 
     w_{t-1}^n\cdot\frac{q_t( x_t|x_{t-1}^n)}{m_t(x_t|x_{t-1}^n)}\label{sis_update}
@@ -621,9 +621,7 @@ Equation \eqref{sis_update} suggests, intuitively, that over time new variance i
 
 \section{Particle Filter}\label{pf_main}
 
-\color{red}
-Let us consider the standard state-space model introduced in the previous chapters.
-\color{black}
+Let us consider the standard state-space model introduced previously (see \ref{sec_state_space}).
 \textit{Particle filter} (PF) is a numerical algorithm that is used to obtain approximations for the filtering - $\Pd_t (dx_t|y_{1:t})$ - and the prediction - $\Pd_t (dx_t|y_{1:t-1})$ - distributions for inference in state-space models.\ \
 In a state-space model sampling sequentially from the transition kernels for the states is not enough to obtain good approximations since the observation sample ($y_{1:T}$) contains information about the underlying states through the likelihood function $f_t(y_t|x_t)$. Observations constitute signals for the model's states.\
 Therefore, the conditional distribution of the states, given the observed data - $\Pd_t(dx_{1:t}|y_{1:t})$ - changes over time as new data points become available. The PF algorithm allows to incorporate sequentially the new data to obtain new approximations for this distribution (and for the filtering and prediction ones). \
@@ -644,7 +642,7 @@ Lastly, it is now common practice to use a mixed approach with respect to resamp
 Consider again the random walk plus noise model of section \ref{implementation},the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
 \begin{algorithm} SIS filter for Random Walk plus Noise Model
 \begin{itemize}
-\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
@@ -697,7 +695,7 @@ SISfun<-function(data,N,m0,C0,tau,sigma){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 ```
-We have already discussed the reasons why the SIS algorithm does not provide a good strategy in the filtering problem. We provide a graphical intuition of what happens when we use such filtering strategy on a simulated dataset. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. The results shown in the following two plots shows a clear degeneration of the effective sample size and bad fit of filtered states with respect to the true values.
+We have already discussed the reasons why the SIS algorithm does not provide a good strategy in the filtering problem. We provide a graphical intuition of what happens when we use such filtering strategy on a simulated dataset. We decide to set $N=1000$, $m_{0}=0$, $C_{0}=100$ and $\tau=\sigma=1$. The following two plots show a clear degeneration of the effective sample size and bad fit of filtered states with respect to the true values.
 ```{r echo=FALSE}
 set.seed(1991)
 N=1000
@@ -830,7 +828,7 @@ In this section, Bootstrap Particle Filter will be used to estimate filtered sta
 
 \begin{algorithm} BPF for Random Walk plus Noise Model
 \begin{itemize}
-\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
@@ -898,7 +896,7 @@ PFfun<-function(data,N,m0,C0,tau,sigma,r){
   return(list(xs=xs,ws=ws,ess=ess))
 }
 ```
-The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure \ref{fig:myfig3}. We decide to set $N=1000$,$m_{0}=0$,$C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
+The estimated states of the Boostrap Particle Filter togheter with the effective sample size are shown in Figure \ref{fig:myfig3}. We decide to set $N=1000$, $m_{0}=0$, $C_{0}=100$ and $\tau=\sigma=1$. Notice how the resampling step allows the effective sample size not to drop, improving results.
 ```{r echo=FALSE, fig.align='center', fig.cap="Effective Sample Size", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 set.seed(1991)
 N=1000
@@ -1057,7 +1055,7 @@ ggarrange(p1,c1,p2,c2,p3,c3,nrow=3,ncol=2,labels=c("N=100","","N=1000","","N=100
 
 \subsection{Guided Particle Filter}
 
-It is not always possible to sample sequentially from the correct transition kernel. Moreover, even if it were possible, there exist a proposal transition kernel that makes the algorithm more efficient. This motivates the \textit{guided particle filter} (GPF), that can be interpreted as a more general version of the GPF. In fact, with the GPF it is possible, at each stage, to sample new states from a transition kernel that differs from the correct one.\ \
+It is not always possible to sample sequentially from the correct transition kernel. Moreover, even if it were possible, there exist a proposal transition kernel that makes the algorithm more efficient. This motivates the \textit{guided particle filter} (GPF), that can be interpreted as a more general version of the BPF. In fact, with the GPF it is possible, at each stage, to sample new states from a transition kernel that differs from the correct one.\ \
 Let $P_t(x_{t-1},dx_t)$ be the correct kernel and consider a kernel $M_t(x_{t-1},dx_t)$ defined on the same measurable space of $P_t$. Moreover, let us assume that that $P_t$ is absolutely continuous with respect to $M_t$\footnote{This condition is stronger than what would be needed for the existence of the importance weights in GPF, i.e., that  $P_t(x_{t-1},dx_t)\cdot f_t(y_t|x_t)\ll M_t(x_{t-1},dx_t)$. } (i.e., $P_t\ll M_t$). If sampling occurs sequentially from this kernel, the way in which weights are updated should differ from the BPF. Consider equation  \eqref{weight_updated_bpf} and let us reformulate it for the GPF case. Here, the proposal distribution is not $\M_t(dx_{0:t}|y_{1:t})=\M_{t-1}(dx_{0:t-1}|y_{1:t-1})\cdot P_t(x_{t-1},dx_t)$ anymore, but becomes $\M_t(dx_{0:t}|y_{1:t})=\M_{t-1}(dx_{0:t-1}|y_{1:t-1})\cdot M_t(x_{t-1},dx_t)$. Hence:
 \begin{equation}
     \begin{split}
@@ -1112,7 +1110,7 @@ On the other hand, the incremental weights, using this importance transition den
 
 \begin{algorithm} GPF for Random Walk plus Noise Model
 \begin{itemize}
-\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item Compute $\sigma_{opt}^{2}$ 
 \item For $t=1,...,n$:
 \begin{enumerate}
@@ -1398,7 +1396,7 @@ For illustration purposes, we are going implement an auxiliary particle filter f
 
 \begin{algorithm} APF for Random Walk plus Noise Model
 \begin{itemize}
-\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item For $k=1,...,N$:
