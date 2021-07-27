@@ -40,6 +40,7 @@ header-includes:
 - \usepackage{ntheorem}
 - \usepackage{lipsum}
 - \usepackage{xcolor}
+- \usepackage{mathtools}
 - \theoremstyle{break}
 - \newtheorem{thm}{Theorem}% theorem counter resets every \subsection
 - \renewcommand{\thethm}{\arabic{thm}}
@@ -566,7 +567,7 @@ It is possible to relate the $ESS$ to the variance of the importance function.  
 The second term in the numerator of the previous formula is the square of the coefficient of variation (i.e., the ratio between the variance and the squared mean) of the un-normalized weights. It is clear that a lower $ESS$ is associated with a higher variance for the weights.
 
 
-\subsection{Sequential Importance Sampling}
+\subsection{Sequential Importance Sampling}\label{seq_impt_sampling}
 
 When dealing with state-space models, the importance sampling algorithm has to be applied dynamically and the importance weights are updated period-by-period. To illustrate the relevance of the \textit{sequential importance sampling} (SIS) algorithm, we consider a two-period stochastic process.\ \
 Let us consider the approximation of the measure $\Q_0$ obtained at time 0 through IS from the measure $\M_0$:
@@ -1960,6 +1961,7 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 
 \section{Convergence}\label{pf_converg}
+
 
 \section{Implementations for Stochastic Volatility Models}
 
