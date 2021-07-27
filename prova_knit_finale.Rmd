@@ -1386,7 +1386,7 @@ We can summarize the APF algorithm.
 \end{enumerate}
 However, it is worth noting that the optimality results both for the kernel in the GPF and of the auxiliary  in the APF, has  two main weaknesses:
 \begin{itemize}
-    \item it is not clear that what is optimal at time $t$ remains such at future stages. In other words, it is not truly clear how the minimization of the variance of the inferential weights at each stage affect the efficiency of the PF estimators;
+    \item it is not clear that what is optimal at time $t$ remains such at future stages. In other words, it is not truly clear how the minimization of the variance of the inferential weights at each stage affects the efficiency of the PF estimators;
     \item both the choice of $M_t$ and of $\eta_t$ affect the way in which weights are computed and, indirectly, the decision to resample in the future. It is difficult to take also this indirect effect into account when evaluating the  overall efficiency of the algorithm.
 \end{itemize}
 
