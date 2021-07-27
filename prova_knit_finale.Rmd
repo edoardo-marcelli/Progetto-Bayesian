@@ -208,21 +208,21 @@ Then by the last equality of definition \ref{state-space-def}, the joint distrib
    \P_T(X_{0:T}\in dx_{0:T},Y_{0:T}\in dy_{0:T})=\P_T(dx_{0:T})\prod\limits_{t=0}^T f_t(y_t\mid x_t)\prod\limits_{t=0}^T\nu(dy_t).
 \end{equation}
 Integrating away $X_{0:T},$ one gets the marginal density
-\begin{align*}\label{state-space-marginal-y}
-  \P_T(dy_{0:T}) &= \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\nu(dy_s) \\
-                &= p_t(y_{0:t})\prod\limits_{s=0}^t\nu(dy_s),
-\end{align*}                
+\begin{equation}\label{state-space-marginal-y}
+  \P_T(dy_{0:T}) = \E_{\P_{t}}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big] \prod\limits_{s=0}^t\nu(dy_s)
+                = p_t(y_{0:t})\prod\limits_{s=0}^t\nu(dy_s),
+\end{equation}                
 where $p_t(y_{0:t})$ is the likelihood function.
-Dividing the left-hand side of equation \ref{state-space-densities} by the left-hand side of equation \ref{state-space-marginal-y} and the right-hand side of equation \ref{state-space-densities} by the right-hand side of equation \ref{state-space-marginal-y}, one obtains the filtering distribution
+Dividing the left-hand side of equation \ref{state-space-densities} by the left-hand side of equation \ref{state-space-marginal-y} and the right-hand side of equation \ref{state-space-densities} by the right-hand side of equation \ref{state-space-marginal-y}, one obtains the distribution
 \begin{equation}
-\P_t(X_{t}\in dx_{t}\mid Y_{0:t}=y_{0:t})=\frac{1}{p_t(y_{0:t})}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big]\P_t(dx_{0:t}).
+\P_t(X_{0:t}\in dx_{0:t}\mid Y_{0:t}=y_{0:t})=\frac{1}{p_t(y_{0:t})}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big]\P_t(dx_{0:t}).
 \end{equation}
 
 \chapter{Linear-Gaussian case}
 
 \textit{Linear Gaussian models} are a class of popular state-space models. A notable property of such models is that the filtering and predictive distributions are analytically tractable, which makes such models very convenient in applications. 
 
-Suppose that $\X=\R^{d_x}$ and $\Y=\R^{d_y}.$ Let $U_t\thicksim\N(0,\Sigma_t)$ and $V_t\thicksim\N(0,R_t)$ be two independent white-noise errors and assume the initial distribution 
+Suppose that $\X=\R^{d_x}$ and $\Y=\R^{d_y}.$ Let $U_t\thicksim\N(0,\Sigma_t)$ and $V_t\thicksim\N(0,\Lambda_t)$ be two independent white-noise errors and assume the initial distribution 
 $X_0\thicksim\N(0,\Sigma_0).$ We have a linear Gaussian model if 
 \begin{align}
 X_t &= A_tX_{t-1}+U_t \\
@@ -231,54 +231,58 @@ Y_t &= B_tX_t + V_t.
 Note that  $X_t\mid X_{t-1}$ and $Y_t\mid X_t$ are both normally distributed. 
 \
 \begin{lemma}\label{kalman-filter}
-  Let $X\thicksim\N(m_0,Q_0)$ and $Y\mid X\thicksim\N(BX,R)$, where $R$ and $Q_0$ are positive semi-definite matrices. 
+  Let $X\thicksim\N(m_0,C_0)$ and $Y\mid X\thicksim\N(BX,\Lambda)$, where $R$ and $Q_0$ are positive semi-definite matrices. 
   Then, it holds that
   \begin{align}
-    X\mid Y=y&\thicksim\N(m_1,Q_1),\\
-    Q_1&= Q_0 (I_{d_x} - B'(B Q_0 B'+ R)^{-1} B Q_0) \\
-    m_1&=[I_{d_x} - Q_0 B'(B Q_0 B'+ R)^{-1} B ]m_0 + Q_0 B'(B Q_0 B'+ R)^{-1}y.
+    X\mid Y=y&\thicksim\N(m_1,C_1),\\
+    C_1&= C_0 (I_{d_x} - B'(B C_0 B'+ \Lambda)^{-1} B C_0) \\
+    m_1&=[I_{d_x} - C_0 B'(B C_0 B'+ \Lambda)^{-1} B ]m_0 + C_0 B'(B C_0 B'+ \Lambda)^{-1}y.
   \end{align}
 \end{lemma}
 \begin{proof*}
-   The lemma can be proved using Bayes' Theorem. Suppose $X\thicksim\N(m_0, Q_0).$ It is easy to see that
+   The lemma can be proved using Bayes' Theorem. Suppose $X\thicksim\N(m_0, C_0).$ It is easy to see that
 \begin{equation} \label{normal-distrib-rewrite}
-        p(x)\propto \text{exp}\Big(-\frac{1}{2}X'AX + X'B\Big),
+        p(x)\propto \text{exp}\Big(-\frac{1}{2}x'C_0^{-1}x + x'C_0^{-1}m_0\Big).
 \end{equation}
-with $A=Q_0^{-1}$ and $B=Am_0.$
 Now, by Bayes' Theorem, 
 
     \begin{align*}
         p(x\mid Y=y)  &\propto p(x) p(y\mid x) \\
-                    &\propto \text{exp}\Big(-\frac{1}{2}X' Q_0^{-1}X + X' Q_0^{-1}m_0-\frac{1}{2}(y-BX)'R^{-1}(y-BX)) \\
-                    &\propto \text{exp}(-\frac{1}{2}X' Q_0^{-1}X + X' Q_0^{-1}m_0-\frac{1}{2}X' B' R^{-1}BX+X' B' R^{-1}y)\\
-                    &=\text{exp}(-\frac{1}{2}X'(Q_0^{-1}+B' R^{-1}B)X+
-                    X'(Q_0^{-1}m_0+B' R^{-1}y)\Big).
+                    &\propto \text{exp}\Big(-\frac{1}{2}x' C_0^{-1}x + x' C_0^{-1}m_0-\frac{1}{2}(y-Bx)'\Lambda^{-1}(y-Bx)) \\
+                    &\propto \text{exp}(-\frac{1}{2}x' C_0^{-1}x + x' C_0^{-1}m_0-\frac{1}{2}x' B' \Lambda^{-1}Bx+x' B' \Lambda^{-1}y)\\
+                    &=\text{exp}(-\frac{1}{2}x'(C_0^{-1}+B' \Lambda^{-1}B)x+
+                    x'(C_0^{-1}m_0+B' \Lambda^{-1}y)\Big).
     \end{align*}
 
 Hence, it follows that 
 \begin{equation*}
-    Q_1=Var(X\mid Y=y)= (Q_0^{-1}+ B' R^{-1} B)^{-1}=Q_0-Q_0 B'(B Q_0 B'+R)^{-1}B Q_0
+    C_1=Var(X\mid Y=y)= (C_0^{-1}+ B' \Lambda^{-1} B)^{-1}=C_0-C_0 B'(B C_0 B'+\Lambda)^{-1}B C_0
 \end{equation*}
 and 
-    \begin{align*}
-        m_1 &=\E(X\mid Y=y) = Q_1^{-1}(Q_0^{-1}m_0+B' R^{-1}y)\\
-            &= (Q_0-Q_0B'(B Q_0B'+R)^{-1}B Q_0)(Q_0^{-1}m_0+B' R^{-1}y)\\
-            &= m_0-Q_0B'(B Q_0B'+R)^{-1}B m_0 + Q_0 B' R^{-1}y - Q_0B'(B Q_0B'+R)^{-1}B Q_0 B' R^{-1}y \\
-            &=[I_{d_x} - Q_0 B'(B Q_0 B'+ R)^{-1} B ]m_0 + Q_0 B'(B Q_0 B'+ R)^{-1}y.
-    \end{align*}
+\begin{equation*}
+\begin{split}
+        m_1 &=\E(X\mid Y=y) = C_1^{-1}(C_0^{-1}m_0+B' \Lambda^{-1}y)\\
+            &= (C_0-C_0B'(B C_0B'+\Lambda)^{-1}B C_0)(C_0^{-1}m_0+B' \Lambda^{-1}y)\\
+            &= m_0-C_0B'(B C_0B'+\Lambda)^{-1}B m_0 + C_0 B' \Lambda^{-1}y - C_0B'(B C_0B'+\Lambda)^{-1}B C_0 B' \Lambda^{-1}y \\
+            &=[I_{d_x} - C_0 B'(B C_0 B'+ \Lambda)^{-1} B ]m_0 + C_0 B'(B C_0 B'+ \Lambda)^{-1}y.
+\end{split}
+\end{equation*}$\hfill\blacksquare$
 \end{proof*}
 
-Assume that $\P_{t-1}(dx_{t-1}\mid Y_{0:t-1}=y_{0:t-1})=\N(m_{t-1},Q_{t-1}).$
+Assume that $\P_{t-1}(dx_{t-1}\mid Y_{1:t-1}=y_{1:t-1})=\N(m_{t-1},C_{t-1}).$
 Then, using the transition equation of the latent variable, 
 by the linearity of the Gaussian distribution, we have that the predictive distribution is 
 \begin{equation}
-\P_{t-1}(dx_{t}\mid Y_{0:t-1}=y_{0:t-1})=\N(A_tm_{t-1},A_tQ_{t-1}A_t'+\Sigma_t).
+\P_{t-1}(dx_{t}\mid Y_{1:t-1}=y_{1:t-1})=\N(A_tm_{t-1},A_tC_{t-1}A_t'+\Sigma_t).
 \end{equation}
-Letting $E_T=A_tQ_{t-1}A_t'+\Sigma_t,$ and applying lemma \ref{kalman-filter}, it follows that the filtering distribution is 
+Letting $R_T=A_tC_{t-1}A_t'+\Sigma_t,$ and applying lemma \ref{kalman-filter}, it follows that the filtering distribution is 
 \begin{align*}
-  \P_{t}(X_t\in dx_{t}\mid Y_{0:t-1}&=y_{0:t-1})=\N(m_t,Q_t), \text{where} \\ Q_t&=E_t[I_{d_x} - B_t'(B_tE_tB_t'+R_t)^{-1} B_tE_t] \\
-  m_t &= [I_{d_x} - E_tB_t'(B_tE_tB_t'+R_t)^{-1} B_t]A_tm_{t-1}+E_tB_t'(B_tE_tB_t'+R_t)^{-1}y_t.
+  \P_{t}(X_t\in dx_{t}\mid Y_{1:t-1}&=y_{1:t-1})=\N(m_t,C_t), \text{ where} \\ C_t&=R_t[I_{d_x} - B_t'(B_tR_tB_t'+\Lambda_t)^{-1} B_tR_t] \\
+  m_t &= [I_{d_x} - R_tB_t'(B_tR_tB_t'+\Lambda_t)^{-1} B_t]A_tm_{t-1}+R_tB_t'(B_tR_tB_t'+\Lambda_t)^{-1}y_t.
 \end{align*}
+
+In some situations, it is possible to linearize otherwise non-linear models in order to employ this filtering method.
+There are, however, cases where this is not possible or where the linearization is not satisfactory. One such example is the stochastic volatility model. In the following chapters, we will introduce powerful algorithms that can be used in much more general settings.
 
 \subsection{Implementation}\label{implementation}
 
@@ -831,14 +835,16 @@ In this section, Bootstrap Particle Filter will be used to estimate filtered sta
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item For $t=1,...,n$:
 \begin{enumerate}
-\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\item Draw $x_{t}^{(i)} \sim N(x_{t-1}^{(i)},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
 \begin{enumerate}
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
-\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\item Set $p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
@@ -1115,14 +1121,16 @@ On the other hand, the incremental weights, using this importance transition den
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Compute $\mu_{opt}$
-\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma_{opt}^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2+\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{t})$
+\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma_{opt}^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};x_{t}^{(i)},\sigma^2+\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
 \begin{enumerate}
 \item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
 \item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
 \end{enumerate}
-\item Set $p(x_{t}|y_{t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\item Set $p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
@@ -1401,7 +1409,7 @@ For illustration purposes, we are going implement an auxiliary particle filter f
 \begin{enumerate}
 \item For $k=1,...,N$:
 \begin{enumerate}
-\item Draw $I_{k}$ with $P(I_{k}) \propto w_{t-1}^{(i)}f(y_{t}|g(x_{t-1}^{(i)})) $
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f(y_{t}|g(x_{t-1}^{(i)})) $
 \item Draw $x_{t}^{(k)} \sim N(x_{t-1}^{(I_{k})},\tau^2)$
 \item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})}))}$
 \end{enumerate}
@@ -1604,8 +1612,32 @@ kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Sq
 ```
 
 We also implement the auxiliary particle filter with optimal transition kernel. Therfore the algorithm is similiar to the one discussed above with the difference that:
-\
-[[[[Inserire l'algoritmo]]]]
+
+\begin{algorithm}APF with optimal transition kernel for Random Walk plus Noise Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Compute $\sigma_{opt}^{2}$ 
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),\sigma^{2}+\tau^{2}) $
+\item Compute $\mu_{opt}=\mu(x_{t-1}^{(I_{k})})$
+\item Draw $x_{t}^{(k)} \sim N(\mu_{opt},\sigma^{2}_{opt})$
+\item Set  $\tilde{w}^{(i)}_{t} = N^{-1}$ for $i=1,...,N$
+\end{enumerate}
+\item otherwise
+\begin{enumerate}
+\item Compute $\mu_{opt}=\mu(x_{t-1})$
+\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma^{2}_{opt})$ for $i=1,...N$
+\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}f_{N}(y_{t};x_{t}^{(i)},\sigma^{2}+\tau^{2})$ for $i=1,...,N$
+\end{enumerate}
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+
 
 ```{r}
 APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
@@ -2815,6 +2847,116 @@ APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
     ws = rbind(ws,w)
     ess =rbind(ess,ESS)
 
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+\
+\hrule
+\hrule
+\
+\code{SISfun(data,N,m0,C0,alpha,beta,tau,r)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
+\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alpha} \ \ intercept $\alpha$ in the state equation
+\
+\code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+\
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<0){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+```
+\
+\hrule
+\hrule
+\
+\code{BAPFfun(data,N,m0,C0,alpha,beta,tau,r)}
+\
+\hrule
+\textbf{Arguments}
+
+\code{data} \ \ the observed process. It has to be a vector or a univariate time series.
+\
+\code{N} \ \ number of particles generated at each step
+\
+\code{m0} \ \ central value of the normal prior state distribution
+\
+\code{C0} \ \ variance of the normal prior state distribution
+\
+\code{alpha} \ \ intercept $\alpha$ in the state equation
+\
+\code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
+\hrule
+\hrule
+\
+```{r message=FALSE, warning=FALSE, paged.print=FALSE}
+BAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS>-1){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }

@@ -120,7 +120,7 @@ of a set $\mathcal{X}$ reads $\mathcal{B}(\mathcal{X}).$ The pair $(\mathcal{X},
 The densities are represented with lower case cursive letters. For example, the density of $X_t$ in $x_t$ is $p_t^\theta(x_t),$ where $\theta\in\Theta$ is some (eventually known) vector, while the density 
 of $X_t$ in $x_t,$ given that $X_{t-1}$ has previously taken value $x_{t-1},$ is $p_t^\theta(x_t\mid x_{t-1}).$  Note that $p_t^\theta(x_t\mid x_{t-1})$ is a member of the parametric family with parameters $(\theta, x_{t-1})$.
 The probability distribution of a random variable $X_t$ is represented by $\mathbb{P}_t(dx_t),$ while the probability distribution of a sequence $X_{0:t}$ is represented by $\mathbb{P}_t(dx_{0:t}).$ The Dirac measure, i.e., the measure that assigns probability $1$ to the singleton $\{x\},$ is denoted by $\delta_x(dy)$.The expectation operator is denoted by $\mathbb{E},$ where the section of $\mathbb{E}$ at $\mathbb{Q},$ i.e., $\mathbb{E}_{\mathbb{Q}}$ denotes the operator computed with respect to the probability distribution $\mathbb{Q}.$ 
-Let $\varphi$ be a function defined on the random variable $X\propto\mathbb{Q}.$ Then, we denote the expected value of $\varphi(X)$ with 
+Let $\varphi$ be a function defined on the random variable $X\thicksim\mathbb{Q}.$ Then, we denote the expected value of $\varphi(X)$ with 
 $$
     \mathbb{E}_{\mathbb{Q}}[\varphi(X)]=
     \int_{\mathcal{X}}\varphi(x)\mathbb{Q}(dx).
