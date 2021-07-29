@@ -636,7 +636,7 @@ We will analyse three different types of particle filtering procedures: \textit{
 \subsection{Degeneracy of the SIS in Particle Filter}
 
 Usually, PF requires a resampling step at each stage of the algorithm. Recall that, in general, resampling determines a trade-off between the increase in the variance at the resampling stage and a decrease in the variance when future states are sampled from the transition kernel.\
-"Dead" particles (i.e., those with small weights) are  likely to be removed when resampling takes place and past weights get ``reset" (usually, they are set to be equal to $1/N$). Otherwise, the \textit{curse of dimensionality} problem will emerge and the variance of the weights will diverge over time as the variance of past weights increases as new updates occur period-by-period. Figure ***** shows an example of a PF where SIS is used: note that the $ESS$ drops dramatically after few periods, meaning that the variance of the importance weights diverges. This motivates the use of a SIR structure for the PF algorithm.\ \
+"Dead" particles (i.e., those with small weights) are  likely to be removed when resampling takes place and past weights get ``reset" (usually, they are set to be equal to $1/N$). Otherwise, the \textit{curse of dimensionality} problem will emerge and the variance of the weights will diverge over time as the variance of past weights increases as new updates occur period-by-period. Next, we show an example of a PF where SIS is used: note that the $ESS$ drops dramatically after few periods, meaning that the variance of the importance weights diverges. This motivates the use of a SIR structure for the PF algorithm.\ \
 Lastly, it is now common practice to use a mixed approach with respect to resampling (recall that resampling has an additional computational cost). Generally, resampling is done \textit{adaptively}, when some condition is met. A standard criterion that is used (and that we adopt in our implementations of the PF) is to resample when the $ESS$ drops below some threshold $ESS_{min}\in [1,N]$:
 \begin{equation}
     ESS(W_{t-1}^{1:N})<ESS_{min}
@@ -1070,7 +1070,7 @@ Let $P_t(x_{t-1},dx_t)$ be the correct kernel and consider a kernel $M_t(x_{t-1}
     \end{split}\label{weight_updated_gpf}
 \end{equation}
 Note that the updating factor is more complex that the one of the BPF: in addition to the likelihood function $f_t(y_t|x_t)$, the fact that sampling occurs from a kernel different from the correct ones requires the additional term $P_t(x_{t-1},dx_t)/M_t(x_{t-1},dx_t)$.\ \
-We are now ready to establish, informally, the optimality result about the transition kernel. Let us denote by  $G_t=[P_t(x_{t-1},dx_t)\cdot f_t(y_t|x_t)dy_t]/M_t(x_{t-1},dx_t)$ the \textit{incremental weights} (i.e., the updating factor) and by $M_t^*(x_{t-1},dx_t)$ the optimal kernel. It can be proved\footnote{For a formal proof see \cite{**}, th. 10.1 p. 142.} that the optimal kernel, i.e., the one that minimizes the variance of the incremental weights $G_t$ (and of the time $t$ weights themselves), is:
+We are now ready to establish, informally, the optimality result about the transition kernel. Let us denote by  $G_t=[P_t(x_{t-1},dx_t)\cdot f_t(y_t|x_t)dy_t]/M_t(x_{t-1},dx_t)$ the \textit{incremental weights} (i.e., the updating factor) and by $M_t^*(x_{t-1},dx_t)$ the optimal kernel. It can be proved\footnote{For a formal proof see Chopin and Papaspiliopoulos (2020), th. 10.1 p. 142.} that the optimal kernel, i.e., the one that minimizes the variance of the incremental weights $G_t$ (and of the time $t$ weights themselves), is:
 \begin{equation}
     M_t^*(x_{t-1},dx_t)=\frac{1}{\int_{\X}P_t(x_{t-1},dx_t)\cdot f_t(y_t|x_t)} P_t(x_{t-1},dx_t)\cdot f_t(y_t|x_t)
 \end{equation}
@@ -1343,7 +1343,7 @@ To understand the logic of this sequential weight updating, consider  \eqref{wei
         =&\frac{w_{t-1}}{ \tilde w_{t-1}}\cdot\frac{P_t(x_{t-1},dx_t)\cdot f_t(y_t|x_t)}{ M_t(x_{t-1},dx_t)}\label{weight_updated_apf}
     \end{split}
 \end{equation}
-It is possible to derive an optimality result for the auxiliary functions\footnote{Details in ***** th 10.2, p. 148}. In the special case in which the transition kernel used for sampling corresponds with the optimal one $M_t^*$, the optimal auxiliary function (i.e., the auxiliary function that minimizes the variance of the inferential weights) becomes:
+It is possible to derive an optimality result for the auxiliary functions\footnote{Details in Chopin and Papaspiliopoulos (2020) th 10.2, p. 148}. In the special case in which the transition kernel used for sampling corresponds with the optimal one $M_t^*$, the optimal auxiliary function (i.e., the auxiliary function that minimizes the variance of the inferential weights) becomes:
 \begin{equation}
     \eta_{t-1}^*(x_{t-1})=\int_\X P_t(x_{t-1},dx_t)f_t(y_t|x_t)
 \end{equation}
@@ -1389,7 +1389,7 @@ We can summarize the APF algorithm.
 \begin{equation*}
  \tilde w_t^n=w_t^n \cdot \eta_t(X_t^n)
 \end{equation*}
-\item Normalize the auxiliary weights, for $n=1,...,N$:  $\tilde W_t^n:=\frac{\tilde w_t^n}{\sum_{m=1}^N\tilde w_t^m}$.\footnote{It is worth mentioning that the original APF included a final resampling step at the end of each iteration. However, our formulation is more efficient since having two resampling steps might introduce additional Monte Carlo variance. Se ***Johansen p. 120}
+\item Normalize the auxiliary weights, for $n=1,...,N$:  $\tilde W_t^n:=\frac{\tilde w_t^n}{\sum_{m=1}^N\tilde w_t^m}$.\footnote{It is worth mentioning that the original APF included a final resampling step at the end of each iteration. However, our formulation is more efficient since having two resampling steps might introduce additional Monte Carlo variance. See Johansen and Evers (2007), p. 120}
     \end{enumerate}
 \end{enumerate}
 However, it is worth noting that the optimality results both for the kernel in the GPF and of the auxiliary  in the APF, has  two main weaknesses:
@@ -2451,6 +2451,8 @@ Jacquier, E., Polson, N. G., & Rossi, P. (1994). Bayesian analysis of stochastic
 
 Jacquier, E., Polson, N. G., & Rossi, P. E. (2004). Bayesian analysis of stochastic volatility models with fat-tails and correlated errors. Journal of Econometrics, 122(1), 185-212.\
 
+Johannes, M., Evers, L. (2007). Monte Carlo Methods. Lecture Notes. University of Bristol, Department of Mathematics.\
+
 Johannes, M., Korteweg, A., & Polson, N. (2014). Sequential learning, predictability, and optimal portfolio returns. The Journal of Finance, 69(2), 611-644.\
 
 Kambouroudis, D. S., McMillan, D. G., & Tsakou, K. (2016). Forecasting stock return volatility: a comparison of GARCH, Implied volatility, and realized volatility models. Journal of Futures Markets, 36(12), 1127-1163.\
@@ -2472,6 +2474,8 @@ Mao, X., Czellar, V., Ruiz, E., & Veiga, H. (2020). Asymmetric stochastic volati
 Nakajima, J., & Omori, Y. (2012). Stochastic volatility model with leverage and asymmetrically heavy-tailed error using GH skew Student's t-distribution. Computational Statistics & Data Analysis, 56(11), 3690-3704.\
 
 Omori, Y., Chib, S., Shephard, N., & Nakajima, J. (2007). Stochastic volatility with leverage: Fast and efficient likelihood inference. Journal of Econometrics, 140(2), 425-449.\
+
+Petris, G., Petrone, S., Campagnali, P. (2010). Dynamic Linear Models with R. Springer.\
 
 Pitt, M. K., & Shephard, N. (1999). Filtering via simulation: Auxiliary particle filters. Journal of the American statistical association, 94(446), 590-599.\
 
