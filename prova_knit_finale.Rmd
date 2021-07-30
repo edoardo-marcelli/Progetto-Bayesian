@@ -1772,7 +1772,7 @@ Consider the linear Gaussian example of section \ref{implementation}, but this t
 \sigma^{2}  & \sim G(\alpha_{v},\beta_{v}) \\
 \tau^{2}  & \sim G(\alpha_{w},\beta_{w})
 \end{align*}
-Alternatively, assign them a uniform prior if we have no knowledge of the hyperparameters. Note that in this model we sample from a Gamma distribution (instead of the Normal one, as in the previous description of the LWF) since the parameters of interest are variances, that can take only positive values. The algorithm follows the following steps.
+Alternatively, assign them a uniform prior if we have no knowledge of the hyperparameters. Note that in this model we sample from a Gamma distribution (instead of the Normal one, as in the previous description of the LWF) since the parameters of interest are variances, that can take only positive values. Next, we descrive the algorithm.
 \begin{algorithm} LWF for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$, $({\sigma^{2}}^{(1)},...,{\sigma^{2}}^{(N)})$ from $G(\alpha_{v},\beta_{v})$ and $({\tau^{2}}^{(1)},...,{\tau^{2}}^{(N)})$ from $G(\alpha_{w},\beta_{w})$. Set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$. Therefore $\psi^{(i)}=({\sigma^{2}}^{(i)},{\tau^{2}}^{(i)})$, and
