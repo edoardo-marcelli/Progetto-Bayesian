@@ -159,7 +159,7 @@ ggarrange(plot_DJI, plot_SP, plot_STOXX, nrow = 3, ncol = 1)
 
 SC<-matrix(nrow=2,ncol=3)
 rownames(SC)<-c("Mean","Standard Deviation")
-colnames(SC) <- c("Dow Jones", "S&P500", "STOXX50E")
+colnames(SC) <- c("S&P500","Dow Jones","STOXX50E")
 
 SC[1,1] = SP_mean
 SC[1,2] = DJI_mean
