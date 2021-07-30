@@ -116,8 +116,15 @@ RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
 
 
 \chapter*{Introduction}
+State-Space models represent an extremely interesting class of models and they are used extensively, for instance, for inference and forecasting in time-series and macroeconometric analysis. In fact, they allow to model observational data as function of underlying states that cannot be observed. For instance, in macroeconomic models GDP is usually observed while the TFP sequence is the hidden state determining output. In this work we describe techniques, such as Kalman and Particle filter, that allows to approximate probability distributions for the states from the observed data. For example, from the sequence of observed GDP, it is possible to "filter" the TFP factor.\
+Furthermore, it is possible to impose a Markov structure to State-Space models, assuming that the states are Markov, i.e., the probability of the current state depends on the entire sequence of past states only through its first lag. The combination of State-Space and Markov structures constitutes a powerful modeling assumption for inference and forecasting.\ \
+Withing the Monte Carlo (MC) methods, where inference is based on repeated simulations that allow to approximate the target distributions (needed to compute the estimator of interest), Particle Filter (PF) Algorithms represent the most important class of procedures for State-Space-Markov models. PF allows to sample states period-by-period, updating sequentially the filtering distributions (i.e., the distribution of current state conditional on all the sequence of observations - up to the current period one -), incorporating the information on the likelihood of the extracted states given the sequence of observations, by means of re-weighting.\
+Moreover, the PF is a very general algorithm, since it can be applied to non-linear models with non-Gaussian errors, while it does not allow for a closed form solution. On the contrary, the Kalman Filter, is a filtering method that can be applied in the case of linear-Gaussian  State-Space-Markov models, that remains analytically tractable.\ 
+In this work we will describe both these algorithms, while our main focus remains on Particle Filter.\ \
+In chapter \ref{MP_SSM_chapter} we define precisely Markov processes and State-Space Models. In chapter \ref{KF_chapter} we describe the Kalman Filter and in chapter \ref{PF_chapter} we analyze extensively the Particle Filter. Finally, in chapter \ref{application_chapter}, we apply these methods to stochastic volatility models.\
+Finally, we find it useful to integrate each section where an algorithm is described and analyzed from a theoretical perspective with an implementation subsection, using as an example a simple Random-Walk State-Space model. In this way, the reader can visualize the codes and the practical meaning of the Kalman and Particle Filter algorithms, immediately after their theoretical description.
 
-\chapter{Markov Processes and State-Space Models}
+\chapter{Markov Processes and State-Space Models}\label{MP_SSM_chapter}
 
 \section{Notation}
 Let us fix the basic notation that will be employed henceforth. Upper case letters, e.g. $X_t, Y_t,$ denote random variables, while lower case letters 
@@ -219,7 +226,7 @@ Dividing the left-hand side of equation \ref{state-space-densities} by the left-
 \P_t(X_{0:t}\in dx_{0:t}\mid Y_{0:t}=y_{0:t})=\frac{1}{p_t(y_{0:t})}\big[\prod\limits_{s=0}^t f_s(y_s\mid X_s) \big]\P_t(dx_{0:t}).
 \end{equation}
 
-\chapter{Linear-Gaussian case}
+\chapter{Linear-Gaussian case}\label{KF_chapter}
 
 \textit{Linear Gaussian models} are a class of popular state-space models. A notable property of such models is that the filtering and predictive distributions are analytically tractable, which makes such models very convenient in applications. 
 
@@ -447,7 +454,7 @@ ggplot(DLM.df,aes(x=timeframe))+
 ```
 The discussion of Kalman Filter will continue in the next sections where we compare it to the Particle Filter.
 
-\chapter{Particle Filter}
+\chapter{Particle Filter}\label{PF_chapter}
 
 In the previous chapter we explained how the Kalman Filter is applied to the case of a linear model with Gaussian errors to find closed-form solution for the filtering and the predictive distributions. Nonetheless, the majority of time-series models have a non-linear structure and errors might follow non-Gaussian distributions.\
 In this chapter we describe \textit{particle filter} as an algorithm that allows to update sequentially the filtering and the predictive distributions in the non-linear and non-Gaussian case. Additionally, the Kalman Filter can be seen as a special case of the more general particle filter.\
@@ -1967,7 +1974,7 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 So far we have seen Sequential Monte Carlo methods applied to the linear Gaussian case, however, as already mentioned, for this class of state space models, Kalman Filter provides a closed form solution
 
-\chapter{Applications to Stochastic Volatility Models}
+\chapter{Applications to Stochastic Volatility Models}\label{application_chapter}
 
 \section{Overview}
 
