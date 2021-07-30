@@ -1972,7 +1972,77 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 \section{Implementations for Stochastic Volatility Models}
 
-So far we have seen Sequential Monte Carlo methods applied to the linear Gaussian case, however, as already mentioned, for this class of state space models, Kalman Filter provides a closed form solution
+So far we have seen Sequential Monte Carlo methods applied to the linear Gaussian case, however, as already mentioned, for this class of state space models, Kalman Filter provides a closed form solution. Here, we want to provide an illustration of Particle Filters for a state space model for which no analytical solutions are available. More precisely, we deal with a stochastic volatility model. For the sake of simplicity we use a basic specification of stochastic volatility model
+
+\begin{align}
+y_{t}|x_{t} & \sim N(0,e^{x_{t}}) \\
+x_{t}|x_{t-1} & \sim N(\alpha+\beta x_{t-1},\tau^2)
+\end{align}
+
+We start describing the main four particle filtering strategies discussed in this work and then we are going to compare their performances. The R code of these and other algorithms used in the Chapter application can be found in Appendix 1.
+
+\begin{algorithm} BPF for Stochastic Volatility Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};0,e^{x_{t}}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{enumerate}
+\item Set $p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+
+\begin{algorithm} GPF for Stochastic Volatility Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}\frac{f_{N}(y_{t};0,e^{x_{t}})f_{N}(x_{t};\alpha+\beta x_{t-1},\tau^{2})}{f_{N}(x_{t};\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2})} \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{enumerate}
+\item Set $p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{x_{t}^{(i)}}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+
+\begin{algorithm}APF with optimal transition kernel for Stochastic Volatility Model
+\begin{itemize}
+\item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
+\item Compute $\sigma_{opt}^{2}$ 
+\item For $t=1,...,n$:
+\begin{enumerate}
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),\sigma^{2}+\tau^{2}) $
+\item Compute $\mu_{opt}=\mu(x_{t-1}^{(I_{k})})$
+\item Draw $x_{t}^{(k)} \sim N(\mu_{opt},\sigma^{2}_{opt})$
+\item Set  $\tilde{w}^{(i)}_{t} = N^{-1}$ for $i=1,...,N$
+\end{enumerate}
+\item otherwise
+\begin{enumerate}
+\item Compute $\mu_{opt}=\mu(x_{t-1})$
+\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma^{2}_{opt})$ for $i=1,...N$
+\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}f_{N}(y_{t};x_{t}^{(i)},\sigma^{2}+\tau^{2})$ for $i=1,...,N$
+\end{enumerate}
+\item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
 
 \chapter{Applications to Stochastic Volatility Models}\label{application_chapter}
 
@@ -2603,7 +2673,8 @@ SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     
     xprev<-x
     x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/
+      dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -2822,48 +2893,6 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 
 
 
-
-
-
-```{r}
-###################
-## Per roberto:::::: cambia molto se usiamo l'uno o l'altro!!!!!! perchè??
-APFoptfun<-function(data,N,m0,C0,tau,sigma,r){
-  if(missing(r)){r=2}else{}
-  xs<-NULL
-  ws<-NULL
-  ess<-NULL
-  x  = rnorm(N,m0,sqrt(C0))
-  importancesd<-sqrt(tau - tau^2 /(tau + sigma))
-  predsd <- sqrt(sigma+tau)
-  w  = rep(1/N,N)
-  
-  for(t in 1:length(data)){
-    
-    weight = w*dnorm(data[t],x,predsd)
-    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
-    means<-x[k]+(tau/(tau+sigma))*(data[t]-x[k])
-    x1   = rnorm(N,means,importancesd)
-    lw  = dnorm(data[t],x1,predsd,log=TRUE)-dnorm(data[t],x[k],predsd,log=TRUE)+log(w)-log(weight)
-    w   = exp(lw)
-    w   = w/sum(w)
-    ESS  = 1/sum(w^2)
-    
-    if(ESS<(N/r)){
-      index<-sample(N,size=N,replace=T,prob=w)
-      x1<-x1[index]
-      w<-rep(1/N,N)
-    }else{}
-    
-    x <- x1
-    xs = rbind(xs,x)
-    ws = rbind(ws,w)
-    ess =rbind(ess,ESS)
-
-  }
-  return(list(xs=xs,ws=ws,ess=ess))
-}
-```
 \
 \hrule
 \hrule
