@@ -1734,7 +1734,7 @@ The LWF can be described by the following algorithm.
 \item \textbf{Extracting new parameter values:}
 \begin{enumerate}
     \item Compute the weighted average and the variance for the parameters, respectively: $\bar \psi = \sum_{n=1}^N \hat W_{t-1}^{A_t^n}\psi^{A_t^n}$, $\Omega = \sum_{n=1}^N \hat W_{t-1}^{A_t^n}(\psi^{A_t^n}-\bar \psi)(\psi^{A_t^n}-\bar \psi)'$.\footnote{Big hat-weights $ \hat W_{t-1}^{A_t^{n}}$ are the normalized weights after the resampling stage, equal to $1/N$ if resampling takes place, $W_{t-1}^n$ otherwise.}
-    \item Compute: $m^n=a\cdot  \psi^n+(1-a)\cdot \bar \psi$ for $n=1,...,N$, with $a\in (0,1)$ and $h^2=1-a^2$.
+    \item Compute: $m^{A_t^{n}=a\cdot  \psi^{A_t^{n}+(1-a)\cdot \bar \psi$ for $n=1,...,N$, with $a\in (0,1)$ and $h^2=1-a^2$.
     \item Draw new parameters: $\psi^n\thicksim \N \big(m^{A_t^n},h^2\cdot \Omega\big)$ for $n=1,...,N$.
 \end{enumerate}
 \item Sample future states from the transition kernel: $X_t^n\thicksim P_t(X_{t-1}^{A_t^n},dx_t; \psi^n)$ for $n=1,...,N$.
