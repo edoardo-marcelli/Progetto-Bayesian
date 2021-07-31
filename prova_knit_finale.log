@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  31 JUL 2021 11:18
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  31 JUL 2021 12:56
 entering extended mode
 **./prova_knit_finale.tex
 (prova_knit_finale.tex
@@ -1017,727 +1017,710 @@ Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/m/n/6'
 ]
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <24.88> not available
 (Font)              Font shape `T1/txr/bx/n' tried instead on input line 179.
-
-Underfull \vbox (badness 4647) has occurred while \output is active []
-
+(prova_knit_finale.toc
+LaTeX Font Info:    Font shape `T1/txr/b/n' in size <10> not available
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 2.
+Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/m/n/10'
+(microtype)             (new value: 10.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/m/n/7'
+(microtype)             (new value: 7.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/m/n/5'
+(microtype)             (new value: 5.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/m/n/10'
+(microtype)             (new value: 10.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/m/n/7'
+(microtype)             (new value: 7.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/m/n/5'
+(microtype)             (new value: 5.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/m/n/10'
+(microtype)             (new value: 10.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/m/n/7'
+(microtype)             (new value: 7.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/m/n/5'
+(microtype)             (new value: 5.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/m/n/10'
+(microtype)             (new value: 10.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/m/n/7'
+(microtype)             (new value: 7.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/m/n/5'
+(microtype)             (new value: 5.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/m/n/10'
+(microtype)             (new value: 10.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/m/n/7'
+(microtype)             (new value: 7.0pt) on input line 3.
+Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/m/n/5'
+(microtype)             (new value: 5.0pt) on input line 3.
 [1
 
-] [2]
+])
+\tf@toc=\write5
+\openout5 = `prova_knit_finale.toc'.
+
+[2] [3
+
+] [4]
 Chapter 1.
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <20.74> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 226.
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 231.
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <14.4> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 228.
-Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/m/n/10'
-(microtype)             (new value: 10.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/m/n/7'
-(microtype)             (new value: 7.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/m/n/5'
-(microtype)             (new value: 5.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/m/n/10'
-(microtype)             (new value: 10.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/m/n/7'
-(microtype)             (new value: 7.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/m/n/5'
-(microtype)             (new value: 5.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/m/n/10'
-(microtype)             (new value: 10.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/m/n/7'
-(microtype)             (new value: 7.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/m/n/5'
-(microtype)             (new value: 5.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/m/n/10'
-(microtype)             (new value: 10.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/m/n/7'
-(microtype)             (new value: 7.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/m/n/5'
-(microtype)             (new value: 5.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/m/n/10'
-(microtype)             (new value: 10.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/m/n/7'
-(microtype)             (new value: 7.0pt) on input line 231.
-Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/m/n/5'
-(microtype)             (new value: 5.0pt) on input line 231.
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 233.
 
 Underfull \vbox (badness 2343) has occurred while \output is active []
 
-[3
+[5
 
 ]
-LaTeX Font Info:    Font shape `T1/txr/b/n' in size <10> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 269.
-Package hyperref Info: bookmark level for unknown definition defaults to 0 on i
-nput line 269.
-LaTeX Font Info:    Trying to load font information for TS1+txr on input line 2
-71.
-(C:\Users\edoar\AppData\Local\Programs\MiKTeX\tex/latex/txfonts\ts1txr.fd
-File: ts1txr.fd 2000/12/15 v3.1
-)
-Underfull \hbox (badness 10000) in paragraph at lines 306--310
+Underfull \hbox (badness 10000) in paragraph at lines 269--272
 
  []
 
-[4]
-Underfull \hbox (badness 10000) in paragraph at lines 322--327
+Package hyperref Info: bookmark level for unknown definition defaults to 0 on i
+nput line 274.
+LaTeX Font Info:    Trying to load font information for TS1+txr on input line 2
+76.
+(C:\Users\edoar\AppData\Local\Programs\MiKTeX\tex/latex/txfonts\ts1txr.fd
+File: ts1txr.fd 2000/12/15 v3.1
+)
+Underfull \hbox (badness 10000) in paragraph at lines 311--315
+
+ []
+
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 327--332
 
  []
 
 Package hyperref Info: bookmark level for unknown proposition defaults to 0 on 
-input line 329.
+input line 334.
 
-Underfull \hbox (badness 10000) in paragraph at lines 340--347
+Underfull \hbox (badness 10000) in paragraph at lines 345--352
 
  []
 
-[5] [6]
+[7] [8]
 Chapter 2.
 Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/b/n/10'
-(microtype)             (new value: 10.0pt) on input line 396.
+(microtype)             (new value: 10.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/b/n/7'
-(microtype)             (new value: 7.0pt) on input line 396.
+(microtype)             (new value: 7.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `OMX/MnSymbolE/b/n/5'
-(microtype)             (new value: 5.0pt) on input line 396.
+(microtype)             (new value: 5.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/b/n/10'
-(microtype)             (new value: 10.0pt) on input line 396.
+(microtype)             (new value: 10.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/b/n/7'
-(microtype)             (new value: 7.0pt) on input line 396.
+(microtype)             (new value: 7.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolA/b/n/5'
-(microtype)             (new value: 5.0pt) on input line 396.
+(microtype)             (new value: 5.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/b/n/10'
-(microtype)             (new value: 10.0pt) on input line 396.
+(microtype)             (new value: 10.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/b/n/7'
-(microtype)             (new value: 7.0pt) on input line 396.
+(microtype)             (new value: 7.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolB/b/n/5'
-(microtype)             (new value: 5.0pt) on input line 396.
+(microtype)             (new value: 5.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/b/n/10'
-(microtype)             (new value: 10.0pt) on input line 396.
+(microtype)             (new value: 10.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/b/n/7'
-(microtype)             (new value: 7.0pt) on input line 396.
+(microtype)             (new value: 7.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolC/b/n/5'
-(microtype)             (new value: 5.0pt) on input line 396.
+(microtype)             (new value: 5.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/b/n/10'
-(microtype)             (new value: 10.0pt) on input line 396.
+(microtype)             (new value: 10.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/b/n/7'
-(microtype)             (new value: 7.0pt) on input line 396.
+(microtype)             (new value: 7.0pt) on input line 401.
 Package microtype Info: Fixing zero fontdimen6 for font `U/MnSymbolD/b/n/5'
-(microtype)             (new value: 5.0pt) on input line 396.
+(microtype)             (new value: 5.0pt) on input line 401.
 
-Underfull \hbox (badness 10000) in paragraph at lines 403--405
+Underfull \hbox (badness 10000) in paragraph at lines 408--410
 
  []
 
 Package hyperref Info: bookmark level for unknown lemma defaults to 0 on input 
-line 406.
+line 411.
 Package hyperref Info: bookmark level for unknown proof* defaults to 0 on input
- line 416.
-[7
+ line 421.
+[9
 
 ]
 LaTeX Font Info:    Font shape `T1/txr/b/n' in size <12> not available
-(Font)              Font shape `T1/txr/bx/n' tried instead on input line 465.
+(Font)              Font shape `T1/txr/bx/n' tried instead on input line 470.
 
-Underfull \hbox (badness 10000) in paragraph at lines 467--471
+Underfull \hbox (badness 10000) in paragraph at lines 472--476
 
  []
 
-[8]
-<prova_knit_finale_files/figure-latex/myfig-1.pdf, id=102, 578.16pt x 289.08pt>
+[10]
+<prova_knit_finale_files/figure-latex/myfig-1.pdf, id=182, 578.16pt x 289.08pt>
 
 File: prova_knit_finale_files/figure-latex/myfig-1.pdf Graphic file (type pdf)
 <use prova_knit_finale_files/figure-latex/myfig-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/myfig-1.pdf  used
- on input line 490.
+ on input line 495.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 Package hyperref Info: bookmark level for unknown algorithm defaults to 0 on in
-put line 499.
-[9pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1}
-) has been already used, duplicate ignored
+put line 504.
+[11pdfTeX warning (ext4): destination with the same identifier (name{figure.2.1
+}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.501 \item I
+l.506 \item I
              nitialize $x_{0} \sim N(m_{0},C_{0})$ <./prova_knit_finale_files/f
 igure-latex/myfig-1.pdf>]
 LaTeX Font Info:    Trying to load font information for T1+txtt on input line 5
-20.
+25.
 (C:\Users\edoar\AppData\Local\Programs\MiKTeX\tex/latex/txfonts\t1txtt.fd
 File: t1txtt.fd 2000/12/15 v3.1
 )
-Underfull \hbox (badness 10000) in paragraph at lines 520--521
+Underfull \hbox (badness 10000) in paragraph at lines 525--526
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 525--527
+Underfull \hbox (badness 10000) in paragraph at lines 530--532
 
  []
 
 LaTeX Font Info:    Font shape `T1/txtt/b/n' in size <10> not available
-(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 544.
-[10]
-<prova_knit_finale_files/figure-latex/myfig2-1.pdf, id=127, 578.16pt x 289.08pt
+(Font)              Font shape `T1/txtt/bx/n' tried instead on input line 549.
+[12]
+<prova_knit_finale_files/figure-latex/myfig2-1.pdf, id=207, 578.16pt x 289.08pt
 >
 File: prova_knit_finale_files/figure-latex/myfig2-1.pdf Graphic file (type pdf)
 
 <use prova_knit_finale_files/figure-latex/myfig2-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/myfig2-1.pdf  use
-d on input line 574.
+d on input line 579.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-[11pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2
+[13pdfTeX warning (ext4): destination with the same identifier (name{figure.2.2
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.584 \chapter
+l.589 \chapter
               {Particle Filter}\label{PF_chapter} <./prova_knit_finale_files/fi
-gure-latex/myfig2-1.pdf>] [12]
+gure-latex/myfig2-1.pdf>] [14]
 Chapter 3.
-[13
+[15
 
-] [14] [15] [16] [17] [18] [19]
-Underfull \hbox (badness 10000) in paragraph at lines 952--953
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 957--959
+] [16] [17] [18] [19] [20] [21]
+Underfull \hbox (badness 10000) in paragraph at lines 957--958
 
  []
 
-[20]
-<prova_knit_finale_files/figure-latex/unnamed-chunk-8-1.pdf, id=247, 578.16pt x
+
+Underfull \hbox (badness 10000) in paragraph at lines 962--964
+
+ []
+
+[22]
+<prova_knit_finale_files/figure-latex/unnamed-chunk-8-1.pdf, id=316, 578.16pt x
  289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-8-1.pdf Graphic file (
 type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-8-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-8-1
-.pdf  used on input line 1011.
+.pdf  used on input line 1016.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[21] [22pdfTeX warning (ext4): destination with the same identifier (name{figur
+[23] [24pdfTeX warning (ext4): destination with the same identifier (name{figur
 e.3.1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1036 \end{enumerate}
+l.1041 \end{enumerate}
                        <./prova_knit_finale_files/figure-latex/unnamed-chunk-8-
-1.pdf>] [23]
-Underfull \hbox (badness 10000) in paragraph at lines 1130--1131
+1.pdf>] [25]
+Underfull \hbox (badness 10000) in paragraph at lines 1135--1136
 
  []
 
-[24]
-Underfull \hbox (badness 10000) in paragraph at lines 1135--1137
+[26]
+Underfull \hbox (badness 10000) in paragraph at lines 1140--1142
 
  []
 
-[25]
-<prova_knit_finale_files/figure-latex/myfig3-1.pdf, id=311, 578.16pt x 289.08pt
+[27]
+<prova_knit_finale_files/figure-latex/myfig3-1.pdf, id=378, 578.16pt x 289.08pt
 >
 File: prova_knit_finale_files/figure-latex/myfig3-1.pdf Graphic file (type pdf)
 
 <use prova_knit_finale_files/figure-latex/myfig3-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/myfig3-1.pdf  use
-d on input line 1197.
+d on input line 1202.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-[26pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2
+[28pdfTeX warning (ext4): destination with the same identifier (name{figure.3.2
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1213 
+l.1218 
         <./prova_knit_finale_files/figure-latex/myfig3-1.pdf>]
-<prova_knit_finale_files/figure-latex/myfig4-1.pdf, id=328, 722.7pt x 939.51pt>
+<prova_knit_finale_files/figure-latex/myfig4-1.pdf, id=395, 722.7pt x 939.51pt>
 
 File: prova_knit_finale_files/figure-latex/myfig4-1.pdf Graphic file (type pdf)
 
 <use prova_knit_finale_files/figure-latex/myfig4-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/myfig4-1.pdf  use
-d on input line 1227.
+d on input line 1232.
 (pdftex.def)             Requested size: 433.62334pt x 563.71036pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[27]
+[29]
 Overfull \vbox (26.48792pt too high) has occurred while \output is active []
 
-[28pdfTeX warning (ext4): destination with the same identifier (name{figure.3.3
+[30pdfTeX warning (ext4): destination with the same identifier (name{figure.3.3
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1233 
+l.1238 
         <./prova_knit_finale_files/figure-latex/myfig4-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1234--1235
+Underfull \hbox (badness 10000) in paragraph at lines 1239--1240
 
  []
 
-[29] [30]
-Underfull \hbox (badness 10000) in paragraph at lines 1364--1365
+[31] [32]
+Underfull \hbox (badness 10000) in paragraph at lines 1369--1370
 
  []
 
-[31]
-Underfull \hbox (badness 10000) in paragraph at lines 1369--1371
+[33]
+Underfull \hbox (badness 10000) in paragraph at lines 1374--1376
 
  []
 
-[32]
-<prova_knit_finale_files/figure-latex/unnamed-chunk-15-1.pdf, id=396, 578.16pt 
+[34]
+<prova_knit_finale_files/figure-latex/unnamed-chunk-15-1.pdf, id=461, 578.16pt 
 x 289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-15-1.pdf Graphic file 
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-15-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-15-
-1.pdf  used on input line 1428.
+1.pdf  used on input line 1433.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-[33pdfTeX warning (ext4): destination with the same identifier (name{figure.3.4
+[35pdfTeX warning (ext4): destination with the same identifier (name{figure.3.4
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1451 \end{longtable}
+l.1456 \end{longtable}
                        <./prova_knit_finale_files/figure-latex/unnamed-chunk-15
 -1.pdf>]
-<prova_knit_finale_files/figure-latex/myfig5-1.pdf, id=414, 578.16pt x 289.08pt
+<prova_knit_finale_files/figure-latex/myfig5-1.pdf, id=480, 578.16pt x 289.08pt
 >
 File: prova_knit_finale_files/figure-latex/myfig5-1.pdf Graphic file (type pdf)
 
 <use prova_knit_finale_files/figure-latex/myfig5-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/myfig5-1.pdf  use
-d on input line 1455.
+d on input line 1460.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 1314) has occurred while \output is active []
 
-[34pdfTeX warning (ext4): destination with the same identifier (name{figure.3.5
+[36pdfTeX warning (ext4): destination with the same identifier (name{figure.3.5
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1478 \end{equation}
+l.1483 \end{equation}
                       Note that the computation of the auxiliary weights is <./
 prova_knit_finale_files/figure-latex/myfig5-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1486--1488
+Underfull \hbox (badness 10000) in paragraph at lines 1491--1493
 
  []
 
-[35] [36]
-Underfull \hbox (badness 10000) in paragraph at lines 1593--1594
+[37] [38]
+Underfull \hbox (badness 10000) in paragraph at lines 1598--1599
 
  []
 
-[37]
-Underfull \hbox (badness 10000) in paragraph at lines 1598--1600
+[39]
+Underfull \hbox (badness 10000) in paragraph at lines 1603--1605
 
  []
 
 
-Underfull \vbox (badness 2635) detected at line 1655
+Underfull \vbox (badness 2635) detected at line 1660
  []
 
 
 Underfull \vbox (badness 2119) has occurred while \output is active []
 
-[38]
-<prova_knit_finale_files/figure-latex/unnamed-chunk-20-1.pdf, id=478, 578.16pt 
+[40]
+<prova_knit_finale_files/figure-latex/unnamed-chunk-20-1.pdf, id=541, 578.16pt 
 x 289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-20-1.pdf Graphic file 
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-20-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-20-
-1.pdf  used on input line 1659.
+1.pdf  used on input line 1664.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-<prova_knit_finale_files/figure-latex/myfig6-1.pdf, id=480, 578.16pt x 289.08pt
+<prova_knit_finale_files/figure-latex/myfig6-1.pdf, id=543, 578.16pt x 289.08pt
 >
 File: prova_knit_finale_files/figure-latex/myfig6-1.pdf Graphic file (type pdf)
 
 <use prova_knit_finale_files/figure-latex/myfig6-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/myfig6-1.pdf  use
-d on input line 1676.
+d on input line 1681.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-[39pdfTeX warning (ext4): destination with the same identifier (name{figure.3.6
+[41pdfTeX warning (ext4): destination with the same identifier (name{figure.3.6
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1681 \end{figure}
+l.1686 \end{figure}
                     <./prova_knit_finale_files/figure-latex/unnamed-chunk-20-1.
-pdf>] [40pdfTeX warning (ext4): destination with the same identifier (name{figu
+pdf>] [42pdfTeX warning (ext4): destination with the same identifier (name{figu
 re.3.7}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1705 \item i
+l.1710 \item i
               f $ESS<N/2$ then <./prova_knit_finale_files/figure-latex/myfig6-1
-.pdf>] [41]
-<prova_knit_finale_files/figure-latex/unnamed-chunk-25-1.pdf, id=523, 578.16pt 
+.pdf>] [43]
+<prova_knit_finale_files/figure-latex/unnamed-chunk-25-1.pdf, id=586, 578.16pt 
 x 289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-25-1.pdf Graphic file 
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-25-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-25-
-1.pdf  used on input line 1768.
+1.pdf  used on input line 1773.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[42] [43pdfTeX warning (ext4): destination with the same identifier (name{figur
+[44] [45pdfTeX warning (ext4): destination with the same identifier (name{figur
 e.3.8}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.1801 
-        <./prova_knit_finale_files/figure-latex/unnamed-chunk-25-1.pdf>] [44]
+l.1806 
+        <./prova_knit_finale_files/figure-latex/unnamed-chunk-25-1.pdf>] [46]
 Underfull \vbox (badness 3396) has occurred while \output is active []
 
-[45]
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-[46]
-Underfull \hbox (badness 10000) in paragraph at lines 1949--1950
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 1954--1956
-
- []
-
 [47]
-Underfull \vbox (badness 10000) detected at line 2042
- []
-
-
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 [48]
-Underfull \vbox (badness 10000) detected at line 2042
+Underfull \hbox (badness 10000) in paragraph at lines 1954--1955
+
  []
 
 
-Underfull \vbox (badness 10000) detected at line 2042
+Underfull \hbox (badness 10000) in paragraph at lines 1959--1961
+
  []
 
 [49]
-<prova_knit_finale_files/figure-latex/unnamed-chunk-28-1.pdf, id=603, 578.16pt 
+Underfull \vbox (badness 10000) detected at line 2047
+ []
+
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[50]
+Underfull \vbox (badness 10000) detected at line 2047
+ []
+
+
+Underfull \vbox (badness 10000) detected at line 2047
+ []
+
+[51]
+<prova_knit_finale_files/figure-latex/unnamed-chunk-28-1.pdf, id=664, 578.16pt 
 x 289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-28-1.pdf Graphic file 
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-28-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-28-
-1.pdf  used on input line 2051.
+1.pdf  used on input line 2056.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-[50pdfTeX warning (ext4): destination with the same identifier (name{figure.3.9
+[52pdfTeX warning (ext4): destination with the same identifier (name{figure.3.9
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2068 
-        <./prova_knit_finale_files/figure-latex/unnamed-chunk-28-1.pdf>] [51] [
-52] [53] [54]
+l.2073 
+        <./prova_knit_finale_files/figure-latex/unnamed-chunk-28-1.pdf>] [53] [
+54] [55] [56]
 Chapter 4.
-[55
+[57
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 2253--2270
+Underfull \hbox (badness 10000) in paragraph at lines 2273--2290
 
  []
 
-[56]
+[58]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[57]
-Underfull \hbox (badness 10000) in paragraph at lines 2361--2391
+[59]
+Underfull \hbox (badness 10000) in paragraph at lines 2381--2411
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2361--2391
+Underfull \hbox (badness 10000) in paragraph at lines 2381--2411
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2361--2391
+Underfull \hbox (badness 10000) in paragraph at lines 2381--2411
 
  []
 
-[58] [59]
-Underfull \hbox (badness 10000) in paragraph at lines 2403--2412
+[60] [61]
+Underfull \hbox (badness 10000) in paragraph at lines 2423--2432
 
  []
 
-<prova_knit_finale_files/figure-latex/unnamed-chunk-31-1.pdf, id=713, 578.16pt 
+<prova_knit_finale_files/figure-latex/unnamed-chunk-31-1.pdf, id=768, 578.16pt 
 x 289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-31-1.pdf Graphic file 
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-31-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-31-
-1.pdf  used on input line 2421.
+1.pdf  used on input line 2441.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-[60pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1
+[62pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2441 
+l.2461 
         <./prova_knit_finale_files/figure-latex/unnamed-chunk-31-1.pdf>]
-<prova_knit_finale_files/figure-latex/unnamed-chunk-33-1.pdf, id=726, 578.16pt 
+<prova_knit_finale_files/figure-latex/unnamed-chunk-33-1.pdf, id=781, 578.16pt 
 x 289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-33-1.pdf Graphic file 
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-33-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-33-
-1.pdf  used on input line 2474.
+1.pdf  used on input line 2494.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[61]
+[63]
 Underfull \vbox (badness 1406) has occurred while \output is active []
 
-[62pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2
+[64pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2519 
+l.2539 
         <./prova_knit_finale_files/figure-latex/unnamed-chunk-33-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 2545--2548
+Underfull \hbox (badness 10000) in paragraph at lines 2565--2568
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2551--2561
+Underfull \hbox (badness 10000) in paragraph at lines 2571--2581
 
  []
 
-[63]
-Underfull \hbox (badness 10000) in paragraph at lines 2562--2579
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2580--2589
-
- []
-
-[64] [65] [66] [67]
-Underfull \hbox (badness 10000) in paragraph at lines 2723--2740
+[65]
+Underfull \hbox (badness 10000) in paragraph at lines 2582--2599
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2751--2762
+Underfull \hbox (badness 10000) in paragraph at lines 2600--2609
 
  []
 
-[68]
+[66] [67] [68] [69]
+Underfull \hbox (badness 10000) in paragraph at lines 2743--2760
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2771--2782
+
+ []
+
+[70]
 Overfull \hbox (1.0353pt too wide) has occurred while \output is active
 \T1/txr/m/sl/10 4.5.  COMPARING CONSTANT AND STOCHASTIC VOLATILITY MODELS OF EQ
-UITY RETURNS \T1/txr/m/n/10 69
+UITY RETURNS \T1/txr/m/n/10 71
  []
 
-[69]
-<prova_knit_finale_files/figure-latex/cll_plot-1.pdf, id=807, 722.7pt x 216.81p
+[71]
+<prova_knit_finale_files/figure-latex/cll_plot-1.pdf, id=858, 722.7pt x 216.81p
 t>
 File: prova_knit_finale_files/figure-latex/cll_plot-1.pdf Graphic file (type pd
 f)
 <use prova_knit_finale_files/figure-latex/cll_plot-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/cll_plot-1.pdf  u
-sed on input line 2848.
+sed on input line 2868.
 (pdftex.def)             Requested size: 433.62334pt x 130.08699pt.
-[70pdfTeX warning (ext4): destination with the same identifier (name{figure.4.3
+[72pdfTeX warning (ext4): destination with the same identifier (name{figure.4.3
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2861 
+l.2881 
         <./prova_knit_finale_files/figure-latex/cll_plot-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 2864--2887
-
- []
-
-[71]
-Underfull \hbox (badness 10000) in paragraph at lines 2915--2926
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2927--2944
-
- []
-
-[72]
-Underfull \hbox (badness 10000) in paragraph at lines 2947--2954
+Underfull \hbox (badness 10000) in paragraph at lines 2884--2907
 
  []
 
 [73]
-Underfull \hbox (badness 10000) in paragraph at lines 3021--3022
+Underfull \hbox (badness 10000) in paragraph at lines 2935--2946
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3023--3026
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3027--3030
+Underfull \hbox (badness 10000) in paragraph at lines 2947--2964
 
  []
 
 [74]
-Underfull \hbox (badness 10000) in paragraph at lines 3031--3034
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3035--3039
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3040--3044
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3045--3047
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3048--3051
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3052--3055
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3056--3059
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3060--3063
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3064--3067
+Underfull \hbox (badness 10000) in paragraph at lines 2967--2974
 
  []
 
 [75]
-Underfull \hbox (badness 10000) in paragraph at lines 3068--3070
+Underfull \hbox (badness 10000) in paragraph at lines 3041--3042
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3071--3073
+Underfull \hbox (badness 10000) in paragraph at lines 3043--3046
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3074--3078
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3079--3083
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3084--3086
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3087--3090
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3091--3094
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3095--3098
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3099--3101
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3102--3105
+Underfull \hbox (badness 10000) in paragraph at lines 3047--3050
 
  []
 
 [76]
-Underfull \hbox (badness 10000) in paragraph at lines 3106--3108
+Underfull \hbox (badness 10000) in paragraph at lines 3051--3054
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3109--3112
+Underfull \hbox (badness 10000) in paragraph at lines 3055--3059
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3113--3115
+Underfull \hbox (badness 10000) in paragraph at lines 3060--3064
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3116--3120
+Underfull \hbox (badness 10000) in paragraph at lines 3065--3067
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3121--3124
+Underfull \hbox (badness 10000) in paragraph at lines 3068--3071
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3125--3127
+Underfull \hbox (badness 10000) in paragraph at lines 3072--3075
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3128--3131
+Underfull \hbox (badness 10000) in paragraph at lines 3076--3079
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3132--3135
+Underfull \hbox (badness 10000) in paragraph at lines 3080--3083
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3136--3138
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3139--3142
+Underfull \hbox (badness 10000) in paragraph at lines 3084--3087
 
  []
 
 [77]
-Underfull \hbox (badness 10000) in paragraph at lines 3143--3147
+Underfull \hbox (badness 10000) in paragraph at lines 3088--3090
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3148--3150
+Underfull \hbox (badness 10000) in paragraph at lines 3091--3093
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3151--3154
+Underfull \hbox (badness 10000) in paragraph at lines 3094--3098
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3155--3158
+Underfull \hbox (badness 10000) in paragraph at lines 3099--3103
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3104--3106
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3107--3110
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3111--3114
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3115--3118
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3119--3121
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3122--3125
+
+ []
+
+[78]
+Underfull \hbox (badness 10000) in paragraph at lines 3126--3128
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3129--3132
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3133--3135
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3136--3140
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3141--3144
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3145--3147
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3148--3151
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3152--3155
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3156--3158
 
  []
 
@@ -1746,165 +1729,190 @@ Underfull \hbox (badness 10000) in paragraph at lines 3159--3162
 
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 3163--3166
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3167--3170
+[79]
+Underfull \hbox (badness 10000) in paragraph at lines 3163--3167
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3171--3175
+Underfull \hbox (badness 10000) in paragraph at lines 3168--3170
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3176--3180
+Underfull \hbox (badness 10000) in paragraph at lines 3171--3174
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3181--3184
-
- []
-
-[78]
-Underfull \hbox (badness 10000) in paragraph at lines 3185--3187
+Underfull \hbox (badness 10000) in paragraph at lines 3175--3178
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3188--3191
+Underfull \hbox (badness 10000) in paragraph at lines 3179--3182
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3192--3194
+Underfull \hbox (badness 10000) in paragraph at lines 3183--3186
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3195--3198
+Underfull \hbox (badness 10000) in paragraph at lines 3187--3190
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3199--3202
+Underfull \hbox (badness 10000) in paragraph at lines 3191--3195
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3203--3205
+Underfull \hbox (badness 10000) in paragraph at lines 3196--3200
 
  []
 
-[79] [80
+
+Underfull \hbox (badness 10000) in paragraph at lines 3201--3204
+
+ []
+
+[80]
+Underfull \hbox (badness 10000) in paragraph at lines 3205--3207
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3208--3211
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3212--3214
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3215--3218
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3219--3222
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3223--3225
+
+ []
+
+[81] [82
 
 ]
 Chapter 5.
 
-Underfull \hbox (badness 10000) in paragraph at lines 3225--3227
+Underfull \hbox (badness 10000) in paragraph at lines 3245--3247
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3245--3246
+Underfull \hbox (badness 10000) in paragraph at lines 3265--3266
 
  []
 
-[81]
-Underfull \hbox (badness 10000) in paragraph at lines 3280--3281
+[83]
+Underfull \hbox (badness 10000) in paragraph at lines 3300--3301
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3285--3287
+Underfull \hbox (badness 10000) in paragraph at lines 3305--3307
 
  []
 
 
 Underfull \vbox (badness 4518) has occurred while \output is active []
 
-[82]
-Underfull \vbox (badness 10000) detected at line 3338
+[84]
+Underfull \vbox (badness 10000) detected at line 3358
  []
 
 
 Underfull \vbox (badness 7116) has occurred while \output is active []
 
-[83]
-Underfull \hbox (badness 10000) in paragraph at lines 3340--3341
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3345--3347
-
- []
-
-[84]
-Underfull \hbox (badness 10000) in paragraph at lines 3405--3407
-
- []
-
-LaTeX Font Info:    Font shape `T1/txtt/m/it' in size <10> not available
-(Font)              Font shape `T1/txtt/m/sl' tried instead on input line 3437.
-
 [85]
-Underfull \hbox (badness 10000) in paragraph at lines 3465--3467
+Underfull \hbox (badness 10000) in paragraph at lines 3360--3361
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3365--3367
 
  []
 
 [86]
-Underfull \vbox (badness 10000) detected at line 3539
+Underfull \hbox (badness 10000) in paragraph at lines 3425--3427
+
  []
 
-
-Overfull \vbox (0.71138pt too high) detected at line 3539
- []
+LaTeX Font Info:    Font shape `T1/txtt/m/it' in size <10> not available
+(Font)              Font shape `T1/txtt/m/sl' tried instead on input line 3457.
 
 [87]
-Underfull \hbox (badness 10000) in paragraph at lines 3541--3542
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3546--3548
+Underfull \hbox (badness 10000) in paragraph at lines 3485--3487
 
  []
 
 [88]
-Underfull \hbox (badness 10000) in paragraph at lines 3566--3567
-
+Underfull \vbox (badness 10000) detected at line 3559
  []
 
 
-Overfull \vbox (0.30138pt too high) detected at line 3599
+Overfull \vbox (0.71138pt too high) detected at line 3559
  []
 
 [89]
-Underfull \hbox (badness 10000) in paragraph at lines 3601--3602
+Underfull \hbox (badness 10000) in paragraph at lines 3561--3562
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3606--3608
+Underfull \hbox (badness 10000) in paragraph at lines 3566--3568
+
+ []
+
+[90]
+Underfull \hbox (badness 10000) in paragraph at lines 3586--3587
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3626--3627
+Overfull \vbox (0.30138pt too high) detected at line 3619
+ []
+
+[91]
+Underfull \hbox (badness 10000) in paragraph at lines 3621--3622
 
  []
 
-[90] [91] [92
+
+Underfull \hbox (badness 10000) in paragraph at lines 3626--3628
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3646--3647
+
+ []
+
+[92] [93] [94
 
 ]
-\tf@thm=\write5
-\openout5 = `prova_knit_finale.thm'.
+\tf@thm=\write6
+\openout6 = `prova_knit_finale.thm'.
 
 (prova_knit_finale.aux)
 
@@ -1912,13 +1920,13 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 21492 strings out of 478870
- 320260 string characters out of 2848836
+ 21499 strings out of 478870
+ 320435 string characters out of 2848836
  776837 words of memory out of 3000000
- 37809 multiletter control sequences out of 15000+600000
+ 37812 multiletter control sequences out of 15000+600000
  541003 words of font info for 696 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 74i,24n,80p,1139b,686s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 74i,24n,80p,1139b,729s stack positions out of 5000i,500n,10000p,200000b,80000s
 {C:/Users/edoar/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/mnsymbol/MnSymb
 olC.enc}{C:/Users/edoar/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/mnsymbol/
 MnSymbolD.enc}{C:/Users/edoar/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/mns
@@ -1947,9 +1955,9 @@ Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on prova_knit_finale.pdf (94 pages, 703160 bytes).
+Output written on prova_knit_finale.pdf (96 pages, 716072 bytes).
 PDF statistics:
- 1247 PDF objects out of 1440 (max. 8388607)
- 404 named destinations out of 1000 (max. 500000)
+ 1292 PDF objects out of 1440 (max. 8388607)
+ 405 named destinations out of 1000 (max. 500000)
  147839 words of extra memory for PDF output out of 154059 (max. 10000000)
 

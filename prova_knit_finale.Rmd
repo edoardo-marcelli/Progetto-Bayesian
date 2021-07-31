@@ -1993,7 +1993,7 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 So far we have seen Sequential Monte Carlo methods applied to the linear Gaussian case, however, as already mentioned, for this class of state space models, Kalman Filter provides a closed form solution. Here, we want to provide an illustration of Particle Filters for a state space model for which no analytical solutions are available. More precisely, we deal with a stochastic volatility model. For the sake of simplicity we use a basic specification of stochastic volatility model
 
 \begin{align}
-y_{t}|x_{t} & \sim N(0,e^{\frac{x_{t}}{2}}) \\
+y_{t}|x_{t} & \sim N(0,e^{x_{t}}) \\
 x_{t}|x_{t-1} & \sim N(\alpha+\beta x_{t-1},\tau^2)
 \end{align}
 
@@ -2007,7 +2007,7 @@ do resampling any time the effective sample size is smaller than a predetermined
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};0,e^{\frac{x_{t}}{2}}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};0,e^{x_{t}}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
 \item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
@@ -2023,8 +2023,9 @@ do resampling any time the effective sample size is smaller than a predetermined
 If we instead want to sample from the optimal transition kernel, things get more complicated. 
 It can be shown that the optimal transition kernel is
 \[ m_{t}^{opt}(x_{t}|x_{t-1}) \propto f_{t}(y_{t}|x_{t})p(x_{t}|x_{t-1}) \propto exp\bigg[-\frac{1}{2\sigma^{2}}(x_{t}-\alpha-\beta x_{t-1})^{2}-\frac{e^{-x_{t}}}{2}y_{t}^{2}-\frac{x_{t}}{2}\bigg]\]
-and it is not straightforward to sample from it. 
-
+and it is not straightforward to sample from it. Therefore, we follow a common praxis consisting in approximating $m_{t}^{opt}$ by a Gaussian distribution obtained by linearising $e^{-x_{t}}$, i.e. $e^{-x_{t}}=e^{-x_{0}}(1+x_{0}-x+...)$. Taking $x_{0}=\mu^{\star}(x_{t-1}) := \alpha + \beta x_{t-1}$, i.e the mean of the Gaussian transition density $p(x_{t}|x_{t-1})$. After some calculations we would end up with a Gaussian distribution $N(\xi(x_{t-1}),\sigma^{2})$ with 
+\[ \xi(x_{t-1}) = \mu^{\star}(x_{t-1}) + \frac{\sigma^{2}}{4}(y_{t}^{2}e^{-\mu^{\star}(x_{t-1})}-2)\].
+With this transition kernel we can implement the Guided Particle Filter in the following way
 
 \begin{algorithm} GPF for Stochastic Volatility Model
 \begin{itemize}
@@ -2032,7 +2033,7 @@ and it is not straightforward to sample from it.
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}\frac{f_{N}(y_{t};0,e^{\frac{x_{t}}{2}})f_{N}(x_{t};\alpha+\beta x_{t-1},\tau^{2})}{f_{N}(x_{t};\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2})} \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}\frac{f_{N}(y_{t};0,e^{x_{t}})f_{N}(x_{t};\alpha+\beta x_{t-1},\tau^{2})}{f_{N}(x_{t};\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2})} \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
 \item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
@@ -2045,6 +2046,8 @@ and it is not straightforward to sample from it.
 \end{itemize}
 \end{algorithm}
 
+The Auxiliary Particle Filter with optimal transition kernel uses the same transition kernel of the Guided Particle Filter and we decided to use an auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=\alpha+\beta x_{t-1}$.
+
 \begin{algorithm}APF with optimal transition kernel for Stochastic Volatility Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
@@ -2053,22 +2056,21 @@ and it is not straightforward to sample from it.
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
 \begin{enumerate}
-\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),\sigma^{2}+\tau^{2}) $
-\item Compute $\mu_{opt}=\mu(x_{t-1}^{(I_{k})})$
-\item Draw $x_{t}^{(k)} \sim N(\mu_{opt},\sigma^{2}_{opt})$
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|0,e^{\alpha+\beta x_{t-1}}) $
+\item $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}^{(I_{k})}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1}^{(I_{k})})}-2\big],\tau^{2})$ for $i=1,...N$
 \item Set  $\tilde{w}^{(i)}_{t} = N^{-1}$ for $i=1,...,N$
 \end{enumerate}
 \item otherwise
 \begin{enumerate}
-\item Compute $\mu_{opt}=\mu(x_{t-1})$
-\item Draw $x_{t}^{(i)} \sim N(\mu_{opt},\sigma^{2}_{opt})$ for $i=1,...N$
-\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}f_{N}(y_{t};x_{t}^{(i)},\sigma^{2}+\tau^{2})$ for $i=1,...,N$
+\item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2}) \ \ i=1,...,N$ for $i=1,...N$
+\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}f_{N}(y_{t};0,\alpha+\beta x_{t})$ for $i=1,...,N$
 \end{enumerate}
 \item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
 
+Finally we 
 \begin{algorithm} LWF for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$, $(\alpha^{(1)},...,\alpha^{(N)})$ from $N(e_{\alpha},v_\alpha)$ and
@@ -2671,7 +2673,7 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))
+    w1<-w*dnorm(data[t],0,exp(x))
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -2785,10 +2787,10 @@ SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   
   for(t in 1:length(data)){
     
-    weight = w*dnorm(data[t],0,exp(x/2))
+    weight = w*dnorm(data[t],0,exp(x))
     k   = sample(1:N,size=N,replace=TRUE,prob=weight)
     x1   = rnorm(N,alpha+beta*x[k],tau)
-    lw  = dnorm(data[t],0,exp(x1/2),log=TRUE)-dnorm(data[t],0,exp(x[k]/2),log=TRUE)
+    lw  = dnorm(data[t],0,exp(x1),log=TRUE)-dnorm(data[t],0,exp(x[k]),log=TRUE)
     w   = exp(lw)
     w   = w/sum(w)
     ESS  = 1/sum(w^2)
@@ -2849,7 +2851,7 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     I_k = sample(1:N,prob=w*dnorm(data[t],0,sqrt(exp((x_hat)/2))))
     for(k in 1:N){
       x[k]=rnorm(size=1,mean=alpha+beta*x_prev[I_k],sd=tau)
-      w[k]=dnorm(data[t],0,sqrt(exp((x[k])/2)))/dnorm(data[t],0,sqrt(exp((x_hat)/2)))
+      w[k]=dnorm(data[t],0,sqrt(exp((x[k]))))/dnorm(data[t],0,sqrt(exp((x_hat))))
     }
     w = w/sum(w)
     ESS  = 1/sum(w^2)
@@ -2919,11 +2921,11 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
     vpar     = var(pars)
     ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
     mus         = pars[,1]+pars[,2]*xs 
-    weight      = w*dnorm(data[t],0,exp(mus/2))
+    weight      = w*dnorm(data[t],0,exp(mus))
     k           = sample(1:N,size=N,replace=T,prob=weight)
     ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
     xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
-    w           = dnorm(data[t],0,exp(xt/2))/dnorm(data[t],0,exp(mus[k]/2))
+    w           = dnorm(data[t],0,exp(xt))/dnorm(data[t],0,exp(mus[k]))
     w           = w/sum(w)
     ESS         = 1/sum(w^2)
     
@@ -2986,7 +2988,7 @@ SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))
+    w1<-w*dnorm(data[t],0,exp(x))
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -3041,7 +3043,7 @@ BAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))
+    w1<-w*dnorm(data[t],0,exp(x))
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
