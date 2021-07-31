@@ -1784,18 +1784,31 @@ Alternatively, assign them a uniform prior if we have no knowledge of the hyperp
 $\hat{\pi}_{0}=p(x_{0}|y_{0})=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi^{(i)})}$
 \item For $t=1,...,n$:.
 \begin{enumerate}
-\item Compute $\overline{\psi}=E_{\hat{\pi}_{t-1}}(\psi)$ and $\Sigma=V_{\hat{\pi}_{t-1}}(\psi)$. For $i=1,...,N$, set
+\item Compute
 \begin{align*}
-m^{(i)} & = a\psi^{(i)}+(1-a)\hat{\psi} \\
-\hat{x}_{t}^{(i)} & = E(x_{t}|x_{t-1}=x_{t-1}^{(i)},\psi=\psi^{(k)})
+\overline{\sigma^{2}}& =E_{\hat{\pi}_{t-1}}(\sigma^{2})\\
+\overline{\tau^{2}}& =E_{\hat{\pi}_{t-1}}(\tau^{2}) \\
+\Sigma_{v} & =V_{\hat{\pi}_{t-1}}(\sigma^{2}) \\
+\Sigma_{w} & =V_{\hat{\pi}_{t-1}}(\tau^{2})
+\end{align*}
+then set
+\begin{align*}
+m_{v}^{(i)} & = a{\sigma^{2}}^{(i)}+(1-a)\overline{\sigma^{2}} \\
+{s_{v}^{2}}^{(i)} & =(1-a^{2})\Sigma_{\sigma^{2}} \\
+\alpha_{v}^{(i)} & =\frac{(m_{v}^{(i)})^{2}}{{s_{v}^{2}}^{(i)}} \\
+\beta_{v}^{(i)} & =\frac{(m_{v}^{(i)})}{{s_{v}^{2}}^{(i)}}\\
+m_{w}^{(i)} & = a{\tau^{2}}^{(i)}+(1-a)\overline{\tau^{2}} \\
+{s_{w}^{2}}^{(i)} & =(1-a^{2})\Sigma_{\tau^{2}}\\
+\alpha_{w}^{(i)} & =\frac{(m_{w}^{(i)})^{2}}{{s_{w}^{2}}^{(i)}} \\
+\beta_{w}^{(i)} & =\frac{(m_{w}^{(i)})}{{s_{w}^{2}}^{(i)}}
 \end{align*}
 \item For $k=1,...,N$:
 \begin{itemize}
-\item Draw $I_{k}$, with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),\psi=m^{(i)}) $
+\item Draw $I_{k}$, with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|g(x_{t-1}^{(i)}),m_{v}) $
 \item Draw ${\sigma^{2}}^{(k)}$ from $G(\alpha_{v}^{(I_k)},\beta_{v}^{(I_k)})$ 
 \item Draw ${\tau^{2}}^{(k)}$ from $G(\alpha_{w}^{(I_k)},\beta_{w}^{(I_k)})$
-\item Draw $x_{t}^{(k)}$ from $N(x_{t-1}^{(I_k)},\psi=\psi^{(k)})$
-\item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)},\psi=\psi^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})},\psi=m^{(I_k)}))}$
+\item Draw $x_{t}^{(k)}$ from $N(x_{t-1}^{(I_k)},{\tau^2}^{(k)})$
+\item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|x_{t}^{(k)},{\sigma^2}^{(k)})}{f_{N}(y_{t}|g(x_{t-1}^{(I_{k})},m_{v}^{(I_k)}))}$
 \end{itemize}
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
@@ -1980,19 +1993,21 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 So far we have seen Sequential Monte Carlo methods applied to the linear Gaussian case, however, as already mentioned, for this class of state space models, Kalman Filter provides a closed form solution. Here, we want to provide an illustration of Particle Filters for a state space model for which no analytical solutions are available. More precisely, we deal with a stochastic volatility model. For the sake of simplicity we use a basic specification of stochastic volatility model
 
 \begin{align}
-y_{t}|x_{t} & \sim N(0,e^{x_{t}}) \\
+y_{t}|x_{t} & \sim N(0,e^{\frac{x_{t}}{2}}) \\
 x_{t}|x_{t-1} & \sim N(\alpha+\beta x_{t-1},\tau^2)
 \end{align}
 
 We start describing the main four particle filtering strategies discussed in this work and then we are going to compare their performances. The R code of these and other algorithms used in the Chapter application can be found in Appendix 1.
 
+In the Bootstrap Particle filter we basically use the model transition kernel and 
+do resampling any time the effective sample size is smaller than a predetermined threshold.
 \begin{algorithm} BPF for Stochastic Volatility Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1},\tau^2) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};0,e^{x_{t}}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}f_{N}(y_{t};0,e^{\frac{x_{t}}{2}}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
 \item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
@@ -2005,13 +2020,19 @@ We start describing the main four particle filtering strategies discussed in thi
 \end{itemize}
 \end{algorithm}
 
+If we instead want to sample from the optimal transition kernel, things get more complicated. 
+It can be shown that the optimal transition kernel is
+\[ m_{t}^{opt}(x_{t}|x_{t-1}) \propto f_{t}(y_{t}|x_{t})p(x_{t}|x_{t-1}) \propto exp\bigg[-\frac{1}{2\sigma^{2}}(x_{t}-\alpha-\beta x_{t-1})^{2}-\frac{e^{-x_{t}}}{2}y_{t}^{2}-\frac{x_{t}}{2}\bigg]\]
+and it is not straightforward to sample from it. 
+
+
 \begin{algorithm} GPF for Stochastic Volatility Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2}) \ \ i=1,...,N$ such that $\{(x_{t},w_{t-1})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t-1})$
-\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}\frac{f_{N}(y_{t};0,e^{x_{t}})f_{N}(x_{t};\alpha+\beta x_{t-1},\tau^{2})}{f_{N}(x_{t};\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2})} \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
+\item Set $w_{t}^{(i)} = w_{t-1}^{(i)}\frac{f_{N}(y_{t};0,e^{\frac{x_{t}}{2}})f_{N}(x_{t};\alpha+\beta x_{t-1},\tau^{2})}{f_{N}(x_{t};\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2})} \ \ i=1,...,N$ such that $\{(x_{t},w_{t})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{t}|y_{1:t})$
 \item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
@@ -2027,7 +2048,6 @@ We start describing the main four particle filtering strategies discussed in thi
 \begin{algorithm}APF with optimal transition kernel for Stochastic Volatility Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarizes $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
-\item Compute $\sigma_{opt}^{2}$ 
 \item For $t=1,...,n$:
 \begin{enumerate}
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
@@ -2048,6 +2068,37 @@ We start describing the main four particle filtering strategies discussed in thi
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
+
+\begin{algorithm} LWF for Random Walk plus Noise Model
+\begin{itemize}
+\item Initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$, $(\alpha^{(1)},...,\alpha^{(N)})$ from $N(e_{\alpha},v_\alpha)$ and
+$(\beta^{(1)},...,\beta^{(N)})$ from $N(e_{\beta},v_\beta)$ $({\tau^{2}}^{(1)},...,{\tau^{2}}^{(N)})$ from $IG(\nu_{0}/2,\nu_{0}\lambda/2)$. Set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$ and chose the appropriate value for $\delta$. Therefore $\psi^{(i)}=({\alpha}^{(i)},{\beta}^{(i)},{\tau^{2}}^{(i)})$, and
+$\hat{\pi}_{0}=p(x_{0}|y_{0})=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi^{(i)})}$
+\item For $t=1,...,n$:.
+\begin{enumerate}
+\item Compute $\overline{\psi}=E_{\hat{\pi}_{t-1}}(\psi)$ and $\Sigma=V_{\hat{\pi}_{t-1}}(\psi)$. For $i=1,...,N$, set
+\begin{align*}
+m^{(i)} & = a\psi^{(i)}+(1-a)\hat{\psi} \\
+\hat{x}_{t}^{(i)} & = E(x_{t}|x_{t-1}=x_{t-1}^{(i)},\psi=\psi^{(k)})
+\end{align*}
+\item For $k=1,...,N$:
+\begin{itemize}
+\item Draw $I_{k}$, with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|0,e^{\frac{\hat{x}_{t}^{(i)}}{2}}) $
+\item Draw $\psi^{(k)}$ from $N(m^{(I_{k})},h^{2}\Sigma)$
+\item Draw $x_{t}^{(k)}$ from $N(\alpha^{(k)}+\beta^{(k)}x_{t-1}^{(I_{k})},\tau^{2})$
+\item Set  $\tilde{w}_{t}^{(k)} = \frac{f_{N}(y_{t}|0,e^{\frac{x_{t}^{(k)}}{2}})}{f_{N}(y_{t}|0,e^{\frac{\hat{x}_{t}^{(I_{k})}}{2}})}$
+\end{itemize}
+\item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
+\item if $ESS<N/2$ then
+\begin{enumerate}
+\item Draw a sample of size N, $(x_{t}^{(1)},...,x_{t}^{(N)})$, from the discrete distribution $P(x_{t}=x_{t}^{(i)})=w_{t}^{(i)},\ \ i=1,...,N$
+\item Reset the weights: $w_{t}^{(i)}=N^{-1}$, $i=1,...,N$.
+\end{enumerate}
+\item Set $\hat{\pi}_{t}=p(x_{t}|y_{1:t})=\sum_{i=1}^{N}w_{t}^{(i)}\delta_{(x_{t}^{(i)},\psi^{(i)})}$
+\end{enumerate}
+\end{itemize}
+\end{algorithm}
+
 
 \chapter{Applications to Stochastic Volatility Models}\label{application_chapter}
 
