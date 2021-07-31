@@ -2070,8 +2070,9 @@ The Auxiliary Particle Filter with optimal transition kernel uses the same trans
 \end{itemize}
 \end{algorithm}
 
-Finally we 
-\begin{algorithm} LWF for Random Walk plus Noise Model
+Finally we present a Liu and West Filter for the case of parameters $\alpha$, $\beta$ and $\tau^{2}$ unknown. 
+
+\begin{algorithm} LWF for Stochastic Volatility Model
 \begin{itemize}
 \item Initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$, $(\alpha^{(1)},...,\alpha^{(N)})$ from $N(e_{\alpha},v_\alpha)$ and
 $(\beta^{(1)},...,\beta^{(N)})$ from $N(e_{\beta},v_\beta)$ $({\tau^{2}}^{(1)},...,{\tau^{2}}^{(N)})$ from $IG(\nu_{0}/2,\nu_{0}\lambda/2)$. Set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$ and chose the appropriate value for $\delta$. Therefore $\psi^{(i)}=({\alpha}^{(i)},{\beta}^{(i)},{\tau^{2}}^{(i)})$, and
@@ -2080,7 +2081,7 @@ $\hat{\pi}_{0}=p(x_{0}|y_{0})=\sum_{i=1}^{N}w_{0}^{(i)}\delta_{(x_{0}^{(i)},\psi
 \begin{enumerate}
 \item Compute $\overline{\psi}=E_{\hat{\pi}_{t-1}}(\psi)$ and $\Sigma=V_{\hat{\pi}_{t-1}}(\psi)$. For $i=1,...,N$, set
 \begin{align*}
-m^{(i)} & = a\psi^{(i)}+(1-a)\hat{\psi} \\
+m^{(i)} & = a\psi^{(i)}+(1-a)\overline{\psi} \\
 \hat{x}_{t}^{(i)} & = E(x_{t}|x_{t-1}=x_{t-1}^{(i)},\psi=\psi^{(k)})
 \end{align*}
 \item For $k=1,...,N$:
@@ -2100,6 +2101,51 @@ m^{(i)} & = a\psi^{(i)}+(1-a)\hat{\psi} \\
 \end{enumerate}
 \end{itemize}
 \end{algorithm}
+
+We are now ready to compare the performances of these four algorithms. We simulate a Stochastic Volatility process setting arbitrarily the following parameters: $\alpha = -0.1$, $\beta = 0.9$ and $\tau^{2}=0.01$. The resulting observation and state process is shown in the figure below.
+
+```{r include=FALSE}
+# Simulating the data
+# -------------------
+set.seed(12345)
+n     =  50
+alpha = -0.1
+beta  =  0.9
+tau2  =  0.01
+tau   = sqrt(tau2)
+y     = rep(0,n)
+x     = rep(0,n)
+x[1]  = alpha/(1-beta)
+y[1]  = rnorm(1,0,exp(x[1]))
+for (t in 2:n){
+  x[t] = alpha + beta*x[t-1] + rnorm(1,0,tau)
+  y[t] = rnorm(1,0,exp(x[t]))
+}
+alpha.true = alpha
+beta.true  = beta
+tau2.true  = tau2
+
+timeframe<-c(1:length(y))
+dfsv<-data.frame(timeframe,y,x)
+```
+
+```{r echo=FALSE, fig.align='center', fig.cap="Simulated Stochastic Volatility Model", fig.height=4, fig.pos='ht', fig.width=8, message=FALSE, warning=FALSE, results=F}
+ggplot(dfsv,aes(x=timeframe))+
+  geom_line(aes(y=y, linetype="Observations"))+
+  geom_line(aes(y=x, linetype="True States"))+
+  scale_linetype_manual(name="",
+                      values=c("Observations" = 1,
+                               "True States" = 3))+
+  labs(x="Time",
+       y="")+
+  theme_bw()+
+  theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+
+
 
 
 \chapter{Applications to Stochastic Volatility Models}\label{application_chapter}
