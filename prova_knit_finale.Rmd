@@ -113,14 +113,17 @@ Coverage<-function(fun){
 RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
 ```
 
-
+\tableofcontents
 
 \chapter*{Introduction}
-State-Space models represent an extremely interesting class of models and they are used extensively, for instance, for inference and forecasting in time-series and macroeconometric analysis. In fact, they allow to model observational data as function of underlying states that cannot be observed. For instance, in macroeconomic models GDP is usually observed while the TFP sequence is the hidden state determining output. In this work we describe techniques, such as Kalman and Particle filter, that allows to approximate probability distributions for the states from the observed data. For example, from the sequence of observed GDP, it is possible to "filter" the TFP factor.\
-Furthermore, it is possible to impose a Markov structure to State-Space models, assuming that the states are Markov, i.e., the probability of the current state depends on the entire sequence of past states only through its first lag. The combination of State-Space and Markov structures constitutes a powerful modeling assumption for inference and forecasting.\ \
-Withing the Monte Carlo (MC) methods, where inference is based on repeated simulations that allow to approximate the target distributions (needed to compute the estimator of interest), Particle Filter (PF) Algorithms represent the most important class of procedures for State-Space-Markov models. PF allows to sample states period-by-period, updating sequentially the filtering distributions (i.e., the distribution of current state conditional on all the sequence of observations - up to the current period one -), incorporating the information on the likelihood of the extracted states given the sequence of observations, by means of re-weighting.\
-Moreover, the PF is a very general algorithm, since it can be applied to non-linear models with non-Gaussian errors, while it does not allow for a closed form solution. On the contrary, the Kalman Filter, is a filtering method that can be applied in the case of linear-Gaussian  State-Space-Markov models, that remains analytically tractable.\ 
-In this work we will describe both these algorithms, while our main focus remains on Particle Filter.\ \
+State-Space models represent an extremely interesting class of models and they are used extensively, for instance, for inference and forecasting in time-series and macroeconometric analysis. In fact, they allow to model observational data as function of underlying states that cannot be observed. For instance, in macroeconomic models GDP is usually observed while the TFP sequence is the hidden state determining output.\
+In this work we describe techniques, such as Kalman and Particle filter, that allow to approximate probability distributions for the states from the observed data. For example, from the sequence of observed GDP, it is possible to "filter" the TFP factor. \
+Furthermore, it is possible to impose a Markov structure to State-Space models, assuming that the states are Markov, i.e., the probability of the current state depends on the entire sequence of past states only through its first lag. The combination of State-Space and Markov structures constitutes a powerful modeling assumption for inference and forecasting. \ 
+
+Within the Monte Carlo (MC) methods, where inference is based on repeated simulations that allow to approximate the target distributions (needed to compute the estimator of interest), Particle Filter (PF) Algorithms represent the most important class of procedures for State-Space-Markov models. PF allows to sample states period-by-period, updating sequentially the filtering distributions (i.e., the distribution of current state conditional on all the sequence of observations - up to the current period one -), incorporating the information on the likelihood of the extracted states given the sequence of observations, by means of re-weighting.\
+Moreover, the PF is a very general algorithm, since it can be applied to non-linear models with non-Gaussian errors, while it does not allow for a closed form solution. On the contrary, the Kalman Filter is a filtering method that can be applied in the case of linear-Gaussian State-Space-Markov models, and remains analytically tractable.\ 
+In this work we will describe both these algorithms, while our main focus remains on Particle Filter. \ 
+
 In chapter \ref{MP_SSM_chapter} we define precisely Markov processes and State-Space Models. In chapter \ref{KF_chapter} we describe the Kalman Filter and in chapter \ref{PF_chapter} we analyze extensively the Particle Filter. Finally, in chapter \ref{application_chapter}, we apply these methods to stochastic volatility models.\
 Finally, we find it useful to integrate each section where an algorithm is described and analyzed from a theoretical perspective with an implementation subsection, using as an example a simple Random-Walk State-Space model. In this way, the reader can visualize the codes and the practical meaning of the Kalman and Particle Filter algorithms, immediately after their theoretical description.
 
@@ -142,6 +145,7 @@ Convergence in distribution is denoted with the symbol $\implies.$ So, $X\implie
 
 \section{Markov Processes}
 Let $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ and $(\mathcal{Y}, \mathcal{B}(\mathcal{Y}))$ be two (eventually equal) measurable spaces. 
+\
 
 \begin{definition}
 A function $P(x,dy): (\mathcal{X}, \mathcal{B}(\mathcal{X}))\rightarrow [0,1]$ such that 
@@ -171,6 +175,7 @@ $$
 
 Let $P_1, P_2, \dots, P_T$ be a finite sequence of probability kernels from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ Fix some $\mathbb{P}_0(dx)$ on $(\mathcal{X}, \mathcal{B}(\mathcal{X})).$ 
 \
+
 \begin{definition}
 A discrete-time Markov process is a sequence $X_{0:T}$ of random variables whose joint distribution can be written as
 \begin{equation}
@@ -458,7 +463,7 @@ The discussion of Kalman Filter will continue in the next sections where we comp
 
 In the previous chapter we explained how the Kalman Filter is applied to the case of a linear model with Gaussian errors to find closed-form solution for the filtering and the predictive distributions. Nonetheless, the majority of time-series models have a non-linear structure and errors might follow non-Gaussian distributions.\
 In this chapter we describe \textit{particle filter} as an algorithm that allows to update sequentially the filtering and the predictive distributions in the non-linear and non-Gaussian case. Additionally, the Kalman Filter can be seen as a special case of the more general particle filter.\
-In section \ref{pf_intro} we introduce the fundamental notions of \textit{importance sampling}, \textit{sequential importance sampling} and \textit{resampling}. Then, in section \ref{pf_main} we describe three particle filtering algorithms: the \textit{bootstrap}, the \textit{guided} and the \textit{auxiliary particle filters}. Instead, in section \ref{pf_lui_west} we describe the \textit{Liu and West filter}, when particle filtering is used to estimate model's parameters. Finally, in section \ref{pf_converg} we establish some general convergence results for Particle Filter - Monte Carlo estimators.
+In section \ref{pf_intro} we introduce the fundamental notions of \textit{importance sampling}, \textit{sequential importance sampling} and \textit{resampling}. Then, in section \ref{pf_main} we describe three particle filtering algorithms: the \textit{bootstrap}, the \textit{guided} and the \textit{auxiliary particle filters}. Instead, in section \ref{pf_liu_west} we describe the \textit{Liu and West filter}, when particle filtering is used to estimate model's parameters. Finally, in section \ref{pf_converg} we establish some general convergence results for Particle Filter - Monte Carlo estimators.
 
 \section{Introductory notions: sampling and resampling}\label{pf_intro}
 
@@ -1700,12 +1705,12 @@ ggarrange(FILT.APFopt,ESS.APFopt,labels=c("(a)","(b)"))
 ```
 
 
-\section{Liu and West Filter}\label{pf_lui_west}
+\section{Liu and West Filter}\label{pf_liu_west}
 
 Let us consider a more general state-space model, where the state vector includes a time-constant parameter vector $\psi \in \Psi$, where $\Psi$ is the parameter space. Since we can interpret the parameter as a state with the law of motion $\psi_t=\psi_{t-1}=\psi$, then it is possible to adopt a PF algorithm to estimate $\psi$.\
 However, being $\psi$ constant over time, it is meaningless to sample its values sequentially: the first extraction of $\psi$ at the initial stage 0 (i.e., $\psi_0^n$) generates a constant path of particles for the parameter ($\psi_t^n=\psi_0^n$). \footnote{To be more precise, at the resampling step, also $\psi^n$ is resampled, but the possible values that it may take are the $N$ ones obtained at the initial time 0 extraction.}\
-Therefore, Liu and West (2001) proposed a modified particle filter, called \textit{Liu and West filter} (LWF) that allows to resample the parameter over time from a continuous distribution. In this way, at every time, the support of $\psi$ is not limited to the initially sampled $N$ values. \
-Here, we describe the LWF that makes use of the normal distribution to sample sequentially the parameter. Moreover, consider the simpler version of the bootstrap filter.\footnote{Clearly, the LWF can be also used within the more general frameweorks of the GPF and the APF. For instance, in our implementation with the random walk model of section \ref{implementation}, we use an auxiliary particle LWF.}\
+Therefore, Liu and West (2001) proposed a modified particle filter, called \textit{Liu and West filter} (LWF) that allows to resample the parameter over time from a continuous distribution. In this way, at every time, the support of $\psi$ is not limited to the $N$ initially sampled values. \
+Here, we describe the LWF that makes use of the normal distribution to sample sequentially the parameter. Moreover, consider the simpler version of the bootstrap filter.\footnote{Clearly, the LWF can be also used within the more general frameweorks of the GPF and the APF. For instance, in our following implementation with the random walk model we use an auxiliary particle LWF.}\
 Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot)$ be the prior distribution for the parameter $\psi$.\
 The LWF can be described by the following algorithm.
 \begin{enumerate}
@@ -1728,8 +1733,8 @@ The LWF can be described by the following algorithm.
 \end{enumerate}
 \item \textbf{Extracting new parameter values:}
 \begin{enumerate}
-    \item Compute the weighted average and the variance for the parameters, respectively: $\bar \psi = \sum_{n=1}^N W_{t-1}^n\psi^n$, $\Omega = \sum_{n=1}^N W_{t-1}^n(\psi^n-\bar \psi)^2$.
-    \item Compute: $m^n=a\cdot  \psi^n+(1-a)\cdot \bar \psi$ for $n=1,...,N$.
+    \item Compute the weighted average and the variance for the parameters, respectively: $\bar \psi = \sum_{n=1}^N W_{t-1}^n\psi^n$, $\Omega = \sum_{n=1}^N W_{t-1}^n(\psi^n-\bar \psi)(\psi^n-\bar \psi)'$.
+    \item Compute: $m^n=a\cdot  \psi^n+(1-a)\cdot \bar \psi$ for $n=1,...,N$, with $a\in (0,1)$ and $h^2=1-a^2$.
     \item Draw new parameters: $\psi^n\thicksim \N \big(m^{A_t^n},h^2\cdot \Omega\big)$ for $n=1,...,N$.
 \end{enumerate}
 \item Sample future states from the transition kernel: $X_t^n\thicksim P_t(X_{t-1}^{A_t^n},dx_t; \psi^n)$ for $n=1,...,N$.
