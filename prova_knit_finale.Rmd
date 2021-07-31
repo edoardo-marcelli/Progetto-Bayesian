@@ -1733,7 +1733,7 @@ The LWF can be described by the following algorithm.
 \end{enumerate}
 \item \textbf{Extracting new parameter values:}
 \begin{enumerate}
-    \item Compute the weighted average and the variance for the parameters, respectively: $\bar \psi = \sum_{n=1}^N W_{t-1}^n\psi^n$, $\Omega = \sum_{n=1}^N W_{t-1}^n(\psi^n-\bar \psi)(\psi^n-\bar \psi)'$.
+    \item Compute the weighted average and the variance for the parameters, respectively: $\bar \psi = \sum_{n=1}^N \hat W_{t-1}^{A_t^n}\psi^{A_t^n}$, $\Omega = \sum_{n=1}^N \hat W_{t-1}^{A_t^n}(\psi^{A_t^n}-\bar \psi)(\psi^{A_t^n}-\bar \psi)'$.\footnote{Big hat-weights $ \hat W_{t-1}^{A_t^{n}}$ are the normalized weights after the resampling stage, equal to $1/N$ if resampling takes place, $W_{t-1}^n$ otherwise.}
     \item Compute: $m^n=a\cdot  \psi^n+(1-a)\cdot \bar \psi$ for $n=1,...,N$, with $a\in (0,1)$ and $h^2=1-a^2$.
     \item Draw new parameters: $\psi^n\thicksim \N \big(m^{A_t^n},h^2\cdot \Omega\big)$ for $n=1,...,N$.
 \end{enumerate}
@@ -1747,9 +1747,9 @@ The LWF can be described by the following algorithm.
 \end{enumerate}
 At the initial step, $N$ states and $N$ parameter values are sampled independently, respectively, from $\Pd_0$ and $\pi$ and the particle weights are set to be constant, as usual.\
 Then, at each iteration (time $t$), the decision to resample is done according to the $ESS$ criterion and indexes are extracted from a multinomial distribution. However, in the LWF both previous periods states and parameters are resampled.\
-Meanwhile, to extract the next period states and parameters it is necessary, firstly, to sample the new $N$ parameter values. Let $\bar \psi$ be the weighted average of the parameter values and $\Omega$ be their variance (the weights used to compute this mean and variance are the previous period inferential ones, i.e. $W_{t-1}^n$).\ \
+Meanwhile, to extract the next period states and parameters it is necessary, firstly, to sample the new $N$ parameter values. Let $\bar \psi$ be the weighted average of the parameter values and $\Omega$ be their variance (using the normalized weights in $t-1$ after the resampling step).\ \
 The algorithm suggests to sample new values for the parameters from a continuous distribution, i.e., a Normal\footnote{More generally, distributions whose support coincides with the relevant parameter space.} centered at the (resampled) values $m^{A_t^n}$ with variance $h^2\cdot \Omega$ where $m^n$ is a convex combination of the sample mean $\bar\psi$ and the actual extraction of $\psi^n$ with coefficient $a\in (0,1)$ and $h$ is a scalar such that $a^2+h^2=1$. While it would be more intuitively immediate to sample new parameters from a Normal density centered at the previously sampled values (i.e., $\psi^n$), this would increase the variance of $\psi$ over time.\
-In fact, let $\pi_{t-1}^N(\psi)=\sum_{n=1}^N \hat W_{t-1}^{A_t^{n}}\cdot \N(\psi^{A_t^{n}},\Omega)$\footnote{Big hat-weights $ \hat W_{t-1}^{A_t^{n}}$ are the normalized weights after the resampling stage, equal to $1/N$ if resampling takes place, $W_{t-1}^n$ otherwise.} be the empirical distribution of the parameters. From the law of iterated expectation and total variance, we obtain:\footnote{For completeness, we specify that the first expected value in the law of iterated expectations and total variances is with respect to the distribution of the indexes and the second one with respect to each of the Normal distributions centered at $\psi^{A_t^{n}}$.}
+In fact, let $\pi_{t-1}^N(\psi)=\sum_{n=1}^N \hat W_{t-1}^{A_t^{n}}\cdot \N(\psi^{A_t^{n}},\Omega)$ be the empirical distribution of the parameters. From the law of iterated expectation and total variance, we obtain:\footnote{For completeness, we specify that the first expected value in the law of iterated expectations and total variances is with respect to the distribution of the indexes and the second one with respect to each of the Normal distributions centered at $\psi^{A_t^{n}}$.}
 \begin{equation*}
     \begin{split}
         \E_{\pi_{t-1}^N} ( \psi)=& \E \big[\E( \psi|A_t^{n})\big]=\E \big[\psi^{A_t^{n}}\big]=\bar \psi\\
