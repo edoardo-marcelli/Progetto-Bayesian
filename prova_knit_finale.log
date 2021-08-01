@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  31 JUL 2021 22:16
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  1 AUG 2021 14:42
 entering extended mode
 **./prova_knit_finale.tex
 (prova_knit_finale.tex
@@ -1447,7 +1447,7 @@ File: prova_knit_finale_files/figure-latex/unnamed-chunk-35-1.pdf Graphic file
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-35-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-35-
-1.pdf  used on input line 2251.
+1.pdf  used on input line 2253.
 (pdftex.def)             Requested size: 433.61893pt x 325.2142pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
@@ -1456,236 +1456,187 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 0}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2257 
-        <./prova_knit_finale_files/figure-latex/unnamed-chunk-32-1.pdf>] [58pdf
-TeX warning (ext4): destination with the same identifier (name{figure.3.11}) ha
-s been already used, duplicate ignored
-<argument> ...shipout:D \box_use:N \l_shipout_box 
-                                                  \__shipout_drop_firstpage_...
-l.2258 \chapter
-               {Applications to Stochastic Volatility Models}\label{applicat...
- <./prova_knit_finale_files/figure-latex/unnamed-chunk-35-1.pdf>]
-Chapter 4.
-[59
-
-]
-Underfull \hbox (badness 10000) in paragraph at lines 2303--2320
-
+l.2259 
+        <./prova_knit_finale_files/figure-latex/unnamed-chunk-32-1.pdf>]
+Underfull \vbox (badness 10000) detected at line 2286
  []
 
-[60]
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[61]
-Underfull \hbox (badness 10000) in paragraph at lines 2411--2441
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2411--2441
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2411--2441
-
- []
-
-[62] [63]
-Underfull \hbox (badness 10000) in paragraph at lines 2453--2462
-
- []
-
-<prova_knit_finale_files/figure-latex/unnamed-chunk-36-1.pdf, id=793, 578.16pt 
-x 289.08pt>
-File: prova_knit_finale_files/figure-latex/unnamed-chunk-36-1.pdf Graphic file 
-(type pdf)
-<use prova_knit_finale_files/figure-latex/unnamed-chunk-36-1.pdf>
-Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-36-
-1.pdf  used on input line 2471.
-(pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
-[64pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1
-}) has been already used, duplicate ignored
+[58pdfTeX warning (ext4): destination with the same identifier (name{figure.3.1
+1}) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2491 
-        <./prova_knit_finale_files/figure-latex/unnamed-chunk-36-1.pdf>]
-<prova_knit_finale_files/figure-latex/unnamed-chunk-38-1.pdf, id=806, 578.16pt 
+l.2286 \end{Shaded}
+                    <./prova_knit_finale_files/figure-latex/unnamed-chunk-35-1.
+pdf>] [59] [60
+
+]
+Chapter 4.
+[61]
+Underfull \hbox (badness 10000) in paragraph at lines 2346--2363
+
+ []
+
+[62]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+[63]
+Underfull \hbox (badness 10000) in paragraph at lines 2454--2484
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2454--2484
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2454--2484
+
+ []
+
+[64] [65]
+Underfull \hbox (badness 10000) in paragraph at lines 2496--2505
+
+ []
+
+<prova_knit_finale_files/figure-latex/unnamed-chunk-38-1.pdf, id=803, 578.16pt 
 x 289.08pt>
 File: prova_knit_finale_files/figure-latex/unnamed-chunk-38-1.pdf Graphic file 
 (type pdf)
 <use prova_knit_finale_files/figure-latex/unnamed-chunk-38-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-38-
-1.pdf  used on input line 2524.
+1.pdf  used on input line 2514.
+(pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
+[66pdfTeX warning (ext4): destination with the same identifier (name{figure.4.1
+}) has been already used, duplicate ignored
+<argument> ...shipout:D \box_use:N \l_shipout_box 
+                                                  \__shipout_drop_firstpage_...
+l.2534 
+        <./prova_knit_finale_files/figure-latex/unnamed-chunk-38-1.pdf>]
+<prova_knit_finale_files/figure-latex/unnamed-chunk-40-1.pdf, id=816, 578.16pt 
+x 289.08pt>
+File: prova_knit_finale_files/figure-latex/unnamed-chunk-40-1.pdf Graphic file 
+(type pdf)
+<use prova_knit_finale_files/figure-latex/unnamed-chunk-40-1.pdf>
+Package pdftex.def Info: prova_knit_finale_files/figure-latex/unnamed-chunk-40-
+1.pdf  used on input line 2567.
 (pdftex.def)             Requested size: 433.61893pt x 216.80946pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[65]
+[67]
 Underfull \vbox (badness 1406) has occurred while \output is active []
 
-[66pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2
+[68pdfTeX warning (ext4): destination with the same identifier (name{figure.4.2
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2569 
-        <./prova_knit_finale_files/figure-latex/unnamed-chunk-38-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 2595--2598
+l.2612 
+        <./prova_knit_finale_files/figure-latex/unnamed-chunk-40-1.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 2638--2641
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2601--2611
+Underfull \hbox (badness 10000) in paragraph at lines 2644--2654
 
  []
 
-[67]
-Underfull \hbox (badness 10000) in paragraph at lines 2612--2629
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2630--2639
-
- []
-
-[68] [69] [70] [71]
-Underfull \hbox (badness 10000) in paragraph at lines 2773--2790
+[69]
+Underfull \hbox (badness 10000) in paragraph at lines 2655--2672
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 2801--2812
+Underfull \hbox (badness 10000) in paragraph at lines 2673--2682
 
  []
 
-[72]
+[70] [71] [72] [73]
+Underfull \hbox (badness 10000) in paragraph at lines 2816--2833
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 2844--2855
+
+ []
+
+[74]
 Overfull \hbox (1.0353pt too wide) has occurred while \output is active
 \T1/txr/m/sl/10 4.5.  COMPARING CONSTANT AND STOCHASTIC VOLATILITY MODELS OF EQ
-UITY RETURNS \T1/txr/m/n/10 73
+UITY RETURNS \T1/txr/m/n/10 75
  []
 
-[73]
-<prova_knit_finale_files/figure-latex/cll_plot-1.pdf, id=883, 722.7pt x 216.81p
+[75]
+<prova_knit_finale_files/figure-latex/cll_plot-1.pdf, id=892, 722.7pt x 216.81p
 t>
 File: prova_knit_finale_files/figure-latex/cll_plot-1.pdf Graphic file (type pd
 f)
 <use prova_knit_finale_files/figure-latex/cll_plot-1.pdf>
 Package pdftex.def Info: prova_knit_finale_files/figure-latex/cll_plot-1.pdf  u
-sed on input line 2898.
+sed on input line 2941.
 (pdftex.def)             Requested size: 433.62334pt x 130.08699pt.
-[74pdfTeX warning (ext4): destination with the same identifier (name{figure.4.3
+[76pdfTeX warning (ext4): destination with the same identifier (name{figure.4.3
 }) has been already used, duplicate ignored
 <argument> ...shipout:D \box_use:N \l_shipout_box 
                                                   \__shipout_drop_firstpage_...
-l.2911 
+l.2954 
         <./prova_knit_finale_files/figure-latex/cll_plot-1.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 2914--2937
-
- []
-
-[75]
-Underfull \hbox (badness 10000) in paragraph at lines 2965--2976
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 2977--2994
-
- []
-
-[76]
-Underfull \hbox (badness 10000) in paragraph at lines 2997--3004
+Underfull \hbox (badness 10000) in paragraph at lines 2957--2980
 
  []
 
 [77]
-Underfull \hbox (badness 10000) in paragraph at lines 3071--3072
+Underfull \hbox (badness 10000) in paragraph at lines 3008--3019
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3073--3076
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3077--3080
+Underfull \hbox (badness 10000) in paragraph at lines 3020--3037
 
  []
 
 [78]
-Underfull \hbox (badness 10000) in paragraph at lines 3081--3084
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3085--3089
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3090--3094
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3095--3097
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3098--3101
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3102--3105
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3106--3109
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3110--3113
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3114--3117
+Underfull \hbox (badness 10000) in paragraph at lines 3040--3047
 
  []
 
 [79]
-Underfull \hbox (badness 10000) in paragraph at lines 3118--3120
+Underfull \hbox (badness 10000) in paragraph at lines 3114--3115
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3121--3123
+Underfull \hbox (badness 10000) in paragraph at lines 3116--3119
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3124--3128
+Underfull \hbox (badness 10000) in paragraph at lines 3120--3123
+
+ []
+
+[80]
+Underfull \hbox (badness 10000) in paragraph at lines 3124--3127
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3129--3133
+Underfull \hbox (badness 10000) in paragraph at lines 3128--3132
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3134--3136
+Underfull \hbox (badness 10000) in paragraph at lines 3133--3137
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3137--3140
+Underfull \hbox (badness 10000) in paragraph at lines 3138--3140
 
  []
 
@@ -1700,251 +1651,306 @@ Underfull \hbox (badness 10000) in paragraph at lines 3145--3148
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3149--3151
+Underfull \hbox (badness 10000) in paragraph at lines 3149--3152
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3152--3155
-
- []
-
-[80]
-Underfull \hbox (badness 10000) in paragraph at lines 3156--3158
+Underfull \hbox (badness 10000) in paragraph at lines 3153--3156
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3159--3162
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3163--3165
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3166--3170
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3171--3174
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3175--3177
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3178--3181
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3182--3185
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3186--3188
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3189--3192
+Underfull \hbox (badness 10000) in paragraph at lines 3157--3160
 
  []
 
 [81]
-Underfull \hbox (badness 10000) in paragraph at lines 3193--3197
+Underfull \hbox (badness 10000) in paragraph at lines 3161--3163
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3198--3200
+Underfull \hbox (badness 10000) in paragraph at lines 3164--3166
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3201--3204
+Underfull \hbox (badness 10000) in paragraph at lines 3167--3171
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3205--3208
+Underfull \hbox (badness 10000) in paragraph at lines 3172--3176
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3209--3212
+Underfull \hbox (badness 10000) in paragraph at lines 3177--3179
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3213--3216
+Underfull \hbox (badness 10000) in paragraph at lines 3180--3183
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3217--3220
+Underfull \hbox (badness 10000) in paragraph at lines 3184--3187
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3221--3225
+Underfull \hbox (badness 10000) in paragraph at lines 3188--3191
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3226--3230
+Underfull \hbox (badness 10000) in paragraph at lines 3192--3194
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3231--3234
+Underfull \hbox (badness 10000) in paragraph at lines 3195--3198
 
  []
 
 [82]
-Underfull \hbox (badness 10000) in paragraph at lines 3235--3237
+Underfull \hbox (badness 10000) in paragraph at lines 3199--3201
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3238--3241
+Underfull \hbox (badness 10000) in paragraph at lines 3202--3205
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3242--3244
+Underfull \hbox (badness 10000) in paragraph at lines 3206--3208
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3245--3248
+Underfull \hbox (badness 10000) in paragraph at lines 3209--3213
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3249--3252
+Underfull \hbox (badness 10000) in paragraph at lines 3214--3217
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3253--3255
+Underfull \hbox (badness 10000) in paragraph at lines 3218--3220
 
  []
 
-[83] [84
+
+Underfull \hbox (badness 10000) in paragraph at lines 3221--3224
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3225--3228
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3229--3231
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3232--3235
+
+ []
+
+[83]
+Underfull \hbox (badness 10000) in paragraph at lines 3236--3240
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3241--3243
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3244--3247
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3248--3251
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3252--3255
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3256--3259
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3260--3263
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3264--3268
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3269--3273
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3274--3277
+
+ []
+
+[84]
+Underfull \hbox (badness 10000) in paragraph at lines 3278--3280
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3281--3284
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3285--3287
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3288--3291
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3292--3295
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3296--3298
+
+ []
+
+[85] [86
 
 ]
 Chapter 5.
 
-Underfull \hbox (badness 10000) in paragraph at lines 3275--3277
+Underfull \hbox (badness 10000) in paragraph at lines 3318--3320
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3295--3296
+Underfull \hbox (badness 10000) in paragraph at lines 3338--3339
 
  []
 
-[85]
-Underfull \hbox (badness 10000) in paragraph at lines 3330--3331
+[87]
+Underfull \hbox (badness 10000) in paragraph at lines 3373--3374
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3335--3337
+Underfull \hbox (badness 10000) in paragraph at lines 3378--3380
 
  []
 
 
 Underfull \vbox (badness 4518) has occurred while \output is active []
 
-[86]
-Underfull \vbox (badness 10000) detected at line 3388
+[88]
+Underfull \vbox (badness 10000) detected at line 3431
  []
 
 
 Underfull \vbox (badness 7116) has occurred while \output is active []
 
-[87]
-Underfull \hbox (badness 10000) in paragraph at lines 3390--3391
-
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 3395--3397
-
- []
-
-[88]
-Underfull \hbox (badness 10000) in paragraph at lines 3455--3457
-
- []
-
 [89]
-Underfull \hbox (badness 10000) in paragraph at lines 3518--3520
+Underfull \hbox (badness 10000) in paragraph at lines 3433--3434
+
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 3438--3440
 
  []
 
 [90]
+Underfull \hbox (badness 10000) in paragraph at lines 3498--3500
+
+ []
+
+[91]
+Underfull \hbox (badness 10000) in paragraph at lines 3561--3563
+
+ []
+
+[92]
 LaTeX Font Info:    Font shape `T1/txtt/m/it' in size <10> not available
-(Font)              Font shape `T1/txtt/m/sl' tried instead on input line 3556.
+(Font)              Font shape `T1/txtt/m/sl' tried instead on input line 3599.
 
 
-Underfull \vbox (badness 10000) detected at line 3592
+Underfull \vbox (badness 10000) detected at line 3635
  []
 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[91]
-Underfull \hbox (badness 10000) in paragraph at lines 3594--3595
+[93]
+Underfull \hbox (badness 10000) in paragraph at lines 3637--3638
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3599--3601
+Underfull \hbox (badness 10000) in paragraph at lines 3642--3644
 
  []
 
 
 Underfull \vbox (badness 4832) has occurred while \output is active []
 
-[92]
-Underfull \hbox (badness 10000) in paragraph at lines 3619--3620
+[94]
+Underfull \hbox (badness 10000) in paragraph at lines 3662--3663
 
  []
 
 
-Underfull \vbox (badness 2626) detected at line 3652
+Underfull \vbox (badness 2626) detected at line 3695
  []
 
 
 Underfull \vbox (badness 1953) has occurred while \output is active []
 
-[93]
-Underfull \hbox (badness 10000) in paragraph at lines 3654--3655
+[95]
+Underfull \hbox (badness 10000) in paragraph at lines 3697--3698
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3659--3661
+Underfull \hbox (badness 10000) in paragraph at lines 3702--3704
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 3679--3680
+Underfull \hbox (badness 10000) in paragraph at lines 3722--3723
 
  []
 
-[94] [95] [96
+[96] [97] [98
 
 ]
 \tf@thm=\write6
@@ -1956,10 +1962,10 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 21527 strings out of 478870
- 321646 string characters out of 2848836
+ 21532 strings out of 478870
+ 321696 string characters out of 2848836
  776837 words of memory out of 3000000
- 37830 multiletter control sequences out of 15000+600000
+ 37832 multiletter control sequences out of 15000+600000
  541168 words of font info for 699 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  74i,24n,80p,1389b,686s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -1991,9 +1997,9 @@ Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on prova_knit_finale.pdf (98 pages, 735130 bytes).
+Output written on prova_knit_finale.pdf (100 pages, 738603 bytes).
 PDF statistics:
- 1319 PDF objects out of 1440 (max. 8388607)
- 409 named destinations out of 1000 (max. 500000)
+ 1328 PDF objects out of 1440 (max. 8388607)
+ 412 named destinations out of 1000 (max. 500000)
  147849 words of extra memory for PDF output out of 154059 (max. 10000000)
 

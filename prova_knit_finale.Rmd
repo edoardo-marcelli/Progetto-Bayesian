@@ -2069,7 +2069,7 @@ where $\xi(x_{t-1})$ and $\mu^{\star}$ are defined as in the case of GPF.
 \item otherwise
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2}) \ \ i=1,...,N$ for $i=1,...N$
-\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}g(x_{t-1})$ for $i=1,...,N$
+\item Set $\tilde{w}_{t}^{(i)} = w_{t-1}^{(i)}\frac{f_{N}(y_{t};0,e^{x_{t}})f_{N}(x_{t};\alpha+\beta x_{t-1},\tau^{2})}{f_{N}(x_{t};\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2})}$ for $i=1,...,N$
 \end{enumerate}
 \item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
 \end{enumerate}
@@ -2115,7 +2115,7 @@ We are now ready to compare the performances of these four algorithms. We simula
 # -------------------
 set.seed(12345)
 n     =  50
-alpha = -0.1
+alpha =  0
 beta  =  0.9
 tau2  =  0.01
 tau   = sqrt(tau2)
@@ -2219,13 +2219,14 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   ess<-NULL
   x  = rnorm(N,m0,sqrt(C0))
   w  = rep(1/N,N)
-  
-  for(t in 1:length(data)){
-    ESS  = 1/sum(w^2)
+ 
+   for(t in 1:length(data)){
+   
+      ESS  = 1/sum(w^2)
     
     if(ESS<(N/r)){
       epsilon=alpha+beta*x+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x)-2)
-    weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x))-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
+    weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x)^2)-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
     k   = sample(1:N,size=N,replace=TRUE,prob=weight)
     x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
     w   = rep(1/N,N)
@@ -2233,7 +2234,8 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     weight = rep(1/N,N)
     k   = sample(1:N,size=N,replace=FALSE,prob=weight)
     x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
-    w   <-  w*exp((1/(2*tau^2))*((alpha+beta*x[k]+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x[k])-2))^2-(alpha+beta*x[k]))-((data[t]^2)/2)*exp(-alpha-beta*x[k])*(1+alpha+beta*x[k]))
+    w   <-  w*dnorm(data[t],0,exp(x1))*dnorm(x1,alpha+beta*x[k],tau)/
+      dnorm(x1,mean=alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
     }
     
     w   = w/sum(w)
@@ -2304,7 +2306,7 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 
 ```{r include=FALSE}
 N <- 5000
-alpha <- -0.1
+alpha <- 0
 beta  <-  0.9
 tau2  =  0.01
 tau   = sqrt(tau2)
@@ -2324,7 +2326,7 @@ svpf<-SVPFfun(y,N,m0,C0, alpha,beta,tau)
 svgpf<-SVGPFfun(y,N,m0,C0,alpha,beta,tau)
 
 
-svapf<-SVAPFoptfun(y,N,m0,C0,alpha,beta=0,tau)
+svapf<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
 
 
 svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
@@ -2366,10 +2368,10 @@ ggplot(dataframe,aes(x=timeframe))+
 We provide both a graphical and a numerical comparison and 
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison of filtering strategies for Stochastic Volatility Model. Filtered States with credible interval (in red)", fig.height=6, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-plotone<-SVFiltplot(dfsv,svpf,"",1.5,-2.5)
-plottwo<-SVFiltplot(dfsv,svgpf,"",1.5,-2.5)
-plotthree<-SVFiltplot(dfsv,svapf,"",1.5,-2.5)
-plotfour<-SVFiltplot(dfsv,svlw,"",1.5,-2.5)
+plotone<-SVFiltplot(dfsv,svpf,"",2,-2)
+plottwo<-SVFiltplot(dfsv,svgpf,"",2,-2)
+plotthree<-SVFiltplot(dfsv,svapf,"",2,-2)
+plotfour<-SVFiltplot(dfsv,svlw,"",2,-2)
 
 ggarrange(plotone, plottwo, plotthree, plotfour, nrow = 2, ncol = 2)
 ```
@@ -2377,9 +2379,9 @@ ggarrange(plotone, plottwo, plotthree, plotfour, nrow = 2, ncol = 2)
 ```{r}
 set.seed(123)
 truex<-x
-estimatedx<-matrix(NA,ncol=5,nrow=4)
+estimatedx<-matrix(NA,ncol=5,nrow=5)
 colnames(estimatedx)<-c("N","BPF","GPF", "APF","LWF")
-estimatedx[,1]<-c(100,1000,10000,100000)
+estimatedx[,1]<-c(10,100,1000,10000,100000)
 
 
 i=1
