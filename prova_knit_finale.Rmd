@@ -1734,7 +1734,7 @@ The LWF can be described by the following algorithm.
 \item \textbf{Extracting new parameter values:}
 \begin{enumerate}
     \item Compute the weighted average and the variance for the parameters, respectively: $\bar \psi = \sum_{n=1}^N \hat W_{t-1}^{A_t^n}\psi^{A_t^n}$, $\Omega = \sum_{n=1}^N \hat W_{t-1}^{A_t^n}(\psi^{A_t^n}-\bar \psi)(\psi^{A_t^n}-\bar \psi)'$.\footnote{Big hat-weights $ \hat W_{t-1}^{A_t^{n}}$ are the normalized weights after the resampling stage, equal to $1/N$ if resampling takes place, $W_{t-1}^n$ otherwise.}
-    \item Compute: $m^{A_t^{n}=a\cdot  \psi^{A_t^{n}+(1-a)\cdot \bar \psi$ for $n=1,...,N$, with $a\in (0,1)$ and $h^2=1-a^2$.
+    \item Compute: $m^{A_t^{n}}=a \cdot  \psi^{{A_t}^{n}}+(1-a)\cdot \bar \psi$ for $n=1,...,N$, with $a\in (0,1)$ and $h^2=1-a^2$.
     \item Draw new parameters: $\psi^n\thicksim \N \big(m^{A_t^n},h^2\cdot \Omega\big)$ for $n=1,...,N$.
 \end{enumerate}
 \item Sample future states from the transition kernel: $X_t^n\thicksim P_t(X_{t-1}^{A_t^n},dx_t; \psi^n)$ for $n=1,...,N$.
@@ -1985,6 +1985,8 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 ```
 
 
+
+
 \section{Convergence}\label{pf_converg}
 
 
@@ -2023,7 +2025,7 @@ do resampling any time the effective sample size is smaller than a predetermined
 If we instead want to sample from the optimal transition kernel, things get more complicated. 
 It can be shown that the optimal transition kernel is
 \[ m_{t}^{opt}(x_{t}|x_{t-1}) \propto f_{t}(y_{t}|x_{t})p(x_{t}|x_{t-1}) \propto exp\bigg[-\frac{1}{2\sigma^{2}}(x_{t}-\alpha-\beta x_{t-1})^{2}-\frac{e^{-x_{t}}}{2}y_{t}^{2}-\frac{x_{t}}{2}\bigg]\]
-and it is not straightforward to sample from it. Therefore, we follow a common praxis consisting in approximating $m_{t}^{opt}$ by a Gaussian distribution obtained by linearising $e^{-x_{t}}$, i.e. $e^{-x_{t}}=e^{-x_{0}}(1+x_{0}-x+...)$. Taking $x_{0}=\mu^{\star}(x_{t-1}) := \alpha + \beta x_{t-1}$, i.e the mean of the Gaussian transition density $p(x_{t}|x_{t-1})$. After some calculations we would end up with a Gaussian distribution $N(\xi(x_{t-1}),\sigma^{2})$ with 
+and it is not straightforward to sample from it. Therefore, we follow a common praxis consisting in approximating $m_{t}^{opt}$ by a Gaussian distribution obtained by linearising $e^{-x_{t}}$, i.e. $e^{-x_{t}}=e^{-x_{0}}(1+x_{0}-x+...)$, taking $x_{0}=\mu^{\star}(x_{t-1}) := \alpha + \beta x_{t-1}$, i.e the mean of the Gaussian transition density $p(x_{t}|x_{t-1})$. After some calculations we would end up with a Gaussian distribution $N(\xi(x_{t-1}),\sigma^{2})$ with 
 \[ \xi(x_{t-1}) = \mu^{\star}(x_{t-1}) + \frac{\sigma^{2}}{4}(y_{t}^{2}e^{-\mu^{\star}(x_{t-1})}-2)\].
 With this transition kernel we can implement the Guided Particle Filter in the following way
 
@@ -2046,7 +2048,11 @@ With this transition kernel we can implement the Guided Particle Filter in the f
 \end{itemize}
 \end{algorithm}
 
-The Auxiliary Particle Filter with optimal transition kernel uses the same transition kernel of the Guided Particle Filter and we decided to use an auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=\alpha+\beta x_{t-1}$.
+The Auxiliary Particle Filter with optimal transition kernel uses the same transition kernel of the Guided Particle Filter and while the perfectly adapted auxiliary function is
+\[g(x_{t-1})=\frac{1}{2\pi\sigma^{2}}\int_{\mathcal{X}}exp\bigg[-\frac{1}{2\sigma^{2}}(x_{t}-\alpha-\beta x_{t-1})^{2}-\frac{e^{-x_{t}}}{2}y_{t}^{2}-\frac{x_{t}}{2}\bigg] dx_{t-1}\]
+The relevant literature suggest to approximate this integral by linearising the exponential term as in the GPF case. The resulting auxiliary function is
+\[ g(x_{t-1})=exp \bigg[ \frac{1}{2\sigma^{2}} \big\{\xi(x_{t-1})^{2}-\mu^{\star}(x_{t-1})^{2} \big\} - \frac{y_{t}^{2}}{2}e^{-\mu^{\star}(x_{t-1})} \big\{ 1+\mu^{\star}(x_{t-1}) \big\}  \bigg]\]
+where $\xi(x_{t-1})$ and $\mu^{\star}$ are defined as in the case of GPF.
 
 \begin{algorithm}APF with optimal transition kernel for Stochastic Volatility Model
 \begin{itemize}
@@ -2056,14 +2062,14 @@ The Auxiliary Particle Filter with optimal transition kernel uses the same trans
 \item Compute $ESS=\Bigg(\sum_{i=1}^{N}(w_{t}^{(i)})^{2}\Bigg)^{-1}$
 \item if $ESS<N/2$ then
 \begin{enumerate}
-\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}f_{N}(y_{t}|0,e^{\alpha+\beta x_{t-1}}) $
+\item Draw $I_{k}$ with $P(I_{k}=i) \propto w_{t-1}^{(i)}g(x_{t-1}) $
 \item $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}^{(I_{k})}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1}^{(I_{k})})}-2\big],\tau^{2})$ for $i=1,...N$
 \item Set  $\tilde{w}^{(i)}_{t} = N^{-1}$ for $i=1,...,N$
 \end{enumerate}
 \item otherwise
 \begin{enumerate}
 \item Draw $x_{t}^{(i)} \sim N(\alpha+\beta x_{t-1}+\frac{\tau^2}{4}\big[y_{t}^2e^{-(\alpha+\beta x_{t-1})}-2\big],\tau^{2}) \ \ i=1,...,N$ for $i=1,...N$
-\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}f_{N}(y_{t};0,\alpha+\beta x_{t})$ for $i=1,...,N$
+\item Set $\tilde{w}^{(i)}_{t}=w^{(i)}_{t-1}g(x_{t-1})$ for $i=1,...,N$
 \end{enumerate}
 \item Normalize the weights: $w_{t}^{(i)}=\frac{\tilde{w}_{t}^{(i)}}{\sum_{j=1}^{N}(\tilde{w}_{t}^{(j)})}$
 \end{enumerate}
@@ -2144,6 +2150,261 @@ ggplot(dfsv,aes(x=timeframe))+
   theme(plot.title = element_text(hjust = 0.5))
 ```
 
+```{r message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
+    w1<-w*dnorm(data[t],0,exp(x))*dnorm(x,alpha+beta*xprev,tau)/
+      dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+#-------------------------------------------------------------------------
+
+SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      epsilon=alpha+beta*x+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x)-2)
+    weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x))-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+    w   = rep(1/N,N)
+    }else{
+    weight = rep(1/N,N)
+    k   = sample(1:N,size=N,replace=FALSE,prob=weight)
+    x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+    w   <-  w*exp((1/(2*tau^2))*((alpha+beta*x[k]+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x[k])-2))^2-(alpha+beta*x[k]))-((data[t]^2)/2)*exp(-alpha-beta*x[k])*(1+alpha+beta*x[k]))
+    }
+    
+    w   = w/sum(w)
+    x <- x1
+   
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+#----------------------------------------------------------------------------------
+
+SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
+  
+  xs = rnorm(N,m0,sqrt(C0))
+  pars   = cbind(rnorm(N,ealpha,sqrt(valpha)),rnorm(N,ebeta,sqrt(vbeta)),
+                 log(1/rgamma(N,nu/2,nu*lambda/2)))
+  delta  = 0.75
+  a      = (3*delta-1)/(2*delta)
+  h2     = 1-a^2
+  parss  = array(0,c(N,3,n))
+  xss    = NULL
+  ws     = NULL
+  ESS    = NULL
+  w      = rep(1/N,N)
+  vpars   = NULL
+  for (t in 1:length(data)){
+    
+    #mpar        = apply(pars,2,mean) #alternatively use this 
+    mpar<-c()
+    for(i in 1:3){
+      mpar[i]    = weighted.mean(pars[,i],w)
+    }
+    
+    vpar     = var(pars)
+    ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
+    mus         = pars[,1]+pars[,2]*xs 
+    weight      = w*dnorm(data[t],0,exp(mus))
+    k           = sample(1:N,size=N,replace=T,prob=weight)
+    ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
+    xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
+    w           = dnorm(data[t],0,exp(xt))/dnorm(data[t],0,exp(mus[k]))
+    w           = w/sum(w)
+    ESS         = 1/sum(w^2)
+    
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      xs<-xt[index]
+      pars<-ms1[index,]
+      w<-rep(1/N,N)
+    }else{
+      xs<-xt
+      pars<-ms1
+    }
+    
+    vpars        = rbind(vpars,vpar)
+    xss         = rbind(xss,xs)
+    parss[,,t]  = pars 
+    ws          = rbind(ws,w)
+  }
+  return(list(xs=xss,pars=parss,ws=ws,vpars=vpars))
+}
+```
+
+```{r include=FALSE}
+N <- 5000
+alpha <- -0.1
+beta  <-  0.9
+tau2  =  0.01
+tau   = sqrt(tau2)
+m0      = 0
+C0      = 100
+ealpha  = alpha
+valpha  = 0.01
+ebeta    = beta
+vbeta    = 0.01
+nu      = 3
+lambda  = tau2
+
+
+
+svpf<-SVPFfun(y,N,m0,C0, alpha,beta,tau)
+
+svgpf<-SVGPFfun(y,N,m0,C0,alpha,beta,tau)
+
+
+svapf<-SVAPFoptfun(y,N,m0,C0,alpha,beta=0,tau)
+
+
+svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+
+SVFiltplot<-function(dataframe,fun,title,ub,lb){
+
+Filt<-Filtervalues(fun)
+mean<-Filt$mean
+sd<-Filt$sd
+dataframe<-data.frame(dataframe,mean,sd)
+  
+ggplot(dataframe,aes(x=timeframe))+
+  geom_line(aes(y=y), col="black", linetype=1)+
+  geom_line(aes(y=x), col="black", linetype=3)+
+  geom_line(aes(y=mean), col="red", linetype=1)+
+  geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
+              fill="red",alpha=0.16) +
+  #  scale_color_manual("",
+   #                  values=c("Observations" = "black",
+    #                         "True States" = "black",
+     #                       "Filtered States"= "red"))+
+  #scale_linetype_manual("",
+   #                  values=c("Observations" = 1,
+    #                         "True States" = 3,
+     #                       "Filtered States"=1))+
+  labs(x="Time",
+       y="")+
+  ggtitle(title)+
+  coord_cartesian(ylim = c(lb, ub)) +
+  theme_bw()+
+#    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+#        legend.background = element_rect(fill = "white", colour = "gray30")) +
+  theme(plot.title = element_text(hjust = 0.5))
+}
+
+
+```
+
+We provide both a graphical and a numerical comparison and 
+
+```{r echo=FALSE, fig.align='center', fig.cap="Comparison of filtering strategies for Stochastic Volatility Model. Filtered States with credible interval (in red)", fig.height=6, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+plotone<-SVFiltplot(dfsv,svpf,"",1.5,-2.5)
+plottwo<-SVFiltplot(dfsv,svgpf,"",1.5,-2.5)
+plotthree<-SVFiltplot(dfsv,svapf,"",1.5,-2.5)
+plotfour<-SVFiltplot(dfsv,svlw,"",1.5,-2.5)
+
+ggarrange(plotone, plottwo, plotthree, plotfour, nrow = 2, ncol = 2)
+```
+
+```{r}
+set.seed(123)
+truex<-x
+estimatedx<-matrix(NA,ncol=5,nrow=4)
+colnames(estimatedx)<-c("N","BPF","GPF", "APF","LWF")
+estimatedx[,1]<-c(100,1000,10000,100000)
+
+
+i=1
+for(N in c(100,1000,10000,100000)){
+set.seed(123)
+  
+svpf_1<-SVPFfun(y,N,m0,C0, alpha,beta,tau)
+svgpf_1<-SVGPFfun(y,N,m0,C0,alpha,beta,tau)
+svapf_1<-SVAPFoptfun(y,N,m0,C0,alpha,beta=0,tau)
+svlw_1<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+
+estimatedx[i,2]<-RMSE(truex,Filtervalues(svpf_1)$mean)
+estimatedx[i,3]<-RMSE(truex,Filtervalues(svgpf_1)$mean)
+estimatedx[i,4]<-RMSE(truex,Filtervalues(svapf_1)$mean)
+estimatedx[i,5]<-RMSE(truex,Filtervalues(svlw_1)$mean)
+i=i+1
+
+}
+
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
+```
 
 
 
@@ -2777,7 +3038,7 @@ SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     
     xprev<-x
     x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/
+    w1<-w*dnorm(data[t],0,exp(x))*dnorm(x,alpha+beta*xprev,tau)/
       dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
     
     w = w1/sum(w1)
@@ -2892,21 +3153,24 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   w  = rep(1/N,N)
   
   for(t in 1:length(data)){
-    x_prev=x
-    x_hat = alpha+beta*x #means of the transition from the previous particle 
-    I_k = sample(1:N,prob=w*dnorm(data[t],0,sqrt(exp((x_hat)/2))))
-    for(k in 1:N){
-      x[k]=rnorm(size=1,mean=alpha+beta*x_prev[I_k],sd=tau)
-      w[k]=dnorm(data[t],0,sqrt(exp((x[k]))))/dnorm(data[t],0,sqrt(exp((x_hat))))
-    }
-    w = w/sum(w)
     ESS  = 1/sum(w^2)
     
     if(ESS<(N/r)){
-      index<-sample(N,size=N,replace=T,prob=w)
-      x<-x[index]
-      w<-rep(1/N,N)
-    }else{}
+      epsilon=alpha+beta*x+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x)-2)
+    weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x))-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+    w   = rep(1/N,N)
+    }else{
+    weight = rep(1/N,N)
+    k   = sample(1:N,size=N,replace=FALSE,prob=weight)
+    x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+    w   <-  w*exp((1/(2*tau^2))*((alpha+beta*x[k]+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x[k])-2))^2-(alpha+beta*x[k]))-((data[t]^2)/2)*exp(-alpha-beta*x[k])*(1+alpha+beta*x[k]))
+    }
+    
+    w   = w/sum(w)
+    x <- x1
+   
     
     xs = rbind(xs,x)
     ws = rbind(ws,w)
@@ -2915,7 +3179,11 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
+
+
 ```
+
+
 
 \hrule
 \hrule
