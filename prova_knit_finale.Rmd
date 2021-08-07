@@ -2233,8 +2233,7 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     weight = rep(1/N,N)
     k   = sample(1:N,size=N,replace=FALSE,prob=weight)
     x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
-    w   <-  w*dnorm(data[t],0,exp(x1))*dnorm(x1,alpha+beta*x[k],tau)/
-      dnorm(x1,mean=alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+    w   <-  w*dnorm(data[t],0,exp(x1))*dnorm(x1,alpha+beta*x[k],tau)/dnorm(x1,mean=alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
     }
     
     w   = w/sum(w)
@@ -2248,6 +2247,7 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
+
 #----------------------------------------------------------------------------------
 
 SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
@@ -2304,7 +2304,7 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 ```
 
 ```{r include=FALSE}
-N <- 5000
+N <- 10000
 alpha <- 0
 beta  <-  0.99
 tau2  =  0.05
@@ -2367,10 +2367,10 @@ ggplot(dataframe,aes(x=timeframe))+
 We provide both a graphical and a numerical comparison. From the plots it is hard to say which particle filter provides the best performances. By and large, BPF, GPF and APF behave similarly while the Liu and West filter presents larger credible intervals but at the same time a higher coverage of the true states. On the other hand, by a RMSE comparison, the Auxiliary Particle filter provides the best performances followed bt the Liu and West filter. Moreover, notice that when the number of particles increases the accuracy improves, however not significant improvements are detected for $N>10000$.
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison of filtering strategies for Stochastic Volatility Model. Filtered States with credible interval (in red)", fig.height=6, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-plotone<-SVFiltplot(dfsv,svpf,"",2,-2)
-plottwo<-SVFiltplot(dfsv,svgpf,"",2,-2)
-plotthree<-SVFiltplot(dfsv,svapf,"",2,-2)
-plotfour<-SVFiltplot(dfsv,svlw,"",2,-2)
+plotone<-SVFiltplot(dfsv,svpf,"",3,-3)
+plottwo<-SVFiltplot(dfsv,svgpf,"",3,-3)
+plotthree<-SVFiltplot(dfsv,svapf,"",3,-3)
+plotfour<-SVFiltplot(dfsv,svlw,"",3,-3)
 
 ggarrange(plotone, plottwo, plotthree, plotfour, nrow = 2, ncol = 2)
 ```
@@ -3161,24 +3161,26 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   w  = rep(1/N,N)
   
   for(t in 1:length(data)){
+    
     ESS  = 1/sum(w^2)
     
     if(ESS<(N/r)){
       epsilon=alpha+beta*x+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x)-2)
-    weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x))-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
-    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
-    x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
-    w   = rep(1/N,N)
+      weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x)^2)-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
+      k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+      x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+      w   = rep(1/N,N)
     }else{
-    weight = rep(1/N,N)
-    k   = sample(1:N,size=N,replace=FALSE,prob=weight)
-    x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
-    w   <-  w*exp((1/(2*tau^2))*((alpha+beta*x[k]+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x[k])-2))^2-(alpha+beta*x[k]))-((data[t]^2)/2)*exp(-alpha-beta*x[k])*(1+alpha+beta*x[k]))
+      weight = rep(1/N,N)
+      k   = sample(1:N,size=N,replace=FALSE,prob=weight)
+      x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+      w   <-  w*dnorm(data[t],0,exp(x1/2))*dnorm(x1,alpha+beta*x[k],tau)/
+        dnorm(x1,mean=alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
     }
     
     w   = w/sum(w)
     x <- x1
-   
+    
     
     xs = rbind(xs,x)
     ws = rbind(ws,w)
@@ -3187,7 +3189,6 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
-
 
 ```
 
