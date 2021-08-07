@@ -309,7 +309,7 @@ LWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 #n     =  length(y)
 alpha =  0
 beta  =  0.99
-tau2  =  0.075
+tau2  =  0.05
 m0      = 0
 C0      = 100 #N(0,100) is an informative prior about the mean of the volatility. It is used by Jacquier et al. (2004), and it is calibrated on percentage returns
 sC0     = sqrt(C0)
@@ -317,8 +317,8 @@ ealpha  = alpha
 valpha  = 0.01
 ebeta    = beta
 vbeta    = 0.01
-nu      = 1
-lambda  = tau2/3
+nu      = 5
+lambda  = tau2*3/5
 tau   = sqrt(tau2)
 
 #Real dataset
