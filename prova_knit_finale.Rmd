@@ -2108,7 +2108,7 @@ m^{(i)} & = a\psi^{(i)}+(1-a)\overline{\psi} \\
 \end{itemize}
 \end{algorithm}
 
-We are now ready to compare the performances of these four algorithms. We simulate a Stochastic Volatility process setting arbitrarily the following parameters: $\alpha = -0.1$, $\beta = 0.9$ and $\tau^{2}=0.01$. The resulting observation and state process is shown in the figure below.
+We are now ready to compare the performances of these four algorithms. We simulate a Stochastic Volatility process setting arbitrarily the following parameters: $\alpha = 0$, $\beta = 0.99$ and $\tau^{2}=0.05$. The resulting observation and state process is shown in the figure below.
 
 ```{r include=FALSE}
 # Simulating the data
@@ -2116,8 +2116,8 @@ We are now ready to compare the performances of these four algorithms. We simula
 set.seed(12345)
 n     =  50
 alpha =  0
-beta  =  0.9
-tau2  =  0.01
+beta  =  0.99
+tau2  =  0.05
 tau   = sqrt(tau2)
 y     = rep(0,n)
 x     = rep(0,n)
@@ -2162,7 +2162,7 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    w1<-w*dnorm(data[t],0,exp(x))
+    w1<-w*dnorm(data[t],0,exp(x/2))
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -2192,8 +2192,7 @@ SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     
     xprev<-x
     x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
-    w1<-w*dnorm(data[t],0,exp(x))*dnorm(x,alpha+beta*xprev,tau)/
-      dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -2276,11 +2275,11 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
     vpar     = var(pars)
     ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
     mus         = pars[,1]+pars[,2]*xs 
-    weight      = w*dnorm(data[t],0,exp(mus))
+    weight      = w*dnorm(data[t],0,exp(mus/2))
     k           = sample(1:N,size=N,replace=T,prob=weight)
     ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
     xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
-    w           = dnorm(data[t],0,exp(xt))/dnorm(data[t],0,exp(mus[k]))
+    w           = dnorm(data[t],0,exp(xt/2))/dnorm(data[t],0,exp(mus[k]/2))
     w           = w/sum(w)
     ESS         = 1/sum(w^2)
     
@@ -2307,8 +2306,8 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 ```{r include=FALSE}
 N <- 5000
 alpha <- 0
-beta  <-  0.9
-tau2  =  0.01
+beta  <-  0.99
+tau2  =  0.05
 tau   = sqrt(tau2)
 m0      = 0
 C0      = 100
@@ -2316,8 +2315,8 @@ ealpha  = alpha
 valpha  = 0.01
 ebeta    = beta
 vbeta    = 0.01
-nu      = 3
-lambda  = tau2
+nu      = 5
+lambda  = tau2*3/5
 
 
 
