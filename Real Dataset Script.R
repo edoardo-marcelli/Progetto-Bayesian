@@ -307,9 +307,9 @@ LWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 #Set hyperparameters
 #-------------------
 #n     =  length(y)
-alpha =  -0.0031
-beta  =  0.9951
-tau2  =  0.074
+alpha =  0
+beta  =  0.99
+tau2  =  0.075
 m0      = 0
 C0      = 100 #N(0,100) is an informative prior about the mean of the volatility. It is used by Jacquier et al. (2004), and it is calibrated on percentage returns
 sC0     = sqrt(C0)
@@ -317,8 +317,8 @@ ealpha  = alpha
 valpha  = 0.01
 ebeta    = beta
 vbeta    = 0.01
-nu      = 3
-lambda  = tau2
+nu      = 1
+lambda  = tau2/3
 tau   = sqrt(tau2)
 
 #Real dataset
@@ -431,7 +431,7 @@ realisedx<-x
 Errorvol<-matrix(NA,ncol=7,nrow=2)
 colnames(Errorvol)<-c("N","BPF", "GPFOPT", "APF","LWF", "SIS", "BAPF")
 rownames(Errorvol)<-c("RMSE","MAE")
-Errorvol[,1]<-c(10000)
+Errorvol[,1]<-c(5000)
 RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
 MAE<-function(x,xhat){mean(abs(x-xhat))}
 comparablevol<-function(fun){exp((Filtervalues(fun)$mean)/2)}
