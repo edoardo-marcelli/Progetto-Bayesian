@@ -2366,7 +2366,7 @@ ggplot(dataframe,aes(x=timeframe))+
 
 ```
 
-We provide both a graphical and a numerical comparison. From the plots it is hard to say which particle filter provides the best performances. By and large, BPF, GPF and APF behave similarly while the Liu and West filter presents larger credible intervals but at the same time a higher coverage of the true states. On the other hand, by a RMSE comparison, the Auxiliary Particle filter provides the best performances followed bt the Liu and West filter. Moreover, notice that when the number of particles increases the accuracy improves, however not significant improvements are detected for $N>10000$.
+We provide both a graphical and a numerical comparison.\footnote{The sequences of filtered states shown in the graphs are obtained by using filters with 10000 particles.} From the plots it is hard to say which particle filter provides the best performances. By and large, BPF, GPF and APF behave similarly, while the Liu and West filter presents larger credible intervals but at the same time a higher coverage of the true states. On the other hand, by a RMSE comparison, the Auxiliary Particle filter provides the best performances followed bt the Liu and West filter. Moreover, notice that when the number of particles increases the accuracy improves, however not significant improvements are detected for $N>10000$.
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison of filtering strategies for Stochastic Volatility Model. Filtered States with credible interval (in red)", fig.height=6, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 plotone<-SVFiltplot(dfsv,svpf,"",5,-5)
@@ -2381,7 +2381,7 @@ ggarrange(plotone, plottwo, plotthree, plotfour, nrow = 2, ncol = 2)
 truex<-x
 estimatedx<-matrix(NA,ncol=5,nrow=5)
 colnames(estimatedx)<-c("N","BPF","GPF", "APF","LWF")
-estimatedx[,1]<-c(20,100,1000,10000,100000)
+estimatedx[,1]<-c("20","100","1000","10000","100000")
 
 
 i=1
@@ -2412,7 +2412,7 @@ i=i+1
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
-kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE", digits=6)
+kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE", digits=4)
 ```
 
 
