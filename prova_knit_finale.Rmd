@@ -2122,10 +2122,10 @@ tau   = sqrt(tau2)
 y     = rep(0,n)
 x     = rep(0,n)
 x[1]  = alpha/(1-beta)
-y[1]  = rnorm(1,0,exp(x[1]))
+y[1]  = rnorm(1,0,exp(x[1]/2))
 for (t in 2:n){
   x[t] = alpha + beta*x[t-1] + rnorm(1,0,tau)
-  y[t] = rnorm(1,0,exp(x[t]))
+  y[t] = rnorm(1,0,exp(x[t]/2))
 }
 alpha.true = alpha
 beta.true  = beta
