@@ -222,25 +222,25 @@ APFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   w  = rep(1/N,N)
   
   for(t in 1:length(data)){
-    
-    xprev<-x
-    
-    weight = w*dnorm(data[t],0,exp(x/2))
-    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
-    x1 <-rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
-    lw  = dnorm(data[t],0,exp(x1/2),log=TRUE)-dnorm(data[t],0,exp(x[k]/2),log=TRUE)
-    w   = exp(lw)
-    w   = w/sum(w)
     ESS  = 1/sum(w^2)
     
     if(ESS<(N/r)){
-      index<-sample(N,size=N,replace=T,prob=w)
-      x<-x1[index]
-      w<-rep(1/N,N)
-    }else{}
+      epsilon=alpha+beta*x+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x)-2)
+      weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x))-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
+      k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+      x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+      w   = rep(1/N,N)
+    }else{
+      weight = rep(1/N,N)
+      k   = sample(1:N,size=N,replace=FALSE,prob=weight)
+      x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
+      w   <-  w*exp((1/(2*tau^2))*((alpha+beta*x[k]+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x[k])-2))^2-(alpha+beta*x[k]))-((data[t]^2)/2)*exp(-alpha-beta*x[k])*(1+alpha+beta*x[k]))
+    }
     
-    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    w   = w/sum(w)
     x <- x1
+    
+    
     xs = rbind(xs,x)
     ws = rbind(ws,w)
     ess =rbind(ess,ESS)

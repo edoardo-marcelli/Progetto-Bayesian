@@ -2939,7 +2939,7 @@ Zhang, B., Chan, J. C., & Cross, J. L. (2020). Stochastic volatility models with
 
 \section{The Stochastic Volatility Model}
 
-We decide to organise this Appendix as an R package. All the R functions described in this Appendix take as reference a basic specification of Stochastic Volatility Model. 
+We decide to organise this Appendix as an R package. All the R functions described in this Appendix take as reference a basic specification of Stochastic Volatility Model.\footnote{Actually, the function SVLWfun considers a SV model with an additional hierarchical level, as specified in section XX.}
 \begin{align*}
     y_t|x_t & \sim N(0,e^{x_t})\\
     x_t|x_{t-1},\alpha,\beta,\tau^2 & \sim N(\alpha+\beta x_{t-1},\tau^2)
@@ -2965,6 +2965,8 @@ All the plots and tables of this work concerning stochastic volatility models us
 \code{alpha} \ \ intercept $\alpha$ in the state equation
 \
 \code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{tau} \ \ square root of $\tau^2$, the conditional variance of the state
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
@@ -3021,6 +3023,8 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 \
 \code{beta} \ \ coefficient $\beta$ in the state equation
 \
+\code{tau} \ \ square root of $\tau^2$, the conditional variance of the state
+\
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
 \hrule
@@ -3040,8 +3044,7 @@ SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     
     xprev<-x
     x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/
-      dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -3079,6 +3082,8 @@ SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 \code{alpha} \ \ intercept $\alpha$ in the state equation
 \
 \code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{tau} \ \ square root of $\tau^2$, the conditional variance of the state
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
@@ -3139,6 +3144,8 @@ SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 \code{alpha} \ \ intercept $\alpha$ in the state equation
 \
 \code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{tau} \ \ square root of $\tau^2$, the conditional variance of the state
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
@@ -3203,9 +3210,17 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 \
 \code{C0} \ \ variance of the normal prior state distribution
 \
-\code{alpha} \ \ intercept $\alpha$ in the state equation
+\code{ealpha} \ \ expected value of the intercept $\alpha$ in the state equation
 \
-\code{beta} \ \ coefficient $\beta$ in the state equation
+\code{valpha} \ \ variance of the intercept $\alpha$ in the state equation
+\
+\code{ebeta} \ \ expected value of the coefficient $\beta$ in the state equation
+\
+\code{vbeta} \ \ variance of the coefficient $\beta$ in the state equation
+\
+\code{nu} \ \ when divided by 2, first hyperparameter of the Inverse Gamma distribution on $\tau^2$, the conditional variance of the state
+\
+\code{lambda} \ \ when multiplied by $\nu/2$, second hyperparameter of the Inverse Gamma distribution on $\tau^2$, the conditional variance of the state
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
@@ -3288,6 +3303,8 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
 \
 \code{beta} \ \ coefficient $\beta$ in the state equation
 \
+\code{tau} \ \ square root of $\tau^2$, the conditional variance of the state
+\
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
 \hrule
@@ -3321,6 +3338,7 @@ SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   }
   return(list(xs=xs,ws=ws,ess=ess))
 }
+
 ```
 \
 \hrule
@@ -3342,6 +3360,8 @@ SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
 \code{alpha} \ \ intercept $\alpha$ in the state equation
 \
 \code{beta} \ \ coefficient $\beta$ in the state equation
+\
+\code{tau} \ \ square root of $\tau^2$, the conditional variance of the state
 \
 \code{r} \ \  if present the threshold is set equal to $N/r$ otherwise, if missing, the threshold is set equal to $N/2$
 \hrule
