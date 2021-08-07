@@ -2114,7 +2114,7 @@ We are now ready to compare the performances of these four algorithms. We simula
 # Simulating the data
 # -------------------
 set.seed(12345)
-n     =  50
+n     =  100
 alpha =  0
 beta  =  0.99
 tau2  =  0.05
@@ -2319,16 +2319,18 @@ nu      = 5
 lambda  = tau2*3/5
 
 
-
-svpf<-SVPFfun(y,N,m0,C0, alpha,beta,tau)
-
-svgpf<-SVGPFfun(y,N,m0,C0,alpha,beta,tau)
-
-
-svapf<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
-
-
-svlw<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+set.seed(12345)
+N1=N
+svpf<-SVPFfun(y,N1,m0,C0, alpha,beta,tau)
+set.seed(12345)
+N1=N
+svgpf<-SVGPFfun(y,N1,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N1=N
+svapf<-SVAPFoptfun(y,N1,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N1=N
+svlw<-SVLWfun(y,N1,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 
 SVFiltplot<-function(dataframe,fun,title,ub,lb){
 
@@ -2367,30 +2369,36 @@ ggplot(dataframe,aes(x=timeframe))+
 We provide both a graphical and a numerical comparison. From the plots it is hard to say which particle filter provides the best performances. By and large, BPF, GPF and APF behave similarly while the Liu and West filter presents larger credible intervals but at the same time a higher coverage of the true states. On the other hand, by a RMSE comparison, the Auxiliary Particle filter provides the best performances followed bt the Liu and West filter. Moreover, notice that when the number of particles increases the accuracy improves, however not significant improvements are detected for $N>10000$.
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison of filtering strategies for Stochastic Volatility Model. Filtered States with credible interval (in red)", fig.height=6, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
-plotone<-SVFiltplot(dfsv,svpf,"",3,-3)
-plottwo<-SVFiltplot(dfsv,svgpf,"",3,-3)
-plotthree<-SVFiltplot(dfsv,svapf,"",3,-3)
-plotfour<-SVFiltplot(dfsv,svlw,"",3,-3)
+plotone<-SVFiltplot(dfsv,svpf,"",5,-5)
+plottwo<-SVFiltplot(dfsv,svgpf,"",5,-5)
+plotthree<-SVFiltplot(dfsv,svapf,"",5,-5)
+plotfour<-SVFiltplot(dfsv,svlw,"",5,-5)
 
 ggarrange(plotone, plottwo, plotthree, plotfour, nrow = 2, ncol = 2)
 ```
 
 ```{r include=FALSE}
-set.seed(123)
 truex<-x
-estimatedx<-matrix(NA,ncol=5,nrow=4)
+estimatedx<-matrix(NA,ncol=5,nrow=5)
 colnames(estimatedx)<-c("N","BPF","GPF", "APF","LWF")
-estimatedx[,1]<-c(100,1000,10000,100000)
+estimatedx[,1]<-c(20,100,1000,10000,100000)
 
 
 i=1
-for(N in c(100,1000,10000,100000)){
+for(N in c(20,100,1000,10000,100000)){
+
 set.seed(12345)
-  
-svpf_1<-SVPFfun(y,N,m0,C0, alpha,beta,tau)
-svgpf_1<-SVGPFfun(y,N,m0,C0,alpha,beta,tau)
-svapf_1<-SVAPFoptfun(y,N,m0,C0,alpha,beta,tau)
-svlw_1<-SVLWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+N1=N
+svpf_1<-SVPFfun(y,N1,m0,C0, alpha,beta,tau)
+set.seed(12345)
+N1=N
+svgpf_1<-SVGPFfun(y,N1,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N1=N
+svapf_1<-SVAPFoptfun(y,N1,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N1=N
+svlw_1<-SVLWfun(y,N1,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
 
 estimatedx[i,2]<-RMSE(truex,Filtervalues(svpf_1)$mean)
 estimatedx[i,3]<-RMSE(truex,Filtervalues(svgpf_1)$mean)
@@ -2404,7 +2412,7 @@ i=i+1
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
-kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE", digits=3)
+kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE", digits=6)
 ```
 
 
