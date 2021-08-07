@@ -947,7 +947,7 @@ FILT.PF <- Filtplot(df,pf,"")
 ggarrange(FILT.PF,ESS.PF,labels=c("(a)","(b)"))
 ```
 
-Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure \ref{fig:myfig4}, when the number of particles generated at any interaction increases the results for both the estimated mean and the variance tend to converge [[SPIEGARE PERCHE']]. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
+Since the Random Walk plus Noise model allows for closed form solutions, we want to compare the results of Boostrap Particle Filter(BPF) with Kalman Filter(KF). As we can see from figure \ref{fig:myfig4}, as the number of particles N increases, both the state level and the standard deviation estimated with particle filter converge to the ones obtained by the recursive Kalman filter formulas, confirming Monte Carlo approximations to be asymptotically consistent. Moreover, comparing the Root Mean Square Errors of the filtered states with respect to the true state values, when the sample size increases the BPF decreases and, for large N, it reaches the accuracy of the Kalman Filter.
 
 ```{r include=FALSE}
 set.seed(1991)
@@ -2982,7 +2982,7 @@ SVPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    w1<-w*dnorm(data[t],0,exp(x))
+    w1<-w*dnorm(data[t],0,exp(x/2))
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -3040,7 +3040,7 @@ SVGPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     
     xprev<-x
     x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
-    w1<-w*dnorm(data[t],0,exp(x))*dnorm(x,alpha+beta*xprev,tau)/
+    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/
       dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
     
     w = w1/sum(w1)
@@ -3096,10 +3096,10 @@ SVAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   
   for(t in 1:length(data)){
     
-    weight = w*dnorm(data[t],0,exp(x))
+    weight = w*dnorm(data[t],0,exp(x/2))
     k   = sample(1:N,size=N,replace=TRUE,prob=weight)
     x1   = rnorm(N,alpha+beta*x[k],tau)
-    lw  = dnorm(data[t],0,exp(x1),log=TRUE)-dnorm(data[t],0,exp(x[k]),log=TRUE)
+    lw  = dnorm(data[t],0,exp(x1/2),log=TRUE)-dnorm(data[t],0,exp(x[k]/2),log=TRUE)
     w   = exp(lw)
     w   = w/sum(w)
     ESS  = 1/sum(w^2)
@@ -3237,11 +3237,11 @@ SVLWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
     vpar     = var(pars)
     ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
     mus         = pars[,1]+pars[,2]*xs 
-    weight      = w*dnorm(data[t],0,exp(mus))
+    weight      = w*dnorm(data[t],0,exp(mus/2))
     k           = sample(1:N,size=N,replace=T,prob=weight)
     ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
     xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
-    w           = dnorm(data[t],0,exp(xt))/dnorm(data[t],0,exp(mus[k]))
+    w           = dnorm(data[t],0,exp(xt/2))/dnorm(data[t],0,exp(mus[k]/2))
     w           = w/sum(w)
     ESS         = 1/sum(w^2)
     
@@ -3304,7 +3304,7 @@ SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    w1<-w*dnorm(data[t],0,exp(x))
+    w1<-w*dnorm(data[t],0,exp(x/2))
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -3359,7 +3359,7 @@ BAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
   for(t in 1:length(data)){
     
     x<-rnorm(N,alpha+beta*x,tau)
-    w1<-w*dnorm(data[t],0,exp(x))
+    w1<-w*dnorm(data[t],0,exp(x/2))
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
