@@ -295,8 +295,8 @@ Interestingly, this time the performance of the Bootstrap filter worsens when N 
 Errorcomp3<-matrix(NA,ncol=2,nrow=2)
 colnames(Errorcomp3)<-c("RMSE", "MAE")
 rownames(Errorcomp3)<-c("N=50000", "N=100000")
-Errorcomp3[1,]<-c(0.04407704,0.01667898)
-Errorcomp3[2,]<-c(0.03575915,0.01476220)
+Errorcomp3[1,]<-c(0.015181843,0.008679359)
+Errorcomp3[2,]<-c(0.013735482,0.006467285) #updated
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
@@ -306,7 +306,7 @@ kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="Discrepancy bet
 
 In fact, by comparing the two benchmark approximations with N=50000, we can see that, for example, the Bootstrap PF run with N=10000 is closer to the benchmark APF than the benchmark BT is, or that the RMSE ranks the APF with N=10000 as closer to the the benchmark BT than the APF with N=50000, mildly pointing at a theoretically-unsound difference between the limiting distributions of the filters. Nevertheless, now the RMSE and MAE do not deliver unanimous verdicts, nor the differences seem large enough to back extreme claims. And, conveniently, running the Auxiliary and the Bootstrap filters with 100000 particles testifies a shrinking difference between the approximations - at increasingly large computational costs, though.\
 
-Overall, we should not overplay tiny differences.\footnote{Indeed, the mere extent of such difference also depends on the real dataset which is used for the comparison, implying different target distributions. For example, running the same experiment using the STOXX50E dataset, we have even smaller differences between the filters at N=50000, with RMS difference between the Bootstrap and the Auxiliary equal to 0.01236279 and mean absolute difference equal to 0.008028818.} Rather, we prefer to stress the points that emerged from both benchmark analyses and we can therefore support quite confidently.\
+Overall, we should not overplay tiny differences.\footnote{Indeed, the mere extent of such difference also depends on the real dataset which is used for the comparison, implying different target distributions. For example, running the same experiment using the STOXX50E dataset, we have similar differences between the filters at N=50000, with RMS difference between the Bootstrap and the Auxiliary equal to 0.016121989 and mean absolute difference equal to 0.009306925. The extent of the difference clearly depends on the chosen parameters too: for example, at N=50000, choosing $\alpha=-0.0031$, $\beta=0.9951$ and $\tau^2=0.0074$, using SP500 data yields RMS difference equal to 0.04408 and MA difference equal to 0.01668, while using STOXX50E data we have 0.01236279 RMS difference and 0.008028818 mean absolute difference.} Rather, we prefer to stress the points that emerged from both benchmark analyses and we can therefore support quite confidently.\
 First, if on the one hand it is clear that some degree of resampling is essential, on the other we found no gains from resampling at each period.\
 Second, when the number of particles is set at 5000 or more, neither benchmark could single out an algorithm that clearly outperformed the others, when restricting the analysis to procedures that feature adaptive resampling rules.\
 Third, when the number of particles was set to 10, 100 or 1000, the Bootstrap particle filter and the Guided particle filter with optimal proposal kernel significantly emerged as the best performing algorithms for our SV model, suggesting that their computational cost is lower than that of the Auxiliary particle filter, which needed more particles to "get rolling".\
