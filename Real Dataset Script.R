@@ -460,6 +460,8 @@ write.xlsx(list1,file="svbpf50000p.xlsx")
 #RMSE and MAE comparison of particle filters (but not LW) vs Bootstrap PF with 50000 particles
 
 library(openxlsx)
+RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
+MAE<-function(x,xhat){mean(abs(x-xhat))}
 bpf50000mean<-read.xlsx("svbpf50000p.xlsx", sheet = 1)
 bpf50000sd<-read.xlsx("svbpf50000p.xlsx", sheet = 2)
 bpf100000mean<-read.xlsx("svbpf100000p.xlsx", sheet = 1)
@@ -496,6 +498,10 @@ Errorcomp[2,5]<-MAE(z50mean,comparablemean(svsis))
 Errorcomp[2,6]<-MAE(z50mean,comparablemean(svbapf))
 RMSEbench50000p<-RMSE(z50mean,w50mean)
 MAEDbench50000p<-MAE(z50mean,w50mean)
+difference50000p<-c(RMSEbench50000p,MAEDbench50000p)
+RMSEbench100000p<-RMSE(z100mean,w100mean)
+MAEDbench100000p<-MAE(z100mean,w100mean)
+difference100000p<-c(RMSEbench100000p,MAEDbench100000p)
 
 # Graphical comparison of filtered states
 
