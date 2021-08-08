@@ -451,7 +451,7 @@ Errorvol[2,7]<-MAE(realisedx,comparablevol(svbapf))
 
 # Save mean and sd series of PF with 50000 particles
 library(openxlsx)
-Filt<-Filtervalues(svapf)
+Filt<-Filtervalues(svbpf)
 mean<-Filt$mean
 sd<-Filt$sd
 list1<-list('mean'=mean,'sd'=sd)
@@ -462,13 +462,21 @@ write.xlsx(list1,file="svbpf50000p.xlsx")
 library(openxlsx)
 bpf50000mean<-read.xlsx("svbpf50000p.xlsx", sheet = 1)
 bpf50000sd<-read.xlsx("svbpf50000p.xlsx", sheet = 2)
+bpf100000mean<-read.xlsx("svbpf100000p.xlsx", sheet = 1)
+bpf100000sd<-read.xlsx("svbpf100000p.xlsx", sheet = 2)
 apf50000mean<-read.xlsx("svapf50000p.xlsx", sheet = 1)
 apf50000sd<-read.xlsx("svapf50000p.xlsx", sheet = 2)
-zmean<-bpf50000mean[,1]
-zsd<-bpf50000sd[,1]
-wmean<-apf50000mean[,1]
-wsd<-apf50000sd[,1]
-dfsv1<-data.frame(timeframe,y,zmean,zsd,wmean,zsd)
+apf100000mean<-read.xlsx("svapf100000p.xlsx", sheet = 1)
+apf100000sd<-read.xlsx("svapf100000p.xlsx", sheet = 2)
+z50mean<-bpf50000mean[,1]
+z50sd<-bpf50000sd[,1]
+z100mean<-bpf100000mean[,1]
+z100sd<-bpf100000sd[,1]
+w50mean<-apf50000mean[,1]
+w100mean<-apf100000mean[,1]
+w50sd<-apf50000sd[,1]
+w100sd<-apf100000sd[,1]
+dfsv1<-data.frame(timeframe,y,z50mean,z50sd,w50mean,z50sd)
 Errorcomp<-matrix(NA,ncol=6,nrow=2)
 colnames(Errorcomp)<-c("N","BPF", "GPFOPT", "APF", "SIS", "BAPF")
 rownames(Errorcomp)<-c("RMSE","MAE")
@@ -476,18 +484,18 @@ Errorcomp[,1]<-c(10000)
 RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
 MAE<-function(x,xhat){mean(abs(x-xhat))}
 comparablemean<-function(fun){Filtervalues(fun)$mean}
-Errorcomp[1,2]<-RMSE(zmean,comparablemean(svbpf))
-Errorcomp[1,3]<-RMSE(zmean,comparablemean(svgpfopt))
-Errorcomp[1,4]<-RMSE(zmean,comparablemean(svapf))
-Errorcomp[1,5]<-RMSE(zmean,comparablemean(svsis))
-Errorcomp[1,6]<-RMSE(zmean,comparablemean(svbapf))
-Errorcomp[2,2]<-MAE(zmean,comparablemean(svbpf))
-Errorcomp[2,3]<-MAE(zmean,comparablemean(svgpfopt))
-Errorcomp[2,4]<-MAE(zmean,comparablemean(svapf))
-Errorcomp[2,5]<-MAE(zmean,comparablemean(svsis))
-Errorcomp[2,6]<-MAE(zmean,comparablemean(svbapf))
-RDiff50000p<-RMSE(zmean,wmean)
-ADiff50000p<-MAE(zmean,wmean)
+Errorcomp[1,2]<-RMSE(z50mean,comparablemean(svbpf))
+Errorcomp[1,3]<-RMSE(z50mean,comparablemean(svgpfopt))
+Errorcomp[1,4]<-RMSE(z50mean,comparablemean(svapf))
+Errorcomp[1,5]<-RMSE(z50mean,comparablemean(svsis))
+Errorcomp[1,6]<-RMSE(z50mean,comparablemean(svbapf))
+Errorcomp[2,2]<-MAE(z50mean,comparablemean(svbpf))
+Errorcomp[2,3]<-MAE(z50mean,comparablemean(svgpfopt))
+Errorcomp[2,4]<-MAE(z50mean,comparablemean(svapf))
+Errorcomp[2,5]<-MAE(z50mean,comparablemean(svsis))
+Errorcomp[2,6]<-MAE(z50mean,comparablemean(svbapf))
+RMSEbench50000p<-RMSE(z50mean,w50mean)
+MAEDbench50000p<-MAE(z50mean,w50mean)
 
 # Graphical comparison of filtered states
 
@@ -499,9 +507,9 @@ Filtplot1<-function(dataframe,fun,title){
   dataframe<-data.frame(dataframe,mean,sd)
   
   ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=zmean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
+    geom_line(aes(y=z50mean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
     geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
-    geom_ribbon(aes(ymin = zmean -1.96*zsd, ymax = zmean +1.96*zsd),
+    geom_ribbon(aes(ymin = z50mean -1.96*z50sd, ymax = z50mean +1.96*z50sd),
                 fill="black",alpha=0.16) +
     geom_ribbon(aes(ymin = mean-1.96*sd, ymax = mean+1.96*sd),
                 fill="red",alpha=0.16) +
@@ -537,11 +545,11 @@ plot12
 Filtplot2<-function(dataframe,title){
   
   ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=zmean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
-    geom_ribbon(aes(ymin = zmean-1.96*zsd, ymax = zmean+1.96*zsd),
+    geom_line(aes(y=z50mean, col="50000p BT Filtered States", linetype="50000p BT Filtered States"))+
+    geom_ribbon(aes(ymin = z50mean-1.96*z50sd, ymax = z50mean+1.96*z50sd),
                 fill="black",alpha=0.16) +
-    geom_line(aes(y=mean, col="50000p AP Filtered States", linetype="50000p AP Filtered States"))+
-    geom_ribbon(aes(ymin = wmean-1.96*wsd, ymax = wmean+1.96*wsd),
+    geom_line(aes(y=w50mean, col="50000p AP Filtered States", linetype="50000p AP Filtered States"))+
+    geom_ribbon(aes(ymin = w50mean-1.96*w50sd, ymax = w50mean+1.96*w50sd),
                 fill="red",alpha=0.16) +
     scale_color_manual("",
                        values=c("50000p BT Filtered States" = "black",
