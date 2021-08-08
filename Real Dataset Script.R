@@ -325,10 +325,10 @@ tau   = sqrt(tau2)
 #Real dataset
 
 library(openxlsx)
-realdatasetSPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 2)
+realdatasetSPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
 y<-realdatasetSPX[,2]
 n = length(y)
-volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 2)
+volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
 x<-volatilitySPX[,3]
 alpha.true = alpha
 beta.true  = beta
@@ -346,10 +346,10 @@ set.seed(12345)
 N=10000
 svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
 set.seed(12345)
-N=50000
+N=10000
 svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
 set.seed(12345)
-N=50000
+N=10000
 svapf<-APFfun(y,N,m0,C0,alpha,beta,tau)
 set.seed(12345)
 N=10000
