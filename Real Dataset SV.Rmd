@@ -327,10 +327,354 @@ Nevertheless, we shall not indulge into forgetting the inherent limitations of u
 
 In order to evaluate the different filters according to the evaluation tool represented by the realized volatility, we start once more from the visual inspection of the plots. For any of the three indices, below graphs are shown including both the filtered volatility obtained from the filtered states (for any of the Sequential MC methods described in the theoretical section) and the corresponding rescaled realised volatility series.\footnote{For simplicity,troughout the rest of this section we will omit "rescaled" when refering to the rescaled realised volatility.} As compared to the visual analysis we conducted in section \textit{fill with the number of the section}, we can now use such a proxy to determine the relative performance of the competing filters.\
 
-Once more, most algorithms used (aside from SIS and Liu-West) seem to provide indistinguishable results and, generally speaking, to underestimate the volatility (as indicated by the realised volatility proxy). The SIS algorithm appears completely inadequate to describe the "true" volatility process: as we argued in section XX, the degeneracy of its weights on the particles prevents it from delivering a good enough approximation of the target distribution (\textit{check whether this is the correct intuition}). On top of that, it does not seem the case that the SIS algorithm, by falling short of the SV target distribution, ends up fitting the proxy better.\footnote{As we will now see, this seems instead to be the case for our preferred algorithms, namely those adopting adaptive resampling rules: a better approximation of the SV target filtering distribution yields slightly higher RMSEs and MAEs than those resulting from less accurate MC approximations.}\
+Once more, most algorithms used (aside from SIS and Liu-West) seem to provide indistinguishable results. The SIS algorithm appears completely inadequate to describe the "true" volatility process: as we argued in section XX, the degeneracy of its weights on the particles prevents it from delivering a good enough approximation of the target distribution (\textit{check whether this is the correct intuition}). On top of that, it does not seem the case that the SIS algorithm, by falling short of the SV target distribution, ends up fitting the proxy better.\footnote{As we will now see, this seems instead to be the case for our preferred algorithms, namely those adopting adaptive resampling rules: a better approximation of the SV target filtering distribution yields slightly higher RMSEs and MAEs than those resulting from less accurate MC approximations.}\
 On the other hand, the Liu and West filter offers the best performance among all filters, at least visually. This suggests that, since the Liu and West particle filter is built on a different underlying model than the other filters considered, this model may offer a better representation of the data analyzed. Once more, these considerations hold for all of the three indices.\
 
-GRAFICI
+```{r echo=FALSE, fig.align='center', fig.cap="Filtered volatility and realised volatility", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+
+# Realized Volatility Plots
+
+library(openxlsx)
+library(ggplot2)
+library(ggpubr)
+
+realdatasetSPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
+y<-realdatasetSPX[,2]
+volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
+x1<-volatilitySPX[,3]
+realisedx1<-x1
+timeframe<-c(1:length(y))
+
+sv_bpf1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 1))[,1]
+sv_gpfopt1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 2))[,1]
+sv_apf1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 3))[,1]
+sv_lw1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 4))[,1]
+sv_bapf1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 5))[,1]
+sv_sis1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 6))[,1]
+dfsv1<-data.frame(timeframe,y,realisedx1,sv_bpf1)
+dfsv2<-data.frame(timeframe,y,realisedx1,sv_gpfopt1)
+dfsv3<-data.frame(timeframe,y,realisedx1,sv_apf1)
+dfsv4<-data.frame(timeframe,y,realisedx1,sv_lw1)
+dfsv5<-data.frame(timeframe,y,realisedx1,sv_bapf1)
+dfsv6<-data.frame(timeframe,y,realisedx1,sv_sis1)
+
+Filtplot1<-function(dataframe,title){
+  mean=sv_bpf1
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot2<-function(dataframe,title){
+  mean=sv_gpfopt1
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot3<-function(dataframe,title){
+  mean=sv_apf1
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot4<-function(dataframe,title){
+  mean=sv_lw1
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot5<-function(dataframe,title){
+  mean=sv_bapf1
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot6<-function(dataframe,title){
+  mean=sv_sis1
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+plotproxy1<-Filtplot1(dfsv1,"Bootstrap Particle Filter SP500")
+plotproxy2<-Filtplot2(dfsv2,"Opt Ker Guided Particle Filter SP500")
+plotproxy3<-Filtplot3(dfsv3,"Auxiliary Particle Filter SP500")
+plotproxy4<-Filtplot4(dfsv4,"Liu and West Filter SP500")
+plotproxy5<-Filtplot5(dfsv5,"Always Resampling SP500")
+plotproxy6<-Filtplot6(dfsv6,"No Resampling SP500")
+
+plotproxy1
+plotproxy2
+plotproxy3
+plotproxy4
+plotproxy5
+plotproxy6
+
+realdatasetSPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 2)
+y<-realdatasetSPX[,2]
+volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 2)
+x2<-volatilitySPX[,3]
+realisedx2<-x2
+timeframe<-c(1:length(y))
+
+sv_bpf2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 1))[,1]
+sv_gpfopt2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 2))[,1]
+sv_apf2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 3))[,1]
+sv_lw2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 4))[,1]
+sv_bapf2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 5))[,1]
+sv_sis2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 6))[,1]
+dfsv7<-data.frame(timeframe,y,realisedx2,sv_bpf2)
+dfsv8<-data.frame(timeframe,y,realisedx2,sv_gpfopt2)
+dfsv9<-data.frame(timeframe,y,realisedx2,sv_apf2)
+dfsv10<-data.frame(timeframe,y,realisedx2,sv_lw2)
+dfsv11<-data.frame(timeframe,y,realisedx2,sv_bapf2)
+dfsv12<-data.frame(timeframe,y,realisedx2,sv_sis2)
+
+Filtplot7<-function(dataframe,title){
+  mean=sv_bpf2
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot8<-function(dataframe,title){
+  mean=sv_gpfopt2
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot9<-function(dataframe,title){
+  mean=sv_apf2
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot10<-function(dataframe,title){
+  mean=sv_lw2
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot11<-function(dataframe,title){
+  mean=sv_bapf2
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+Filtplot12<-function(dataframe,title){
+  mean=sv_sis2
+  mean1=exp(mean/2)
+  dataframe<-data.frame(dataframe,mean1)
+  
+  ggplot(dataframe,aes(x=timeframe))+
+    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
+    scale_color_manual("",
+                       values=c("Proxy" = "black",
+                                "Filtered Volatility"= "red"))+
+    scale_linetype_manual("",
+                          values=c("Proxy" = 3,
+                                   "Filtered Volatility"=1))+
+    labs(x="Time",
+         y="")+
+    ggtitle(title)+
+    theme_bw()+
+    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
+          legend.background = element_rect(fill = "white", colour = "gray30")) +
+    theme(plot.title = element_text(hjust = 0.5))
+}
+
+plotproxy7<-Filtplot7(dfsv7,"Bootstrap Particle Filter STOXX")
+plotproxy8<-Filtplot8(dfsv8,"Opt Ker Guided Particle Filter STOXX")
+plotproxy9<-Filtplot9(dfsv9,"Auxiliary Particle Filter STOXX")
+plotproxy10<-Filtplot10(dfsv10,"Liu and West Filter STOXX")
+plotproxy11<-Filtplot11(dfsv11,"Always Resampling STOXX")
+plotproxy12<-Filtplot12(dfsv12,"No Resampling STOXX")
+
+plotproxy7
+plotproxy8
+plotproxy9
+plotproxy10
+plotproxy11
+plotproxy12
+
+
+```
+
 
 The above intuitions are confirmed by looking at Table XX, where the RMSE and MAE are shown for each filter (run with a number of particles equal to 10000), considering the realised volatility as benchmark. Indeed, for any index, most of the filters give rather similar results in terms of RMSE and MAE. For any index and for any measure, the worst performing is the SIS algorithm, while the best performing is the Liu and West particle filter. (Metterei qua l'intuizione del Liu West)\
 
@@ -426,8 +770,8 @@ kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, r
 ```
 
 Finally, we can see from Table XX the RMSE and MAE obtained with a number of particles equal to 50000, for the SP500 and the EuroStoxx50 indices. We consider the Bootstrap particle filter and the Auxiliary particle filter, which we employed in section XX; in addition to these, we add the Liu and West filter, which did not feature in that section of this work.\
-In the case of the SP500 index, although the number of particles increases, the RMSE and MAE increase (although by very small amounts) for both the particle filters based on our usual specification of the SV model. Instead, for the Liu and West filter we see some improvements, although the small extent suggests that also the LW filter was already in the convergence phase with N=10000.\
-In the case of the EuroStoxx50 index, while the Bootstrap filter increases both RMSE and MAE when N is raised to 50000, the APF shows improvements in its performance, according to both criteria, which instead disagree for the Liu and West filter. COMMENTI DA AGGIORNARE
+In the case of the SP500 index, although the number of particles increases, both RMSE and MAE increase (although by very small amounts) for the Auxiliary Particle Filter, while they slightly decrease for the Bootstrap PF. Instead, for the Liu and West filter we see a sizable deterioration in the performance: this suggests that the parameter learning process embedded in the LWF is actually pointing in a different direction than that of the proxy, suggesting that either the proxy does not capture well the latent volatility, or a SV model may not be the best tool to disclose such latent process.\footnote{Note that at N=1000, the LWF yields a RMSE and a MAE. In words, worse approximations of the target distribution of the LWF are actually best at replicating the proxy for the SP500. A possible interpretation goes, once again, as that reported in the main text.}\
+In the case of the EuroStoxx50 index, while the Bootstrap filter slightly increases both RMSE and MAE when N is raised to 50000, the APF shows mild improvements in its MAE performance, while the RMSE criterion points in the opposite direction. The criteria disagree also in the case of the LW filter, as the MAE mildly prefers the performance of N=10000, while the RMSE detects minor improvements for N=50000.
 
 ```{r include=FALSE}
 
