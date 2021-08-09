@@ -1988,7 +1988,102 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 
 \section{Convergence}\label{pf_converg}
+In this section, we cover three propositions that justify the use of the PF algorithms to estimate quantities of interest. Firstly, we present two convergence results for the estimators of the predictive and filtering distributions. As we will discuss, these results hold under reasonable conditions. Then, we will show that the error of the particle estimators are asymptotically distributed according to a Gaussian distribution with known variance. 
+Henceforth, we will maintain the assumption that (multinomial) resampling is repeated at each iteration.
+\subsection{MSE convergence}
+As already seen in subsection \ref{seq_impt_sampling}, the particle approximation of $\Q_{t}(dx_{0:t})$ is:
+\begin{equation*}
+      \sum_{n=1}^NW_{t-1}^nM_t(X_{t-1}^n,dx_t).
+\end{equation*}
+The following lemma states that the (mean squared) error related to sampling from this conditional distribution is bounded.
+\bigskip
+\begin{lemma}
+For any measurable, integrable, and bounded function $\varphi:\X\rightarrow\R,$
+$$
+\E\Bigg[ \bigg\{ \frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)-\sum\limits_{n=1}^NW_{t-1}^n(M_t\varphi)(X_{t-1}^n) \bigg\}^2 \Bigg]\leq \frac{\|\varphi\|_{\infty}^2}{N},
+$$
+where $\|\cdot\|_{\infty}$ is the supnorm and $M_t\varphi$ is the map 
+$x_{t-1}\mapsto \int_{\X}M_t(x_{t-1},dx_t)\varphi(x_t).$
+\end{lemma}
+This result can be used to prove the convergence of the estimator $\frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)$. To see this, note that 
+\begin{equation}
+    \begin{split}
+        \frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)-\E_{\Q_{t-1}M_t}(\varphi)=\bigg(&\frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)-\sum\limits_{n=1}^NW_{t-1}^n(M_t\varphi)(X_{t-1}^n) \bigg) \\
+        & + \bigg(\sum\limits_{n=1}^NW_{t-1}^n(M_t\varphi)(X_{t-1}^n)- \E_{\Q_{t-1}M_t}(\varphi)\bigg).
+    \end{split}
+\end{equation}
+where $\E_{\Q_{t-1}M_t}(\varphi)=\int_{\X^{t+1}}\varphi(x_t)  \Q_{t-1}(dx_{0:t-1})M_t(x_{t-1},dx_t)$.\
+By the lemma, the first component of the right-hand side has a bounded MSE. It can be proved that also the second component of the right-hand side has a bounded MSE. Using the fact that $\E\{(X+Y)^2\}\leq2\E\{\E(X^2)+\E(Y^2)\},$ it follows that also the MSE of the left-hand side is bounded. A simple induction argument proves that the result holds for all $t$.\
+Using a similar argument, one can prove that the MSE of the estimator $\sum\limits_{n=1}^N W_t^n \varphi(X_t^n)$ is bounded as well. These ideas are formalized in the following proposition.
+\bigskip
+\begin{proposition}
+For any measurable, integrable, and bounded function $\varphi:\X\rightarrow\R,$ $\forall t\geq0$ there exist constants $c_t,c_t'$ such that:
+$$
+\E \Bigg[ \bigg\{ \frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)-\E_{\Q_{t-1}M_t}(\varphi)\bigg\}^2 \Bigg]\leq c_t \frac{\|\varphi\|_{\infty}^2}{N}
+$$
+and 
+$$
+    \E \Bigg[ \bigg\{\sum\limits_{n=1}^N W_t^n \varphi(X_t^n)-\E_{\Q_t}(\varphi) \bigg\}^2 \Bigg]\leq c_t' \frac{\|\varphi\|_{\infty}^2}{N}.
+$$
+Therefore, taking the limit for $N\rightarrow \infty,$ we have that 
+$$
+\frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)\xrightarrow{\text{MSE}}\E_{\Q_{t-1}M_t}(\varphi)
+$$
+and 
+$$
+\sum\limits_{n=1}^N W_t^n \varphi(X_t^n)\xrightarrow{\text{MSE}}\E_{\Q_t}(\varphi)
+$$
+\end{proposition}
+In the next subsection, we establish a much stronger property of the particle filter algorithms.
 
+\subsection{Almost sure convergence}
+The following proposition states that estimators $\frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)$ and $\sum\limits_{n=1}^N W_t^n \varphi(X_t^n)$ converge to their true values, up to negligible sets, i.e., the sets such that the estimators do not converge to $\E_{\Q_{t-1}M_t}(\varphi)$ and $\E_{\Q_t}(\varphi)$ have zero probability.  Additionally, recall that almost sure convergence implies convergence in probability.
+\bigskip
+\begin{proposition}
+For any $t\geq0$ and any measurable, integrable, and bounded function $\varphi:\X\rightarrow\R,$
+$$
+\frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)\xrightarrow{\text{a.s}}\E_{\Q_{t-1}M_t}(\varphi)
+$$
+and 
+$$
+\sum\limits_{n=1}^N W_t^n \varphi(X_t^n)\xrightarrow{\text{a.s}}\E_{\Q_{t}}(\varphi).
+$$
+\end{proposition}
+
+\subsection{Central limit theorem}
+The last asymptotic result of PF estimators concerns convergence in law: the error of a particle estimate is asymptotically normally distributed. 
+\bigskip
+\begin{proposition}
+For any $t\geq0$ and any measurable, integrable, and bounded function $\varphi:\X\rightarrow\R,$
+$$
+\sqrt{N}\bigg( \frac{1}{N} \sum\limits_{n=1}^N \varphi(X_t^n)-\E_{\Q_{t-1}M_t}(\varphi)\bigg)\implies \N(0,\hat{\mathcal{V}}_t(\varphi))
+$$
+and 
+$$
+\sqrt{N}\bigg(\sum\limits_{n=1}^N W_t^n \varphi(X_t^n)-\E_{\Q_{t}}(\varphi)\bigg)\implies \N(0,\mathcal{V}_t(\varphi)),
+$$
+where the asymptotic variances are defined recursively, with $ \hat{\mathcal{V}}_0(\varphi):=Var_{\M_0}(\varphi) $,
+\begin{equation*}
+    \begin{split}
+        \hat{\mathcal{V}}_t(\varphi)&:=\mathcal{V}_{t-1}(\E_{M_t}(\varphi))+Var_{\Q_{t-1}M_t}(\varphi) \text{ }\forall t\geq1, \\
+        \mathcal{V}_t(\varphi)&:=\hat{\mathcal{V}}_{t}\big( \bar{G}_t(\varphi-\E_{\Q_t}(\varphi)) \big) \text{ }\forall t\geq0.
+    \end{split}
+\end{equation*}
+Here, $\bar{G}_t=G_t/\E_{\Q_{t-1}M_t}(G_t)$ is the normalized incremental weight.
+\end{proposition}
+This version of the CLT for PF suggest that PF estimators with respect both to the predictive and the filtering distributions are approximately normal for a large number of particles. \
+In particular, the logic behind the expression for $\mathcal{V}_t(\varphi)$ is the same as described in section \ref{pf_is_conv}. In fact, recall that the estimator with respect to the filtering distribution is a more sophisticated form of IS estimator, where the target distribution differs from the proposal one. \ 
+Instead, to get an intuition of the variance $\hat{\mathcal{V}}_t(\varphi),$ note that by the law of total variance, 
+\begin{equation*}
+    \begin{split}
+        Var\Bigg[ \frac{1}{N}  \sum\limits_{n=1}^N \varphi(X_t^n) \Bigg] = &Var\Bigg[ \E\bigg[\frac{1}{N}  \sum\limits_{n=1}^N \varphi(X_t^n)\Big| \sigma(X_{t-1}^{1:N}) \bigg] \Bigg] \\
+        &+ \E \Bigg[ Var\bigg[ \frac{1}{N}  \sum\limits_{n=1}^N \varphi(X_t^n)    \Big| \sigma(X_{t-1}^{1:N})\bigg]\Bigg] \\
+        &= Var\bigg[\sum\limits_{n=1}^N W_{t-1}^n (M_t\varphi)(X_{t-1}^n)\bigg] \\
+        &+\frac{1}{N}\E\Bigg[Var\bigg[\varphi(X_t^1) \Big| \sigma(X_{t-1}^{1:N})\bigg]\Bigg].
+    \end{split}
+\end{equation*}
+The notation $\mid \sigma(X_{t-1}^{1:N})$ means conditioning on having sampled (from the multinomial distribution) $X_{t-1}^{1:N}$. Conditional on multinomial sampling, the $X_{t-1}^n$ are i.i.d., with distribution  $\sum\limits_{n=1}^N W_{t-1}^n M_t(X_{t-1}^n, dx_t)$, that should converge to $\Q_{t-1}M_t$. So, it is natural to think that the second element of the sum converges to the variance of $\varphi$ with respect to the distribution $\Q_{t-1}M_t$. 
+These results are of practical use because they provide a way to explicitly compute the variance of the PF estimates.
 
 \section{Implementations for Stochastic Volatility Models}
 
@@ -2366,7 +2461,10 @@ ggplot(dataframe,aes(x=timeframe))+
 
 ```
 
-We provide both a graphical and a numerical comparison.\footnote{The sequences of filtered states shown in the graphs are obtained by using filters with 10000 particles.} From the plots it is hard to say which particle filter provides the best performances. By and large, BPF, GPF and APF behave similarly, while the Liu and West filter presents larger credible intervals but at the same time a higher coverage of the true states. On the other hand, by a RMSE comparison, the Auxiliary Particle filter provides the best performances followed bt the Liu and West filter. Moreover, notice that when the number of particles increases the accuracy improves, however not significant improvements are detected for $N>10000$.
+We provide both a graphical and a numerical comparison.\footnote{The sequences of filtered states shown in the graphs are obtained by using filters with 10000 particles.} From the plots it is hard to say which particle filter provides the best performances. By and large, BPF, GPF and APF behave similarly, while the Liu and West filter presents larger credible intervals but at the same time a higher coverage of the true states.\
+On the other hand, by a RMSE comparison, we see several differences between the filters. Note that the Guided Particle Filter yields the lowest RMSE at N=100, and does not improve much even when raising the number of particles to 100000. Instead, the APF achieves the best performance in the field when N rises to 10000 and 100000, despite lagging well behind the BPF and the GPF for the three initial N thresholds. For the Bootstrap PF, the most significant improvements is that from N=100 to N=1000. We could then point at the APF as the best performing and more computationally expensive filter, while the GPF as the best one at low thresholds (\textit{i.e.} least computationally expensive, in a way). However, fine margins suggest caution in such comparative assessments.\
+Rather, we would stress the performance of the Liu and West filter: indeed, it is apparent that, at least for the first four thresholds, such filter delivers the worst performance. Even at N=100000, the APF, the GPF and the BPF are much closer to each other than the LWF, which still yields the highest RMSE. Such results, in fact, do not come as a surprise: indeed, note that, while the three best performing filters are built on a model that perfectly coincides with the true DGP, the Liu and West filter considers a somewhat misspecified model, which features additional uncertainty on several parameters. Intuitively, even though the LWF features some degree of parameter learning, and would then converge to the correct figures of such parameters, the other filters "have already learnt" the true parameters from the beginning.\footnote{Such difference can be represented as follows. When trying to pin down real valued parameters, the probability that a simple initial guess for each value is correct can be deemed as null. So, in contexts where parameters are unknown, we expect the additional uncertainty featured in the LWF to prove useful, as it can adjust the initial parameters to get closer to the true unknown values. However, in synthetic contexts where we know the DGP, such uncertainty is almost useless.}\
+Finally, notice that in general when the number of particles increases the accuracy improves; however, significant improvements are not detected for $N>10000$, suggesting that such threshold may be a telling one as regards the convergence of our filters.
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Comparison of filtering strategies for Stochastic Volatility Model. Filtered States with credible interval (in red)", fig.height=6, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
 plotone<-SVFiltplot(dfsv,svpf,"",5,-5)
