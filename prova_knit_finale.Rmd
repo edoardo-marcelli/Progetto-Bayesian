@@ -2072,7 +2072,7 @@ where the asymptotic variances are defined recursively, with $ \hat{\mathcal{V}}
 Here, $\bar{G}_t=G_t/\E_{\Q_{t-1}M_t}(G_t)$ is the normalized incremental weight.
 \end{proposition}
 This version of the CLT for PF suggest that PF estimators with respect both to the predictive and the filtering distributions are approximately normal for a large number of particles. \
-In particular, the logic behind the expression for $\mathcal{V}_t(\varphi)$ is the same as described in section \ref{asympt_IS}. In fact, recall that the estimator with respect to the filtering distribution is a more sophisticated form of IS estimator, where the target distribution differs from the proposal one. \ 
+In particular, the logic behind the expression for $\mathcal{V}_t(\varphi)$ is the same as described in section \ref{pf_is_conv}. In fact, recall that the estimator with respect to the filtering distribution is a more sophisticated form of IS estimator, where the target distribution differs from the proposal one. \ 
 Instead, to get an intuition of the variance $\hat{\mathcal{V}}_t(\varphi),$ note that by the law of total variance, 
 \begin{equation*}
     \begin{split}
