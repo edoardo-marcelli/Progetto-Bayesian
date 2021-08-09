@@ -335,88 +335,16 @@ GRAFICI
 The above intuitions are confirmed by looking at Table XX, where the RMSE and MAE are shown for each filter (run with a number of particles equal to 10000), considering the realised volatility as benchmark. Indeed, for any index, most of the filters give rather similar results in terms of RMSE and MAE. For any index and for any measure, the worst performing is the SIS algorithm, while the best performing is the Liu and West particle filter. (Metterei qua l'intuizione del Liu West)\
 
 ```{r include=FALSE}
-# RMSE MAE comparison
-
-library(openxlsx)
 Errorcomp3<-matrix(NA,ncol=7,nrow=6)
 colnames(Errorcomp3)<-c("N","BPF", "GPFOPT", "APF", "BAPF","LW", "SIS")
 rownames(Errorcomp3)<-c("RMSE SP500","MAE SP500","RMSE STOXX","MAE STOXX","RMSE DJI","MAE DJI")
 Errorcomp3[,1]<-c(10000,10000,10000,10000,10000,10000)
-
-volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
-x1<-volatilitySPX[,3]
-realisedx1<-x1
-sv_bpf1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 1))[,1]
-sv_gpfopt1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 2))[,1]
-sv_apf1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 3))[,1]
-sv_lw1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 4))[,1]
-sv_bapf1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 5))[,1]
-sv_sis1<-(read.xlsx("SP500_filters_10000p.xlsx", sheet = 6))[,1]
-RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
-MAE<-function(x,xhat){mean(abs(x-xhat))}
-comparablevol<-function(fun){exp(fun/2)}
-Errorcomp3[1,2]<-RMSE(realisedx1,comparablevol(sv_bpf1))
-Errorcomp3[1,3]<-RMSE(realisedx1,comparablevol(sv_gpfopt1))
-Errorcomp3[1,4]<-RMSE(realisedx1,comparablevol(sv_apf1))
-Errorcomp3[1,5]<-RMSE(realisedx1,comparablevol(sv_bapf1))
-Errorcomp3[1,6]<-RMSE(realisedx1,comparablevol(sv_lw1))
-Errorcomp3[1,7]<-RMSE(realisedx1,comparablevol(sv_sis1))
-Errorcomp3[2,2]<-MAE(realisedx1,comparablevol(sv_bpf1))
-Errorcomp3[2,3]<-MAE(realisedx1,comparablevol(sv_gpfopt1))
-Errorcomp3[2,4]<-MAE(realisedx1,comparablevol(sv_apf1))
-Errorcomp3[2,5]<-MAE(realisedx1,comparablevol(sv_bapf1))
-Errorcomp3[2,6]<-MAE(realisedx1,comparablevol(sv_lw1))
-Errorcomp3[2,7]<-MAE(realisedx1,comparablevol(sv_sis1))
-
-volatilitySTOXX<-read.xlsx("Dataset 17-21.xlsx", sheet = 2)
-x2<-volatilitySTOXX[,3]
-realisedx2<-x2
-sv_bpf2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 1))[,1]
-sv_gpfopt2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 2))[,1]
-sv_apf2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 3))[,1]
-sv_lw2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 4))[,1]
-sv_bapf2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 5))[,1]
-sv_sis2<-(read.xlsx("STOXX_filters_10000p.xlsx", sheet = 6))[,1]
-RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
-MAE<-function(x,xhat){mean(abs(x-xhat))}
-comparablevol<-function(fun){exp(fun/2)}
-Errorcomp3[3,2]<-RMSE(realisedx2,comparablevol(sv_bpf2))
-Errorcomp3[3,3]<-RMSE(realisedx2,comparablevol(sv_gpfopt2))
-Errorcomp3[3,4]<-RMSE(realisedx2,comparablevol(sv_apf2))
-Errorcomp3[3,5]<-RMSE(realisedx2,comparablevol(sv_bapf2))
-Errorcomp3[3,6]<-RMSE(realisedx2,comparablevol(sv_lw2))
-Errorcomp3[3,7]<-RMSE(realisedx2,comparablevol(sv_sis2))
-Errorcomp3[4,2]<-MAE(realisedx2,comparablevol(sv_bpf2))
-Errorcomp3[4,3]<-MAE(realisedx2,comparablevol(sv_gpfopt2))
-Errorcomp3[4,4]<-MAE(realisedx2,comparablevol(sv_apf2))
-Errorcomp3[4,5]<-MAE(realisedx2,comparablevol(sv_bapf2))
-Errorcomp3[4,6]<-MAE(realisedx2,comparablevol(sv_lw2))
-Errorcomp3[4,7]<-MAE(realisedx2,comparablevol(sv_sis2))
-
-volatilityDJI<-read.xlsx("Dataset 17-21.xlsx", sheet = 3)
-x3<-volatilityDJI[,3]
-realisedx3<-x3
-sv_bpf3<-(read.xlsx("DJI_filters_10000p.xlsx", sheet = 1))[,1]
-sv_gpfopt3<-(read.xlsx("DJI_filters_10000p.xlsx", sheet = 2))[,1]
-sv_apf3<-(read.xlsx("DJI_filters_10000p.xlsx", sheet = 3))[,1]
-sv_lw3<-(read.xlsx("DJI_filters_10000p.xlsx", sheet = 4))[,1]
-sv_bapf3<-(read.xlsx("DJI_filters_10000p.xlsx", sheet = 5))[,1]
-sv_sis3<-(read.xlsx("DJI_filters_10000p.xlsx", sheet = 6))[,1]
-RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
-MAE<-function(x,xhat){mean(abs(x-xhat))}
-comparablevol<-function(fun){exp(fun/2)}
-Errorcomp3[5,2]<-RMSE(realisedx3,comparablevol(sv_bpf3))
-Errorcomp3[5,3]<-RMSE(realisedx3,comparablevol(sv_gpfopt3))
-Errorcomp3[5,4]<-RMSE(realisedx3,comparablevol(sv_apf3))
-Errorcomp3[5,5]<-RMSE(realisedx3,comparablevol(sv_bapf3))
-Errorcomp3[5,6]<-RMSE(realisedx3,comparablevol(sv_lw3))
-Errorcomp3[5,7]<-RMSE(realisedx3,comparablevol(sv_sis3))
-Errorcomp3[6,2]<-MAE(realisedx3,comparablevol(sv_bpf3))
-Errorcomp3[6,3]<-MAE(realisedx3,comparablevol(sv_gpfopt3))
-Errorcomp3[6,4]<-MAE(realisedx3,comparablevol(sv_apf3))
-Errorcomp3[6,5]<-MAE(realisedx3,comparablevol(sv_bapf3))
-Errorcomp3[6,6]<-MAE(realisedx3,comparablevol(sv_lw3))
-Errorcomp3[6,7]<-MAE(realisedx3,comparablevol(sv_sis3))
+Errorcomp3[,2]<-c(0.508642137861919,0.353767519133916,0.463584874517798,0.301898325469172,0.507624385776376,0.337543646258033)
+Errorcomp3[,3]<-c(0.509256032254369,0.35314674168209,0.463446053320389,0.304178601158929,0.506222076244991,0.338268970683459)
+Errorcomp3[,4]<-c(0.509943715852212,0.351738603428736,0.475708272485282,0.30422270387141,0.509343139732461,0.337449244130176)
+Errorcomp3[,5]<-c(0.510334461444389,0.35305864294958,0.46783471248187,0.304213895457104,0.505360139532104,0.3361502165818)
+Errorcomp3[,6]<-c(0.428716693039206,0.291557534456417,0.344065170120452,0.237159281665533,0.440832171188778,0.280952286978564)
+Errorcomp3[,7]<-c(0.602883459334495,0.431972177956328,0.652533564914959,0.440767074642285,0.604672122750974,0.415631855223678)
 
 ```
 
@@ -427,47 +355,16 @@ kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, r
 
 Finally, we can see from Table XX the RMSE and MAE obtained with a number of particles equal to 50000, for the SP500 and the EuroStoxx50 indices. We consider the Bootstrap particle filter and the Auxiliary particle filter, which we employed in section XX; in addition to these, we add the Liu and West filter, which did not feature in that section of this work.\
 In the case of the SP500 index, although the number of particles increases, the RMSE and MAE increase (although by very small amounts) for both the particle filters based on our usual specification of the SV model. Instead, for the Liu and West filter we see some improvements, although the small extent suggests that also the LW filter was already in the convergence phase with N=10000.\
-In the case of the EuroStoxx50 index, while the Bootstrap filter increases both RMSE and MAE when N is raised to 50000, the APF shows improvements in its performance, according to both criteria, which instead disagree for the Liu and West filter. COMMENTI DA AGGIORNARE
+In the case of the EuroStoxx50 index, while the Bootstrap filter increases both RMSE and MAE when N is raised to 50000, the APF shows improvements in its performance, according to both criteria, which instead disagree for the Liu and West filter.
 
 ```{r include=FALSE}
-
-library(openxlsx)
 Errorcomp4<-matrix(NA,ncol=4,nrow=4)
 colnames(Errorcomp4)<-c("N","BPF", "APF","LWF")
 rownames(Errorcomp4)<-c("RMSE SP500","MAE SP500","RMSE STOXX","MAE STOXX")
 Errorcomp4[,1]<-c(50000,50000,50000,50000)
-
-volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
-x1<-volatilitySPX[,3]
-realisedx1<-x1
-sv_bpf1_5<-(read.xlsx("svbpf50000p.xlsx", sheet = 1))[,1]
-sv_apf1_5<-(read.xlsx("svapf50000p.xlsx", sheet = 1))[,1]
-sv_lw1_5<-(read.xlsx("svlw50000p.xlsx", sheet = 1))[,1]
-RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
-MAE<-function(x,xhat){mean(abs(x-xhat))}
-comparablevol<-function(fun){exp(fun/2)}
-Errorcomp4[1,2]<-RMSE(realisedx1,comparablevol(sv_bpf1_5))
-Errorcomp4[1,3]<-RMSE(realisedx1,comparablevol(sv_apf1_5))
-Errorcomp4[1,4]<-RMSE(realisedx1,comparablevol(sv_lw1_5))
-Errorcomp4[2,2]<-MAE(realisedx1,comparablevol(sv_bpf1_5))
-Errorcomp4[2,3]<-MAE(realisedx1,comparablevol(sv_apf1_5))
-Errorcomp4[2,4]<-MAE(realisedx1,comparablevol(sv_lw1_5))
-
-volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 2)
-x2<-volatilitySPX[,3]
-realisedx2<-x2
-sv_bpf2_5<-(read.xlsx("svbpf50000p.xlsx", sheet = 2))[,1]
-sv_apf2_5<-(read.xlsx("svapf50000p.xlsx", sheet = 2))[,1]
-sv_lw2_5<-(read.xlsx("svlw50000p.xlsx", sheet = 2))[,1]
-RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
-MAE<-function(x,xhat){mean(abs(x-xhat))}
-comparablevol<-function(fun){exp(fun/2)}
-Errorcomp4[3,2]<-RMSE(realisedx2,comparablevol(sv_bpf2_5))
-Errorcomp4[3,3]<-RMSE(realisedx2,comparablevol(sv_apf2_5))
-Errorcomp4[3,4]<-RMSE(realisedx2,comparablevol(sv_lw2_5))
-Errorcomp4[4,2]<-MAE(realisedx2,comparablevol(sv_bpf2_5))
-Errorcomp4[4,3]<-MAE(realisedx2,comparablevol(sv_apf2_5))
-Errorcomp4[4,4]<-MAE(realisedx2,comparablevol(sv_lw2_5))
+Errorcomp4[,2]<-c(0.511700619467058,0.354186384429001,0.4650284,0.3034359)
+Errorcomp4[,3]<-c(0.514888164962505,0.355336840861771,0.4670426,0.3040741)
+Errorcomp4[,4]<-c(0.4242305,0.2906932,0.3422955,0.2395650)
 
 
 ```
