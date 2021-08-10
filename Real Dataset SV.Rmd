@@ -676,7 +676,7 @@ plotproxy12
 ```
 
 
-The above intuitions are confirmed by looking at Table XX, where the RMSE and MAE are shown for each filter (run with a number of particles equal to 10000), considering the realised volatility as benchmark. Indeed, for any index, most of the filters give rather similar results in terms of RMSE and MAE. For any index and for any measure, the worst performing is the SIS algorithm, while the best performing is the Liu and West particle filter. (Metterei qua l'intuizione del Liu West)\
+The above intuitions are confirmed by looking at Table XX, where the RMSE and MAE are shown for each filter (run with a number of particles equal to 10000), considering the realised volatility as benchmark. Indeed, for any index, most of the filters give rather similar results in terms of RMSE and MAE. For any index and for any measure, the worst performing is the SIS algorithm, while the best performing is the Liu and West particle filter. Although the latter algorithm was outperformed in the analysis we conducted on synthetic data, in fact we expected such reversal of fortunes: intuitively, while the rest of the field is built on a model with fixed guesses for the unknown parameters, the Liu and West filters enjoys more flexibility thanks to the higher variability implied by its additional hierarchical level and by its parameter learning, two features that should both pay off in real data analyses.\
 
 ```{r include=FALSE}
 # RMSE MAE comparison
@@ -770,7 +770,7 @@ kbl(Errorcomp3, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, r
 ```
 
 Finally, we can see from Table XX the RMSE and MAE obtained with a number of particles equal to 50000, for the SP500 and the EuroStoxx50 indices. We consider the Bootstrap particle filter and the Auxiliary particle filter, which we employed in section XX; in addition to these, we add the Liu and West filter, which did not feature in that section of this work.\
-In the case of the SP500 index, although the number of particles increases, both RMSE and MAE increase (although by very small amounts) for the Auxiliary Particle Filter, while they slightly decrease for the Bootstrap PF. Instead, for the Liu and West filter we see a sizable deterioration in the performance: this suggests that the parameter learning process embedded in the LWF is actually pointing in a different direction than that of the proxy, suggesting that either the proxy does not capture well the latent volatility, or a SV model may not be the best tool to disclose such latent process.\footnote{Note that at N=1000, the LWF yields a RMSE and a MAE. In words, worse approximations of the target distribution of the LWF are actually best at replicating the proxy for the SP500. A possible interpretation goes, once again, as that reported in the main text.}\
+In the case of the SP500 index, although the number of particles increases, both RMSE and MAE increase (although by very small amounts) for the Auxiliary Particle Filter, while they slightly decrease for the Bootstrap PF. Instead, for the Liu and West filter we see a sizable deterioration in the performance: this suggests that the parameter learning process embedded in the LWF is actually pointing in a different direction than that of the proxy, suggesting that either the proxy does not capture well the latent volatility, or a SV model may not be the best tool to disclose such latent process.\footnote{Note that at N=1000, the LWF yields a 0.3794359 RMSE and a 0.2687336 MAE. In words, worse approximations of the target distribution of the LWF are actually best at replicating the proxy for the SP500. A possible interpretation goes, once again, as that reported in the main text.}\
 In the case of the EuroStoxx50 index, while the Bootstrap filter slightly increases both RMSE and MAE when N is raised to 50000, the APF shows mild improvements in its MAE performance, while the RMSE criterion points in the opposite direction. The criteria disagree also in the case of the LW filter, as the MAE mildly prefers the performance of N=10000, while the RMSE detects minor improvements for N=50000.
 
 ```{r include=FALSE}
@@ -821,7 +821,347 @@ library(kableExtra)
 kbl(Errorcomp4, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, realised volatility as benchmark (SP500 and STOXX50E)",digits=5)
 ```
 
-Nevertheless, as we previously argued, we should not let tiny differences drive our conclusions. The idea behind employing also such 50000 particles approximations (\textit{i.e} more precise and computationally expensive ones) is to check whether the relative performance that we assessed with N=10000 might be significantly influenced by issues of convergence among the filters: possibly, by further approaching the exact filtering distribution implied by the basic SV model, the filters built on such specification would improve their relative performance. This does not seem to be the case, even though the use of a proxy of the latent volatility process leaves room for discussion, as such conclusions rely on the assumption that such proxy is indeed a good one.\footnote{Nota che riporta il fatto che in certi casi si ottengano MAE e RMSE più bassi usando N più bassi di 10000: in altre parole, approssimare un po' peggio la distribuzione implicata dal modello SV può portare a rispettare meglio la proxy.}\
+Nevertheless, as we previously argued, we should not let tiny differences drive our conclusions. The idea behind employing also such 50000 particles approximations (\textit{i.e} more precise and computationally expensive ones) is to check whether the relative performance that we assessed with N=10000 might be significantly influenced by issues of convergence among the filters: possibly, by further approaching the exact filtering distribution implied by the basic SV model, the filters built on such specification would improve their relative performance. This does not seem to be the case, even though the use of a proxy of the latent volatility process leaves room for discussion, as such conclusions rely on the assumption that such proxy is indeed a good one.\footnote{Indeed, it can be argued that the issue is almost the opposite one, as in some cases the filters replicate the proxy better when they are further from convergence. For example, note how comparing the following table for the SP500 dataset with that of the main text reveals that some filters perform better when N=1000 as compared to N=10000, even though we know that at N=10000 they replicate their target distribution better.
+```{r include=FALSE}
+
+SISfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<0){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+# Basis Particle Filter (Resampling at each step)
+#---------------
+BAPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS>-1){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+# Bootstrap Particle Filter
+#---------------
+BPFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    x<-rnorm(N,alpha+beta*x,tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#
+#-----------------------
+#Guided Particle Filter Optimal Kernel
+#------------------------------
+GPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    xprev<-x
+    x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    
+    w = w1/sum(w1)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#Auxiliary Particle Filter
+#-------------------------
+APFfun<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    
+    weight = w*dnorm(data[t],0,exp(x/2))
+    k   = sample(1:N,size=N,replace=TRUE,prob=weight)
+    x1   = rnorm(N,alpha+beta*x[k],tau)
+    lw  = dnorm(data[t],0,exp(x1/2),log=TRUE)-dnorm(data[t],0,exp(x[k]/2),log=TRUE)
+    w   = exp(lw)
+    w   = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x1[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    x <- x1
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#Auxiliary Particle Filter (PETRONE p 218)
+#-------------------------
+SVAPFfun_2<-function(data,N,m0,C0,alpha,beta,tau,r){
+  if(missing(r)){r=2}else{}
+  xs<-NULL
+  ws<-NULL
+  ess<-NULL
+  x  = rnorm(N,m0,sqrt(C0))
+  w  = rep(1/N,N)
+  
+  for(t in 1:length(data)){
+    x_prev=x
+    x_hat = alpha+beta*x #means of the transition from the previous particle 
+    I_k = sample(1:N,prob=w*dnorm(data[t],0,sqrt(exp((x_hat)/2))))
+    for(k in 1:N){
+      x[k]=rnorm(size=1,mean=alpha+beta*x_prev[I_k],sd=tau)
+      w[k]=dnorm(data[t],0,sqrt(exp((x[k])/2)))/dnorm(data[t],0,sqrt(exp((x_hat)/2)))
+    }
+    w = w/sum(w)
+    ESS  = 1/sum(w^2)
+    
+    if(ESS<(N/r)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      x<-x[index]
+      w<-rep(1/N,N)
+    }else{}
+    
+    xs = rbind(xs,x)
+    ws = rbind(ws,w)
+    ess =rbind(ess,ESS)
+    
+  }
+  return(list(xs=xs,ws=ws,ess=ess))
+}
+
+#Liu West
+#--------
+LWfun<-function(data,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda){
+  
+  xs = rnorm(N,m0,sqrt(C0))
+  pars   = cbind(rnorm(N,ealpha,sqrt(valpha)),rnorm(N,ebeta,sqrt(vbeta)),
+                 log(1/rgamma(N,nu/2,nu*lambda/2)))
+  delta  = 0.75
+  a      = (3*delta-1)/(2*delta)
+  h2     = 1-a^2
+  parss  = array(0,c(N,3,n))
+  xss    = NULL
+  ws     = NULL
+  ESS    = NULL
+  w      = rep(1/N,N)
+  vpars   = NULL
+  for (t in 1:length(data)){
+    
+    #mpar        = apply(pars,2,mean) #alternatively use this 
+    mpar<-c()
+    for(i in 1:3){
+      mpar[i]    = weighted.mean(pars[,i],w)
+    }
+    
+    vpar     = var(pars)
+    ms          = a*pars+(1-a)*matrix(mpar,N,3,byrow=T)
+    mus         = pars[,1]+pars[,2]*xs 
+    weight      = w*dnorm(data[t],0,exp(mus/2))
+    k           = sample(1:N,size=N,replace=T,prob=weight)
+    ms1         = ms[k,] + matrix(rnorm(3*N),N,3)%*%chol(h2*vpar)
+    xt          = rnorm(N,ms1[,1]+ms1[,2]*xs[k],exp(ms1[,3]/2))
+    w           = dnorm(data[t],0,exp(xt/2))/dnorm(data[t],0,exp(mus[k]/2))
+    w           = w/sum(w)
+    ESS         = 1/sum(w^2)
+    
+    
+    if(ESS<(N/2)){
+      index<-sample(N,size=N,replace=T,prob=w)
+      xs<-xt[index]
+      pars<-ms1[index,]
+      w<-rep(1/N,N)
+    }else{
+      xs<-xt
+      pars<-ms1
+    }
+    
+    vpars        = rbind(vpars,vpar)
+    xss         = rbind(xss,xs)
+    parss[,,t]  = pars 
+    ws          = rbind(ws,w)
+  }
+  return(list(xs=xss,pars=parss,ws=ws,vpars=vpars))
+}
+#Set hyperparameters
+#-------------------
+#n     =  length(y)
+alpha =  0
+beta  =  0.99
+tau2  =  0.05
+m0      = 0
+C0      = 100 #N(0,100) is an informative prior about the mean of the volatility. It is used by Jacquier et al. (2004), and it is calibrated on percentage returns
+sC0     = sqrt(C0)
+ealpha  = alpha
+valpha  = 0.01
+ebeta    = beta
+vbeta    = 0.01
+nu      = 5
+lambda  = tau2*3/5
+tau   = sqrt(tau2)
+
+#Real dataset
+
+library(openxlsx)
+realdatasetSPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
+y<-realdatasetSPX[,2]
+n = length(y)
+volatilitySPX<-read.xlsx("Dataset 17-21.xlsx", sheet = 1)
+x<-volatilitySPX[,3]
+alpha.true = alpha
+beta.true  = beta
+tau2.true  = tau2
+timeframe<-c(1:length(y))
+dfsv<-data.frame(timeframe,y,x)
+
+#Filtering
+#---------
+set.seed(12345)
+N=1000
+svsis<-SISfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=1000
+svbapf<-BAPFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=1000
+svbpf<-BPFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=1000
+svapf<-APFfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=1000
+svgpfopt<-GPFoptfun(y,N,m0,C0,alpha,beta,tau)
+set.seed(12345)
+N=1000
+svlw<-LWfun(y,N,m0,C0,ealpha,valpha,ebeta,vbeta,nu,lambda)
+
+Filtervalues<-function(fun){
+  xhat<-sapply(1:n,function(i)
+    weighted.mean(fun$xs[i,],fun$ws[i,]))
+  sdhat<-sapply(1:n,function(i)
+    sqrt(weighted.mean((fun$xs[i,]-xhat[i])^2,fun$ws[i,])))
+  
+  return(list(mean=xhat,sd=sdhat))
+  
+}
+
+## RMSE MAE comparison
+
+realisedx<-x
+ErrorvolSPX<-matrix(NA,ncol=7,nrow=2)
+colnames(ErrorvolSPX)<-c("N","BPF", "GPFOPT", "APF","BAPF","LWF", "SIS")
+rownames(ErrorvolSPX)<-c("RMSE SP500","MAE SP500")
+ErrorvolSPX[,1]<-c(1000)
+RMSE<-function(x,xhat){sqrt(mean((x-xhat)^2))}
+MAE<-function(x,xhat){mean(abs(x-xhat))}
+comparablevol<-function(fun){exp((Filtervalues(fun)$mean)/2)}
+ErrorvolSPX[1,2]<-RMSE(realisedx,comparablevol(svbpf))
+ErrorvolSPX[1,3]<-RMSE(realisedx,comparablevol(svgpfopt))
+ErrorvolSPX[1,4]<-RMSE(realisedx,comparablevol(svapf))
+ErrorvolSPX[1,5]<-RMSE(realisedx,comparablevol(svbapf))
+ErrorvolSPX[1,6]<-RMSE(realisedx,comparablevol(svlw))
+ErrorvolSPX[1,7]<-RMSE(realisedx,comparablevol(svsis))
+ErrorvolSPX[2,2]<-MAE(realisedx,comparablevol(svbpf))
+ErrorvolSPX[2,3]<-MAE(realisedx,comparablevol(svgpfopt))
+ErrorvolSPX[2,4]<-MAE(realisedx,comparablevol(svapf))
+ErrorvolSPX[2,5]<-MAE(realisedx,comparablevol(svbapf))
+ErrorvolSPX[2,6]<-MAE(realisedx,comparablevol(svlw))
+ErrorvolSPX[2,7]<-MAE(realisedx,comparablevol(svsis))
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+library(kableExtra)
+kbl(ErrorvolSPX, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, realised volatility as benchmark (SPX)",digits=5)
+```
+}\
 Rather, what this exercise highlights (under its assumptions) is a need for more flexibility and variability in the basic SV model: the underlying SV model of the LW filter meets this request, but clearly other solutions are possible, and have been argued for in the field of financial econometrics and mathematical finance, as we noted in the literary review section.
 
 
