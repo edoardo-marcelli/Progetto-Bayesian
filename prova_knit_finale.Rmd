@@ -626,10 +626,10 @@ Steps 3-4 constitute the actual resampling ones. At this point, let us define th
      \Q_{1}^N(dx_{0:1})=\frac{1}{N}\sum_{n=1}^N\delta_{\tilde X_{0:1}^n}(dx_{0:1})
 \end{equation*}
 Note that, after resampling occurred, each particle $\tilde X_{0:1}^n:=(X_0^{A_1^n},X_1^n)$ has the same probability weight.\
-To understand the reason of the previous statement, let us assume that both $\Q_0$ and $\M_0$ admit densities $q_0$, $m_0$ with respect to the same dominating measure $\nu(dx_0)$ and that the transition kernel $M_1$ also admits the density $m_1$. 
+To understand the logic of the previous statement, let us assume that both $\Q_0$ and $\M_0$ admit densities $q_0$, $m_0$ with respect to the same dominating measure $\nu(dx_0)$ and that the transition kernel $M_1$ also admits the density $m_1$. 
 Consider the sequential updating for the weights:
 \begin{equation}
-    w^n_1=\frac{\Q_1(dx_{0:1})}{\M_1(dx_{0:1})}\propto \frac{q_0(x_0^{A_1^n})}{Pr(A_1^n)\cdot m_0(x_0^{A_1^n})}\cdot \frac{m_1(x_1^n|x_0^{A_1^n})}{m_1(x_1^n|x_0^{A_1^n})}
+    W^n_1=\frac{\Q_1(dx_{0:1})}{\M_1(dx_{0:1})}\propto \frac{q_0(x_0^{A_1^n})}{Pr(A_1^n)\cdot m_0(x_0^{A_1^n})}\cdot \frac{m_1(x_1^n|x_0^{A_1^n})}{m_1(x_1^n|x_0^{A_1^n})}
 =\underbrace{\frac{q_0(x_0^{A_1^n})}{ m_0(x_0^{A_1^n})}}_{W_0^n}\cdot \underbrace{\frac{1}{Pr(A_1^n)}}_{1/W_0^n}=1\label{sis_update}
 \end{equation}
 where $\M_1$ denotes the probability measure for the extraction of the particle $\tilde x_{0:1}^n$ according to SIR. $\M_1$ (second equality sign in the previous formula) can be rewritten as the product between the kernel for $x_1^n$ given $x_0^{A_1^n}$ and the probability of $x_0^{A_1^n}$ itself. This last probability can also be rewritten as the product between the proposal density $m_0$ from which $X_0$ is extracted and the probability that it is sampled again when resampling occurs.
@@ -641,7 +641,7 @@ Consider an extension of SIS to a $T$-period model and let us assume that the ta
     w_t^n\propto \frac{q_t(x_{0:t}^n)}{m_t(x_{0:t}^n)}\propto \underbrace{\frac{q_{t-1}( x_{0:t-1}^n)}{m_{t-1}(x_{0:t-1}^n)}}_{\propto w_{t-1}^n}\cdot \frac{q_t( x_t|x_{t-1}^n)}{m_t(x_t|x_{t-1}^n)}\propto 
     w_{t-1}^n\cdot\frac{q_t( x_t|x_{t-1}^n)}{m_t(x_t|x_{t-1}^n)}\label{sis_update}
 \end{equation}
-Equation \eqref{sis_update} suggests, intuitively, that over time new variance is added from the incremental weights (i.e., the updating factor $q_t( x_t|x_{t-1}^n)/m_t( x_t|x_{t-1}^n)$) determining the curse of dimensionality issue. Instead, when resampling takes place, since the past weights $w_{t-1}$ are reset to be equal across them all the variance of $w_t$ inherited from the past is shut-down and the only source of variability at each stage comes from the incremental weights.
+Intuitively, equation \eqref{sis_update} suggests that over time new variance is added from the incremental weights (i.e., the updating factor $q_t( x_t|x_{t-1}^n)/m_t( x_t|x_{t-1}^n)$) determining the curse of dimensionality issue. Instead, when resampling takes place, since the past weights $w_{t-1}$ are reset to be equal across them all the variance of $w_t$ inherited from the past is shut-down and the only source of variability at each stage comes from the incremental weights.
 
 
 \section{Particle Filter}\label{pf_main}
