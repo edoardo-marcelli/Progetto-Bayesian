@@ -1111,7 +1111,7 @@ The GPF can be resumed by the following steps.
 \end{enumerate}
 \textbf{Otherwise, } 
 \begin{enumerate}
-    \item Set the indexes: $A_t^{n}=n$ for $n=1,...,N$
+    \item Set the indexes: $A_t^{n}=n$ for $n=1,...,N$.
     \item Set the weights: $\hat w_{t-1}^n = w_{t-1}$ for $n=1,...,N$.
 \end{enumerate}
 \item Sample the future states from the transition kernel: $X_t^n\thicksim M_t(X_{t-1}^{A_t^n},dx_t)$ for $n=1,...,N$.
@@ -1343,7 +1343,7 @@ ggarrange(p2,c2)
 
 \subsection{Auxiliary Particle Filter}
 
-The \textit{auxiliary particle filter} (APF) constitutes a further extension of the BPF. The GPF allowed to sample from a transition kernel different from the correct ones. The APF, instead, allows to extract the ancestor variables from an arbitrary distribution at the resampling step.\ \
+The \textit{auxiliary particle filter} (APF) constitutes a further extension of the BPF. The GPF allowed to sample from a transition kernel different from the correct ones. Instead, the APF allows to extract the ancestor variables from an arbitrary distribution at the resampling step.\ \
 Let $\eta_t:\X\rightarrow \R_+$ be a non-negative, real-valued positive function, called \textit{auxiliary function}. At time $t$, when the resampling stage occurs, the multinomial distribution for the indexes to be extracted can use probabilities that differ from the weights in $t-1$, $W_{t-1}^n$. The new weights, called \textit{auxiliary weights}, are computed as a transformation of the original ones, denoted as \textit{inferential weights}, through the auxiliary function:
 \begin{equation}
     \tilde W_t^n=\frac{W_t^n\cdot \eta_t(X_t^n)}{\sum_{m=1}^NW_t^m\cdot \eta_t(X_t^n)}
@@ -1363,7 +1363,7 @@ To understand the logic of this sequential weight updating, consider  \eqref{wei
         =&\frac{w_{t-1}}{ \tilde w_{t-1}}\cdot\frac{P_t(x_{t-1},dx_t)\cdot f_t(y_t|x_t)}{ M_t(x_{t-1},dx_t)}\label{weight_updated_apf}
     \end{split}
 \end{equation}
-It is possible to derive an optimality result for the auxiliary functions\footnote{Details in Chopin and Papaspiliopoulos (2020) th 10.2, p. 148}. In the special case in which the transition kernel used for sampling corresponds with the optimal one $M_t^*$, the optimal auxiliary function (i.e., the auxiliary function that minimizes the variance of the inferential weights) becomes:
+It is possible to derive an optimality result for the auxiliary functions.\footnote{Details in Chopin and Papaspiliopoulos (2020) th 10.2, p. 148.} In the special case in which the transition kernel used for sampling corresponds with the optimal one $M_t^*$, the optimal auxiliary function (i.e., the auxiliary function that minimizes the variance of the inferential weights) becomes:
 \begin{equation}
     \eta_{t-1}^*(x_{t-1})=\int_\X P_t(x_{t-1},dx_t)f_t(y_t|x_t)
 \end{equation}
@@ -1409,18 +1409,20 @@ We can summarize the APF algorithm.
 \begin{equation*}
  \tilde w_t^n=w_t^n \cdot \eta_t(X_t^n)
 \end{equation*}
-\item Normalize the auxiliary weights, for $n=1,...,N$:  $\tilde W_t^n:=\frac{\tilde w_t^n}{\sum_{m=1}^N\tilde w_t^m}$.\footnote{It is worth mentioning that the original APF included a final resampling step at the end of each iteration. However, our formulation is more efficient since having two resampling steps might introduce additional Monte Carlo variance. See Johansen and Evers (2007), p. 120}
+\item Normalize the auxiliary weights, for $n=1,...,N$:  $\tilde W_t^n:=\frac{\tilde w_t^n}{\sum_{m=1}^N\tilde w_t^m}$.\footnote{It is worth mentioning that the original APF included a final resampling step at the end of each iteration. However, our formulation is more efficient since having two resampling steps might introduce additional Monte Carlo variance. See Johansen and Evers (2007), p. 120.\label{footnote_apf}}
     \end{enumerate}
 \end{enumerate}
-However, it is worth noting that the optimality results both for the kernel in the GPF and of the auxiliary  in the APF, has  two main weaknesses:
+However, it is worth noting that the optimality results both for the kernel in the GPF and of the auxiliary function in the APF, have  two main weaknesses:
 \begin{itemize}
-    \item it is not clear that what is optimal at time $t$ remains such at future stages. In other words, it is not truly clear how the minimization of the variance of the inferential weights at each stage affects the efficiency of the PF estimators;
+    \item it is not clear that what is optimal at time $t$ remains such at future stages. In other words, it is not truly clear how the minimization of the variance of the inferential weights at each stage affects the overall efficiency of the PF estimators;
     \item both the choice of $M_t$ and of $\eta_t$ affect the way in which weights are computed and, indirectly, the decision to resample in the future. It is difficult to take also this indirect effect into account when evaluating the  overall efficiency of the algorithm.
 \end{itemize}
 
 \subsection{Implementation}
 
-For illustration purposes, we are going implement an auxiliary particle filter for the linear Gaussian model with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  
+For illustration purposes, we are going implement an auxiliary particle filter for the linear Gaussian model with auxiliary function $g(x_{t-1})=E(x_{t}|x_{t-1})=x_{t-1}$.  \
+
+Firstly, states are drawn from the true transition kernel, while a second resampling step is done at the end of each iteration, according to the original formulation of the algorithm (see footnote \ref{footnote_apf}).
 
 \begin{algorithm} APF for Random Walk plus Noise Model
 \begin{itemize}
@@ -1631,7 +1633,7 @@ i=i+1
 kbl(estimatedx[,], align="c", longtable = T, booktabs = T, caption="Root Mean Square Errors",digits=3)
 ```
 
-We also implement the auxiliary particle filter with optimal transition kernel. Therfore the algorithm is similiar to the one discussed above with the difference that:
+We also implement the auxiliary particle filter with optimal transition kernel. Note that we are also using the perfectly adapted auxiliary function and that we resample only once, at the beginning of each iteration. Therefore the algorithm is similar to the one discussed above with the difference that:
 
 \begin{algorithm}APF with optimal transition kernel for Random Walk plus Noise Model
 \begin{itemize}
