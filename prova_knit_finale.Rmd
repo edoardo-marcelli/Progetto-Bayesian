@@ -41,7 +41,6 @@ header-includes:
 - \usepackage{lipsum}
 - \usepackage{xcolor}
 - \usepackage{mathtools}
-- \usepackage{appendix}
 - \theoremstyle{break}
 - \newtheorem{thm}{Theorem}% theorem counter resets every \subsection
 - \renewcommand{\thethm}{\arabic{thm}}
@@ -3048,8 +3047,8 @@ Xu, X., & Chen, Y. (2021). Deep Stochastic Volatility Model. arXiv preprint arXi
 
 Zhang, B., Chan, J. C., & Cross, J. L. (2020). Stochastic volatility models with ARMA innovations: An application to G7 inflation forecasts. International Journal of Forecasting, 36(4), 1318-1328.
 
-\appendix
-\chapter{The Stochastic Volatility Model}
+\chapter*{Appendix}
+\section{The Stochastic Volatility Model}
 
 We decide to organise this Appendix as an R package. All the R functions described in this Appendix take as reference a basic specification of Stochastic Volatility Model.\footnote{Actually, the function SVLWfun considers a SV model with an additional hierarchical level, as specified in section XX.}
 \begin{align*}
