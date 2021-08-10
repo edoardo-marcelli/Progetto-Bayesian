@@ -1720,10 +1720,10 @@ Let us consider a more general state-space model, where the state vector include
 However, being $\psi$ constant over time, it is meaningless to sample its values sequentially: the first extraction of $\psi$ at the initial stage 0 (i.e., $\psi_0^n$) generates a constant path of particles for the parameter ($\psi_t^n=\psi_0^n$). \footnote{To be more precise, at the resampling step, also $\psi^n$ is resampled, but the possible values that it may take are the $N$ ones obtained at the initial time 0 extraction.}\
 Therefore, Liu and West (2001) proposed a modified particle filter, called \textit{Liu and West filter} (LWF) that allows to resample the parameter over time from a continuous distribution. In this way, at every time, the support of $\psi$ is not limited to the $N$ initially sampled values. \
 Here, we describe the LWF that makes use of the normal distribution to sample sequentially the parameter. Moreover, consider the simpler version of the bootstrap filter.\footnote{Clearly, the LWF can be also used within the more general frameweorks of the GPF and the APF. For instance, in our following implementation with the random walk model we use an auxiliary particle LWF.}\
-Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi(\cdot)$ be the prior distribution for the parameter $\psi$.\
+Let the transition kernel and the likelihood depend on the parameter $\psi$ (i.e., $P_t(x_{t-1},dx_t;\psi)$ and $f_t(y_t|x_t;\psi)$) and let $\pi_0(\cdot)$ be the prior distribution for the parameter $\psi$.\
 The LWF can be described by the following algorithm.
 \begin{enumerate}
-    \item \textbf{Inital stage: }For $n=1,...,N$, at time 0 sample: $X_0^n\thicksim\Pd_0(dx_0)$ and $\psi_0^n\thicksim \pi(\psi_0)$.
+    \item \textbf{Inital stage: }For $n=1,...,N$, at time 0 sample: $X_0^n\thicksim\Pd_0(dx_0)$ and $\psi^n\thicksim \pi_0(\psi)$.
     
     Then, set the un-normalized weights $w_0^n=1$.
     
@@ -1737,7 +1737,7 @@ The LWF can be described by the following algorithm.
 \end{enumerate}
 \textbf{Otherwise, } 
 \begin{enumerate}
-    \item Set the indexes: $A_t^{n}=n$ for  $n=1,...,N$
+    \item Set the indexes: $A_t^{n}=n$ for  $n=1,...,N$.
     \item Set the weights: $\hat w_{t-1}^n = w_{t-1}$ for $n=1,...,N$.
 \end{enumerate}
 \item \textbf{Extracting new parameter values:}
@@ -1754,7 +1754,7 @@ The LWF can be described by the following algorithm.
 \item Normalize the weights, for $n=1,...,N$:  $W_t^n:=\frac{w_t^n}{\sum_{m=1}^Nw_t^m}$.
     \end{enumerate}
 \end{enumerate}
-At the initial step, $N$ states and $N$ parameter values are sampled independently, respectively, from $\Pd_0$ and $\pi$ and the particle weights are set to be constant, as usual.\
+At the initial step, $N$ states and $N$ parameter values are sampled independently, respectively, from $\Pd_0$ and $\pi_0$ and the particle weights are set to be constant, as usual.\
 Then, at each iteration (time $t$), the decision to resample is done according to the $ESS$ criterion and indexes are extracted from a multinomial distribution. However, in the LWF both previous periods states and parameters are resampled.\
 Meanwhile, to extract the next period states and parameters it is necessary, firstly, to sample the new $N$ parameter values. Let $\bar \psi$ be the weighted average of the parameter values and $\Omega$ be their variance (using the normalized weights in $t-1$ after the resampling step).\ \
 The algorithm suggests to sample new values for the parameters from a continuous distribution, i.e., a Normal\footnote{More generally, distributions whose support coincides with the relevant parameter space.} centered at the (resampled) values $m^{A_t^n}$ with variance $h^2\cdot \Omega$ where $m^n$ is a convex combination of the sample mean $\bar\psi$ and the actual extraction of $\psi^n$ with coefficient $a\in (0,1)$ and $h$ is a scalar such that $a^2+h^2=1$. While it would be more intuitively immediate to sample new parameters from a Normal density centered at the previously sampled values (i.e., $\psi^n$), this would increase the variance of $\psi$ over time.\
@@ -1762,7 +1762,7 @@ In fact, let $\pi_{t-1}^N(\psi)=\sum_{n=1}^N \hat W_{t-1}^{A_t^{n}}\cdot \N(\psi
 \begin{equation*}
     \begin{split}
         \E_{\pi_{t-1}^N} ( \psi)=& \E \big[\E( \psi|A_t^{n})\big]=\E \big[\psi^{A_t^{n}}\big]=\bar \psi\\
-        Var_{\pi_{t-1}^N} ( \psi)=&Var\big[\E( \psi|A_t^{n})\big]+\E \big[Var( \psi|A_t^{n})\big]=Var\big[\psi^{A_t^{n}}\big]+\E\big[\Omega\big]=2\cdot\Omega
+        Var_{\pi_{t-1}^N} ( \psi)=&Var\big[\E( \psi|A_t^{n})\big]+\E \big[Var( \psi|A_t^{n})\big]=Var\big[\psi^{A_t^{n}}\big]+\E\big[\Omega\big]>\Omega
     \end{split}
 \end{equation*}
 Hence, while the mean is preserved, the variance increases at each iteration. Instead, sampling from the distribution proposed by Liu and West $\N \big(m^{A_t^n},h^2\cdot \Omega\big)$ preserves both the mean and the variance of the parameters over time.\
@@ -1776,17 +1776,16 @@ Hence, while the mean is preserved, the variance increases at each iteration. In
 Finally, after sampling the new $N$ parameter values, conditional on these values, new states are also sampled from the transition kernel: $X_t^n\thicksim P_t(X_{t-1}^{A_t^n},dx_t; \psi^n)$. Lastly, weights are updated through the incremental weights.\ \
 To conclude, it is worth noting that the LWF produces, together with the usual filtering and prediction distributions, a posterior distribution for the parameter:
 \begin{equation}
-    \pi^N_{t}(\psi)=\pi^N(\psi|y_{1:t})=\sum_{n=1}^NW_{t}^n\delta_{\psi^n}(\psi)
+    \pi^N_{t}(\psi)=\pi^N(\psi|y_{1:t})=\sum_{n=1}^NW_{t}^n\delta_{\psi^n}(d\psi)
 \end{equation}
 
 \subsection{Implementation}
-\
 Consider the linear Gaussian example of section \ref{implementation}, but this time with unknown variances $\tau^{2}$ and $\sigma^{2}$. Thus, let $\psi=(\sigma^{2},\tau^{2})$ be the unknown parameter vector and assign a gamma prior for its components,
 \begin{align*}
 \sigma^{2}  & \sim G(\alpha_{v},\beta_{v}) \\
 \tau^{2}  & \sim G(\alpha_{w},\beta_{w})
 \end{align*}
-Alternatively, assign them a uniform prior if we have no knowledge of the hyperparameters. Note that in this model we sample from a Gamma distribution (instead of the Normal one, as in the previous description of the LWF) since the parameters of interest are variances, that can take only positive values. Next, we descrive the algorithm.
+Alternatively, assign them a uniform prior if we have no knowledge of the hyperparameters. Note that in this model we sample from a Gamma distribution (instead of the Normal one, as in the previous description of the LWF) since the parameters of interest are variances, that can take only positive values. Note that we are applying the LWF in the framework of APF with two resampling stage and the correct transition kernel. Next, we describe the algorithm.
 \begin{algorithm} LWF for Random Walk plus Noise Model
 \begin{itemize}
 \item Initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ from $N(m_{0},C_{0})$, $({\sigma^{2}}^{(1)},...,{\sigma^{2}}^{(N)})$ from $G(\alpha_{v},\beta_{v})$ and $({\tau^{2}}^{(1)},...,{\tau^{2}}^{(N)})$ from $G(\alpha_{w},\beta_{w})$. Set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$. Therefore $\psi^{(i)}=({\sigma^{2}}^{(i)},{\tau^{2}}^{(i)})$, and
@@ -1997,7 +1996,7 @@ kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE",digits=3)
 
 
 \section{Convergence}\label{pf_converg}
-In this section, we cover three propositions that justify the use of the PF algorithms to estimate quantities of interest. Firstly, we present two convergence results for the estimators of the predictive and filtering distributions. As we will discuss, these results hold under reasonable conditions. Then, we will show that the error of the particle estimators are asymptotically distributed according to a Gaussian distribution with known variance. 
+In this section,\footnote{This section has the purpose to give only a very general idea about convergence of PF estimators.} we cover three propositions that justify the use of the PF algorithms to estimate quantities of interest. Firstly, we present two convergence results for the estimators of the predictive and filtering distributions. As we will discuss, these results hold under reasonable conditions. Then, we will show that the error of the particle estimators are asymptotically distributed according to a Gaussian distribution with known variance. All the convergence results that we present here involve the limit for the number of particles $N$ at each iteration.\
 Henceforth, we will maintain the assumption that (multinomial) resampling is repeated at each iteration.
 \subsection{MSE convergence}
 As already seen in subsection \ref{seq_impt_sampling}, the particle approximation of $\Q_{t}(dx_{0:t})$ is:
