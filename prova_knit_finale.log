@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  10 AUG 2021 11:34
+=======
+This is pdfTeX, Version 3.141592653-2.6-1.40.23 (MiKTeX 21.7) (preloaded format=pdflatex 2021.7.19)  10 AUG 2021 11:53
+>>>>>>> 8010d60bf0a8fab0a6619813eff2380a9eddfb1d
 entering extended mode
 **./prova_knit_finale.tex
 (prova_knit_finale.tex
@@ -1990,7 +1994,11 @@ Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/edoar/AppData/Local/
 Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
+<<<<<<< HEAD
 Output written on prova_knit_finale.pdf (102 pages, 762553 bytes).
+=======
+Output written on prova_knit_finale.pdf (102 pages, 762567 bytes).
+>>>>>>> 8010d60bf0a8fab0a6619813eff2380a9eddfb1d
 PDF statistics:
  1365 PDF objects out of 1440 (max. 8388607)
  426 named destinations out of 1000 (max. 500000)
