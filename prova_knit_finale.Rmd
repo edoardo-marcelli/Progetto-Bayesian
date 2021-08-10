@@ -41,6 +41,7 @@ header-includes:
 - \usepackage{lipsum}
 - \usepackage{xcolor}
 - \usepackage{mathtools}
+- \usepackage{appendix}
 - \theoremstyle{break}
 - \newtheorem{thm}{Theorem}% theorem counter resets every \subsection
 - \renewcommand{\thethm}{\arabic{thm}}
@@ -501,7 +502,7 @@ Lemma \ref{lemma_imp_sam_1} represents the key theoretical foundation of \textbf
 Adopting the previous notation, the target measure is $\Q$, while the proposal is $\M$. IS requires to sample $N$ values from $\M$, then to find the associated \textit{normalized}\footnote{Weights are normalized when $\E_\M(W)=1$. In this case $W$ is the Radom-Nikodym derivative between $\Q$ and $\M$.} weights $W(X^n)$, finally to compute a weighted average of the values taken by the function $\varphi$. The IS is implemented according to the following algorithm.
 \begin{enumerate}
     \item Sample $N$ values from the proposal measure: $X^n\thicksim \M$ for $n=1,...,N$.
-    \item Compute the associated normalized weights: $W(X^n)$ for $n=1,...,N$
+    \item Compute the associated normalized weights: $W(X^n)$ for $n=1,...,N$.
     \item Compute the estimator:
     \begin{equation*}
         \hat \varphi= \frac{1}{N} \sum_{n=1}^N\varphi (X^n)W(X^n).
@@ -524,11 +525,11 @@ In this case, weights have to be \textit{auto}-normalized to obtain the IS - Mon
     \item Compute the associated \textit{un-normalized} weights: $w(X^n)$ for $n=1,...,N$.
     \item Normalize the weights, for $n=1,...,N$:
     \begin{equation*}
-        W^n:=\frac{w(X^n)}{\sum_{m=1}^Nw(X^m)}
+        W^n:=\frac{w(X^n)}{\sum_{m=1}^Nw(X^m)}.
     \end{equation*}
     \item Compute the estimator:
     \begin{equation*}
-        \hat \varphi_{AN}=\sum_{n=1}^N\varphi (X^n)W^n
+        \hat \varphi_{AN}=\sum_{n=1}^N\varphi (X^n)W^n.
     \end{equation*}
 \end{enumerate}
 While the auto-normalized estimator is biased (since  $W^n$ involves a ratio of random variables), it is consistent (see \ref{pf_is_conv} for details). \ \
@@ -536,7 +537,7 @@ It is useful to interpret IS as an algorithm that allows to find an approximatio
 \begin{equation}
     \Q^N(dx):=\sum_{n=1}^NW^n\delta_{X^n}(dx), ~~~X^n\thicksim \M
 \end{equation}
-Furthermore, the IS estimator is the expected value of the function $\varphi$ with respect to the approximating probability measure $\Q^N$:
+Then, the auto-normalized IS estimator $\hat\varphi_{AN}$ is the expected value of the function $\varphi$ with respect to the approximating probability measure $\Q^N$:
 \begin{equation*}
     \begin{split}
         \E_{\Q^N}(\varphi)=&\int_\X \varphi(x)\Q^N(dx)=\int_\X \varphi(x)\sum_{n=1}^NW^n\delta_{X^n}(dx)=\\
@@ -546,7 +547,7 @@ Furthermore, the IS estimator is the expected value of the function $\varphi$ wi
 
 
 \subsubsection{Convergence of the IS estimator}\label{pf_is_conv}
-
+We can show that the auto-normalized IS estimator is both consistent and asymptotically normal.\
 Consider the auto-normalized IS estimator $\hat \varphi= \sum_{n=1}^N\varphi (X^n)W^n$. We can write:
 \begin{equation*}
    \hat \varphi_{AN} - \E_{\Q}(\varphi)=\E_{\Q^N}(\varphi)-\E_{\Q}(\varphi)=\frac{N^{-1}\sum_{n=1}^Nw(X^n)[\varphi(X^n)-\E_{\Q}(\varphi)]}{N^{-1}\sum_{n=1}^Nw(X^n)}
@@ -557,13 +558,20 @@ Let $\bar \varphi(X):=\varphi(X)-\E_{\Q}(\varphi)$. Applying the CLT to the nume
 \end{equation}
 where $\implies$ denotes convergence in distribution. Instead, for the denominator the strong LLN implies that:
 \begin{equation}
-    \frac{1}{N}\sum_{n=1}^Nw(X^n)\rightarrow \E_{\M}(w) ~~~\text{ a.s.}\label{is_conv_lln}
+    \frac{1}{N}\sum_{n=1}^Nw(X^n)\rightarrow^{\text{a.s.}} \E_{\M}(w) \label{is_conv_lln}
 \end{equation}
 Applying Slutsky's theorem, together with \eqref{is_conv_clt} and \eqref{is_conv_lln}, we obtain:
 \begin{equation}
    \sqrt{N}\big[  \hat \varphi_{AN} - \E_{\Q}(\varphi)\big] \implies \N \Bigg(0,\frac{\E_{\M}(w^2\bar\varphi^2)}{[\E_{\M}(w)]^2}\Bigg)
 \end{equation}
-Therefore, the IS (auto-normalized) estimator for $\varphi$ is both consistent and asymptotically normal.
+Therefore, the IS (auto-normalized) estimator for $\varphi$ is asymptotically normal. Consistency can be proved in an analogous way, applying the LLN and lemma \ref{lemma_imp_sam_1}:
+\begin{equation}
+    \frac{1}{N}\sum_{n=1}^Nw(X^n) \varphi (X^n)\rigtharrow^{\text{a.s.}}  \E_\M(\varphi \cdot w)=\E_\Q(\varphi)\cdot \E_\M(w)
+\end{equation}
+Together with \eqref{is_conv_lln}, we get that:
+\begin{equation}
+   \hat \varphi_{AN}=\sum_{n=1}^NW^n \varphi (X^n)\rigtharrow^{\text{a.s.}}  \E_\Q(\varphi)
+\end{equation}
 
 \subsubsection{Effective Sample Size}
 
@@ -3040,9 +3048,8 @@ Xu, X., & Chen, Y. (2021). Deep Stochastic Volatility Model. arXiv preprint arXi
 
 Zhang, B., Chan, J. C., & Cross, J. L. (2020). Stochastic volatility models with ARMA innovations: An application to G7 inflation forecasts. International Journal of Forecasting, 36(4), 1318-1328.
 
-\chapter{Appendix}
-
-\section{The Stochastic Volatility Model}
+\appendix
+\chapter{The Stochastic Volatility Model}
 
 We decide to organise this Appendix as an R package. All the R functions described in this Appendix take as reference a basic specification of Stochastic Volatility Model.\footnote{Actually, the function SVLWfun considers a SV model with an additional hierarchical level, as specified in section XX.}
 \begin{align*}
