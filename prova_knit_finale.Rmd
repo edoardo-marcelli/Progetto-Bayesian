@@ -557,7 +557,7 @@ Let $\bar \varphi(X):=\varphi(X)-\E_{\Q}(\varphi)$. Applying the CLT to the nume
 \end{equation}
 where $\implies$ denotes convergence in distribution. Instead, for the denominator the strong LLN implies that:
 \begin{equation}
-    \frac{1}{N}\sum_{n=1}^Nw(X^n)\rightarrow^{\text{a.s.}} \E_{\M}(w) \label{is_conv_lln}
+    \frac{1}{N}\sum_{n=1}^Nw(X^n)\xrightarrow{\text{a.s.}} \E_{\M}(w) \label{is_conv_lln}
 \end{equation}
 Applying Slutsky's theorem, together with \eqref{is_conv_clt} and \eqref{is_conv_lln}, we obtain:
 \begin{equation}
@@ -565,11 +565,19 @@ Applying Slutsky's theorem, together with \eqref{is_conv_clt} and \eqref{is_conv
 \end{equation}
 Therefore, the IS (auto-normalized) estimator for $\varphi$ is asymptotically normal. Consistency can be proved in an analogous way, applying the strong LLN and lemma \ref{lemma_imp_sam_1}:
 \begin{equation}
+<<<<<<< HEAD
     \frac{1}{N}\sum_{n=1}^Nw(X^n) \varphi (X^n)\xrigtharrow{\text{a.s.}}  \E_\M(\varphi \cdot w)=\E_\Q(\varphi)\cdot \E_\M(w)
 \end{equation}
 Together with \eqref{is_conv_lln}, we get strong convergence of the estimator (that implies consistency).
 \begin{equation}
    \hat \varphi_{AN}=\sum_{n=1}^NW^n \varphi (X^n)\xrigtharrow{\text{a.s.}}  \E_\Q(\varphi)
+=======
+    \frac{1}{N}\sum_{n=1}^Nw(X^n) \varphi (X^n)\xrightarrow{\text{a.s.}}  \E_\M(\varphi \cdot w)=\E_\Q(\varphi)\cdot \E_\M(w)
+\end{equation}
+Together with \eqref{is_conv_lln}, we get strong convergence of the estimator (that implies consistency).
+\begin{equation}
+   \hat \varphi_{AN}=\sum_{n=1}^NW^n \varphi (X^n)\xrightarrow{\text{a.s.}}  \E_\Q(\varphi)
+>>>>>>> 2c40cdae00f6d2ea7ce1ad9c7e1468a02bf9063e
 \end{equation}
 
 \subsubsection{Effective Sample Size}
@@ -2482,7 +2490,7 @@ plotfour<-SVFiltplot(dfsv,svlw,"",5,-5)
 ggarrange(plotone, plottwo, plotthree, plotfour, nrow = 2, ncol = 2)
 ```
 
-```{r include=FALSE}
+```{r eval=FALSE, include=FALSE}
 truex<-x
 estimatedx<-matrix(NA,ncol=5,nrow=5)
 colnames(estimatedx)<-c("N","BPF","GPF", "APF","LWF")
@@ -2516,7 +2524,7 @@ i=i+1
 
 ```
 
-```{r echo=FALSE, message=FALSE, warning=FALSE, results="asis"}
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE, results="asis"}
 kbl(estimatedx, align="c", longtable = T, booktabs = T, caption="RMSE", digits=4)
 ```
 
