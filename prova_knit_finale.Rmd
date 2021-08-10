@@ -564,11 +564,11 @@ Applying Slutsky's theorem, together with \eqref{is_conv_clt} and \eqref{is_conv
 \begin{equation}
    \sqrt{N}\big[  \hat \varphi_{AN} - \E_{\Q}(\varphi)\big] \implies \N \Bigg(0,\frac{\E_{\M}(w^2\bar\varphi^2)}{[\E_{\M}(w)]^2}\Bigg)
 \end{equation}
-Therefore, the IS (auto-normalized) estimator for $\varphi$ is asymptotically normal. Consistency can be proved in an analogous way, applying the LLN and lemma \ref{lemma_imp_sam_1}:
+Therefore, the IS (auto-normalized) estimator for $\varphi$ is asymptotically normal. Consistency can be proved in an analogous way, applying the strong LLN and lemma \ref{lemma_imp_sam_1}:
 \begin{equation}
     \frac{1}{N}\sum_{n=1}^Nw(X^n) \varphi (X^n)\rigtharrow^{\text{a.s.}}  \E_\M(\varphi \cdot w)=\E_\Q(\varphi)\cdot \E_\M(w)
 \end{equation}
-Together with \eqref{is_conv_lln}, we get that:
+Together with \eqref{is_conv_lln}, we get strong convergence of the estimator (that implies consistency).
 \begin{equation}
    \hat \varphi_{AN}=\sum_{n=1}^NW^n \varphi (X^n)\rigtharrow^{\text{a.s.}}  \E_\Q(\varphi)
 \end{equation}
