@@ -565,11 +565,11 @@ Applying Slutsky's theorem, together with \eqref{is_conv_clt} and \eqref{is_conv
 \end{equation}
 Therefore, the IS (auto-normalized) estimator for $\varphi$ is asymptotically normal. Consistency can be proved in an analogous way, applying the strong LLN and lemma \ref{lemma_imp_sam_1}:
 \begin{equation}
-    \frac{1}{N}\sum_{n=1}^Nw(X^n) \varphi (X^n)\rigtharrow^{\text{a.s.}}  \E_\M(\varphi \cdot w)=\E_\Q(\varphi)\cdot \E_\M(w)
+    \frac{1}{N}\sum_{n=1}^Nw(X^n) \varphi (X^n)\xrigtharrow{\text{a.s.}}  \E_\M(\varphi \cdot w)=\E_\Q(\varphi)\cdot \E_\M(w)
 \end{equation}
 Together with \eqref{is_conv_lln}, we get strong convergence of the estimator (that implies consistency).
 \begin{equation}
-   \hat \varphi_{AN}=\sum_{n=1}^NW^n \varphi (X^n)\rigtharrow^{\text{a.s.}}  \E_\Q(\varphi)
+   \hat \varphi_{AN}=\sum_{n=1}^NW^n \varphi (X^n)\xrigtharrow{\text{a.s.}}  \E_\Q(\varphi)
 \end{equation}
 
 \subsubsection{Effective Sample Size}
@@ -663,7 +663,7 @@ Lastly, it is now common practice to use a mixed approach with respect to resamp
 \end{equation}
 
 \subsection{Implementation}
-Consider again the random walk plus noise model of section \ref{implementation},the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
+Consider again the random walk plus noise model of section \ref{implementation}, the challenge here is to estimate the filtered states using a Sequential Importance Sampling algorithm. The main idea of the SIS applied to this univariate linear gaussian model is described in the following algorithm. We indicate with $n$ the sample size of time observations and with $N$ the generated sample size for each step of the Sequenial Monte Carlo. 
 \begin{algorithm} SIS filter for Random Walk plus Noise Model
 \begin{itemize}
 \item Let $\{(x_{0},w_{0})^{(i)}\}_{i=1}^{N}$ summarize $p(x_{0}|y_{0})$ such that, for example, $E(g(x_{0})|y_{0}) \approx \sum_{i=1}^{N}w_{0}^{(i)}g(x_{0}^{(i)})$. In particular, initialize $(x_{0}^{(1)},...,x_{0}^{(N)})$ form $N(m_{0},C_{0})$ and set $w_{0}^{(i)}=N^{-1} \ \forall \ i=1,...,N$.
