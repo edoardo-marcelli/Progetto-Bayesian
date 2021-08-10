@@ -2760,118 +2760,8 @@ dfsv4<-data.frame(timeframe,y1,sv_lw1)
 dfsv5<-data.frame(timeframe,y1,sv_bapf1)
 dfsv6<-data.frame(timeframe,y1,sv_sis1)
 
-Filtplot1<-function(dataframe,title){
-  mean=sv_bpf1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y1, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot2<-function(dataframe,title){
-  mean=sv_gpfopt1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y1, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot3<-function(dataframe,title){
-  mean=sv_apf1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y1, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot4<-function(dataframe,title){
-  mean=sv_lw1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y1, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot5<-function(dataframe,title){
-  mean=sv_bapf1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y1, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot6<-function(dataframe,title){
-  mean=sv_sis1
+Filtplot1<-function(dataframe,title,fun){
+  mean=fun
   mean1=exp(mean/2)
   dataframe<-data.frame(dataframe,mean1)
   
@@ -2893,12 +2783,12 @@ Filtplot6<-function(dataframe,title){
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-plotobs1<-Filtplot1(dfsv1,"Bootstrap Particle Filter SP500")
-plotobs2<-Filtplot2(dfsv2,"Opt Ker Guided Particle Filter SP500")
-plotobs3<-Filtplot3(dfsv3,"Auxiliary Particle Filter SP500")
-plotobs4<-Filtplot4(dfsv4,"Liu and West Filter SP500")
-plotobs5<-Filtplot5(dfsv5,"Always Resampling SP500")
-plotobs6<-Filtplot6(dfsv6,"No Resampling SP500")
+plotobs1<-Filtplot1(dfsv1,"Bootstrap Particle Filter SP500",sv_bpf1)
+plotobs2<-Filtplot1(dfsv2,"Opt Ker Guided Particle Filter SP500",sv_gpfopt1)
+plotobs3<-Filtplot1(dfsv3,"Auxiliary Particle Filter SP500",sv_apf1)
+plotobs4<-Filtplot1(dfsv4,"Liu and West Filter SP500",sv_lw1)
+plotobs5<-Filtplot1(dfsv5,"Always Resampling SP500",sv_bapf1)
+plotobs6<-Filtplot1(dfsv6,"No Resampling SP500",sv_sis1)
 
 ggarrange(plotobs1,plotobs2)
 ggarrange(plotobs3,plotobs4)
@@ -2921,118 +2811,8 @@ dfsv10<-data.frame(timeframe,y2,sv_lw2)
 dfsv11<-data.frame(timeframe,y2,sv_bapf2)
 dfsv12<-data.frame(timeframe,y2,sv_sis2)
 
-Filtplot7<-function(dataframe,title){
-  mean=sv_bpf2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y2, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot8<-function(dataframe,title){
-  mean=sv_gpfopt2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y2, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot9<-function(dataframe,title){
-  mean=sv_apf2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y2, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot10<-function(dataframe,title){
-  mean=sv_lw2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y2, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot11<-function(dataframe,title){
-  mean=sv_bapf2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y2, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot12<-function(dataframe,title){
-  mean=sv_sis2
+Filtplot2<-function(dataframe,title,fun){
+  mean=fun
   mean1=exp(mean/2)
   dataframe<-data.frame(dataframe,mean1)
   
@@ -3054,12 +2834,13 @@ Filtplot12<-function(dataframe,title){
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-plotobs7<-Filtplot7(dfsv7,"Bootstrap Particle Filter STOXX50E")
-plotobs8<-Filtplot8(dfsv8,"Opt Ker Guided Particle Filter STOXX50E")
-plotobs9<-Filtplot9(dfsv9,"Auxiliary Particle Filter STOXX50E")
-plotobs10<-Filtplot10(dfsv10,"Liu and West Filter STOXX50E")
-plotobs11<-Filtplot11(dfsv11,"Always Resampling STOXX50E")
-plotobs12<-Filtplot12(dfsv12,"No Resampling STOXX50E")
+
+plotobs7<-Filtplot2(dfsv7,"Bootstrap Particle Filter STOXX50E",sv_bpf2)
+plotobs8<-Filtplot2(dfsv8,"Opt Ker Guided Particle Filter STOXX50E",sv_gpfopt2)
+plotobs9<-Filtplot2(dfsv9,"Auxiliary Particle Filter STOXX50E",sv_apf2)
+plotobs10<-Filtplot2(dfsv10,"Liu and West Filter STOXX50E",sv_lw2)
+plotobs11<-Filtplot2(dfsv11,"Always Resampling STOXX50E",sv_bapf2)
+plotobs12<-Filtplot2(dfsv12,"No Resampling STOXX50E",sv_sis2)
 
 ggarrange(plotobs7,plotobs8)
 ggarrange(plotobs9,plotobs10)
@@ -3082,118 +2863,8 @@ dfsv16<-data.frame(timeframe,y3,sv_lw3)
 dfsv17<-data.frame(timeframe,y3,sv_bapf3)
 dfsv18<-data.frame(timeframe,y3,sv_sis3)
 
-Filtplot13<-function(dataframe,title){
-  mean=sv_bpf3
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y3, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot14<-function(dataframe,title){
-  mean=sv_gpfopt3
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y3, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot15<-function(dataframe,title){
-  mean=sv_apf3
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y3, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot16<-function(dataframe,title){
-  mean=sv_lw3
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y3, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot17<-function(dataframe,title){
-  mean=sv_bapf3
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=y3, col="Observations", linetype="Observations"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Observations" = "gray",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Observations" = 1,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot18<-function(dataframe,title){
-  mean=sv_sis3
+Filtplot3<-function(dataframe,title,fun){
+  mean=fun
   mean1=exp(mean/2)
   dataframe<-data.frame(dataframe,mean1)
   
@@ -3215,12 +2886,12 @@ Filtplot18<-function(dataframe,title){
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-plotobs13<-Filtplot13(dfsv13,"Bootstrap Particle Filter DJI")
-plotobs14<-Filtplot14(dfsv14,"Opt Ker Guided Particle Filter DJI")
-plotobs15<-Filtplot15(dfsv15,"Auxiliary Particle Filter DJI")
-plotobs16<-Filtplot16(dfsv16,"Liu and West Filter DJI")
-plotobs17<-Filtplot17(dfsv17,"Always Resampling DJI")
-plotobs18<-Filtplot18(dfsv18,"No Resampling DJI")
+plotobs13<-Filtplot3(dfsv13,"Bootstrap Particle Filter DJI",sv_bpf3)
+plotobs14<-Filtplot3(dfsv14,"Opt Ker Guided Particle Filter DJI",sv_gpfopt3)
+plotobs15<-Filtplot3(dfsv15,"Auxiliary Particle Filter DJI",sv_apf3)
+plotobs16<-Filtplot3(dfsv16,"Liu and West Filter DJI",sv_lw3)
+plotobs17<-Filtplot3(dfsv17,"Always Resampling DJI",sv_bapf3)
+plotobs18<-Filtplot3(dfsv18,"No Resampling DJI",sv_sis3)
 
 ggarrange(plotobs13,plotobs14)
 ggarrange(plotobs15,plotobs16)
@@ -3295,57 +2966,9 @@ dfsv3<-data.frame(timeframe,y,btbenchmark,sv_apf1,sv_apf1sd)
 dfsv5<-data.frame(timeframe,y,btbenchmark,sv_bapf1,sv_bapf1sd)
 dfsv6<-data.frame(timeframe,y,btbenchmark,sv_sis1,sv_sis1sd)
 
-Filtplot1<-function(dataframe,title){
-  mean=sv_bpf1
-  sd=sv_bpf1sd
-  dataframe<-data.frame(dataframe,mean)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=btbenchmark, col="BT benchmark", linetype="BT benchmark"))+
-    geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
-    geom_ribbon(aes(ymin = mean -1.96*sd, ymax = mean +1.96*sd),
-                fill="red",alpha=0.16) +
-    scale_color_manual("",
-                       values=c("BT benchmark" = "black",
-                                "Filtered States"= "red"))+
-    scale_linetype_manual("",
-                          values=c("BT benchmark" = 1,
-                                   "Filtered States"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot2<-function(dataframe,title){
-  mean=sv_gpfopt1
-  sd=sv_gpfopt1sd
-  dataframe<-data.frame(dataframe,mean)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=btbenchmark, col="BT benchmark", linetype="BT benchmark"))+
-    geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
-    geom_ribbon(aes(ymin = mean -1.96*sd, ymax = mean +1.96*sd),
-                fill="red",alpha=0.16) +
-    scale_color_manual("",
-                       values=c("BT benchmark" = "black",
-                                "Filtered States"= "red"))+
-    scale_linetype_manual("",
-                          values=c("BT benchmark" = 1,
-                                   "Filtered States"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot3<-function(dataframe,title){
-  mean=sv_apf1
-  sd=sv_apf1sd
+Filtplot4<-function(dataframe,title,funmean,funsd){
+  mean=funmean
+  sd=funsd
   dataframe<-data.frame(dataframe,mean)
   
   ggplot(dataframe,aes(x=timeframe))+
@@ -3368,60 +2991,11 @@ Filtplot3<-function(dataframe,title){
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-Filtplot5<-function(dataframe,title){
-  mean=sv_bapf1
-  sd=sv_bapf1sd
-  dataframe<-data.frame(dataframe,mean)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=btbenchmark, col="BT benchmark", linetype="BT benchmark"))+
-    geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
-    geom_ribbon(aes(ymin = mean -1.96*sd, ymax = mean +1.96*sd),
-                fill="red",alpha=0.16) +
-    scale_color_manual("",
-                       values=c("BT benchmark" = "black",
-                                "Filtered States"= "red"))+
-    scale_linetype_manual("",
-                          values=c("BT benchmark" = 1,
-                                   "Filtered States"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot6<-function(dataframe,title){
-  mean=sv_sis1
-  sd=sv_sis1sd
-  dataframe<-data.frame(dataframe,mean)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=btbenchmark, col="BT benchmark", linetype="BT benchmark"))+
-    geom_line(aes(y=mean, col="Filtered States", linetype="Filtered States"))+
-    geom_ribbon(aes(ymin = mean -1.96*sd, ymax = mean +1.96*sd),
-                fill="red",alpha=0.16) +
-    scale_color_manual("",
-                       values=c("BT benchmark" = "black",
-                                "Filtered States"= "red"))+
-    scale_linetype_manual("",
-                          values=c("BT benchmark" = 1,
-                                   "Filtered States"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-
-plotcomp1<-Filtplot1(dfsv1,"Bootstrap Particle Filter SP500")
-plotcomp2<-Filtplot2(dfsv2,"Opt Ker Guided Particle Filter SP500")
-plotcomp3<-Filtplot3(dfsv3,"Auxiliary Particle Filter SP500")
-plotcomp5<-Filtplot5(dfsv5,"Always Resampling SP500")
-plotcomp6<-Filtplot6(dfsv6,"No Resampling SP500")
+plotcomp1<-Filtplot4(dfsv1,"Bootstrap Particle Filter SP500",sv_bpf1,sv_bpf1sd)
+plotcomp2<-Filtplot4(dfsv2,"Opt Ker Guided Particle Filter SP500",sv_gpfopt1,sv_gpfopt1sd)
+plotcomp3<-Filtplot4(dfsv3,"Auxiliary Particle Filter SP500",sv_apf1,sv_apf1sd)
+plotcomp5<-Filtplot4(dfsv5,"Always Resampling SP500",sv_bapf1,sv_bapf1sd)
+plotcomp6<-Filtplot4(dfsv6,"No Resampling SP500",sv_sis1,sv_sis1sd)
 
 plotcomp1
 plotcomp2
@@ -3589,123 +3163,13 @@ dfsv4<-data.frame(timeframe,y,realisedx1,sv_lw1)
 dfsv5<-data.frame(timeframe,y,realisedx1,sv_bapf1)
 dfsv6<-data.frame(timeframe,y,realisedx1,sv_sis1)
 
-Filtplot1<-function(dataframe,title){
-  mean=sv_bpf1
+Filtplot5<-function(dataframe,title,fun,realisedx){
+  mean=fun
   mean1=exp(mean/2)
   dataframe<-data.frame(dataframe,mean1)
   
   ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot2<-function(dataframe,title){
-  mean=sv_gpfopt1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot3<-function(dataframe,title){
-  mean=sv_apf1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot4<-function(dataframe,title){
-  mean=sv_lw1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot5<-function(dataframe,title){
-  mean=sv_bapf1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot6<-function(dataframe,title){
-  mean=sv_sis1
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx1, col="Proxy", linetype="Proxy"))+
+    geom_line(aes(y=realisedx, col="Proxy", linetype="Proxy"))+
     geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
     scale_color_manual("",
                        values=c("Proxy" = "black",
@@ -3722,12 +3186,12 @@ Filtplot6<-function(dataframe,title){
     theme(plot.title = element_text(hjust = 0.5))
 }
 
-plotproxy1<-Filtplot1(dfsv1,"Bootstrap Particle Filter SP500")
-plotproxy2<-Filtplot2(dfsv2,"Opt Ker Guided Particle Filter SP500")
-plotproxy3<-Filtplot3(dfsv3,"Auxiliary Particle Filter SP500")
-plotproxy4<-Filtplot4(dfsv4,"Liu and West Filter SP500")
-plotproxy5<-Filtplot5(dfsv5,"Always Resampling SP500")
-plotproxy6<-Filtplot6(dfsv6,"No Resampling SP500")
+plotproxy1<-Filtplot5(dfsv1,"Bootstrap Particle Filter SP500",sv_bpf1,realisedx1)
+plotproxy2<-Filtplot5(dfsv2,"Opt Ker Guided Particle Filter SP500",sv_gpfopt1,realisedx1)
+plotproxy3<-Filtplot5(dfsv3,"Auxiliary Particle Filter SP500",sv_apf1,realisedx1)
+plotproxy4<-Filtplot5(dfsv4,"Liu and West Filter SP500",sv_lw1,realisedx1)
+plotproxy5<-Filtplot5(dfsv5,"Always Resampling SP500",sv_bapf1,realisedx1)
+plotproxy6<-Filtplot5(dfsv6,"No Resampling SP500",sv_sis1,realisedx1)
 
 plotproxy1
 plotproxy2
@@ -3756,145 +3220,12 @@ dfsv10<-data.frame(timeframe,y,realisedx2,sv_lw2)
 dfsv11<-data.frame(timeframe,y,realisedx2,sv_bapf2)
 dfsv12<-data.frame(timeframe,y,realisedx2,sv_sis2)
 
-Filtplot7<-function(dataframe,title){
-  mean=sv_bpf2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot8<-function(dataframe,title){
-  mean=sv_gpfopt2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot9<-function(dataframe,title){
-  mean=sv_apf2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot10<-function(dataframe,title){
-  mean=sv_lw2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot11<-function(dataframe,title){
-  mean=sv_bapf2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-Filtplot12<-function(dataframe,title){
-  mean=sv_sis2
-  mean1=exp(mean/2)
-  dataframe<-data.frame(dataframe,mean1)
-  
-  ggplot(dataframe,aes(x=timeframe))+
-    geom_line(aes(y=realisedx2, col="Proxy", linetype="Proxy"))+
-    geom_line(aes(y=mean1, col="Filtered Volatility", linetype="Filtered Volatility"))+
-    scale_color_manual("",
-                       values=c("Proxy" = "black",
-                                "Filtered Volatility"= "red"))+
-    scale_linetype_manual("",
-                          values=c("Proxy" = 3,
-                                   "Filtered Volatility"=1))+
-    labs(x="Time",
-         y="")+
-    ggtitle(title)+
-    theme_bw()+
-    theme(legend.direction = "horizontal", legend.position = "bottom", legend.key = element_blank(), 
-          legend.background = element_rect(fill = "white", colour = "gray30")) +
-    theme(plot.title = element_text(hjust = 0.5))
-}
-
-plotproxy7<-Filtplot7(dfsv7,"Bootstrap Particle Filter STOXX")
-plotproxy8<-Filtplot8(dfsv8,"Opt Ker Guided Particle Filter STOXX")
-plotproxy9<-Filtplot9(dfsv9,"Auxiliary Particle Filter STOXX")
-plotproxy10<-Filtplot10(dfsv10,"Liu and West Filter STOXX")
-plotproxy11<-Filtplot11(dfsv11,"Always Resampling STOXX")
-plotproxy12<-Filtplot12(dfsv12,"No Resampling STOXX")
+plotproxy7<-Filtplot5(dfsv7,"Bootstrap Particle Filter STOXX",sv_bpf2,realisedx2)
+plotproxy8<-Filtplot5(dfsv8,"Opt Ker Guided Particle Filter STOXX",sv_gpfopt2,realisedx2)
+plotproxy9<-Filtplot5(dfsv9,"Auxiliary Particle Filter STOXX",sv_apf2,realisedx2)
+plotproxy10<-Filtplot5(dfsv10,"Liu and West Filter STOXX",sv_lw2,realisedx2)
+plotproxy11<-Filtplot5(dfsv11,"Always Resampling STOXX",sv_bapf2,realisedx2)
+plotproxy12<-Filtplot5(dfsv12,"No Resampling STOXX",sv_sis2,realisedx2)
 
 plotproxy7
 plotproxy8
@@ -4454,6 +3785,7 @@ So, M. E. P., Lam, K., & Li, W. K. (1998). A stochastic volatility model with Ma
 Xu, X., & Chen, Y. (2021). Deep Stochastic Volatility Model. arXiv preprint arXiv:2102.12658.\
 
 Zhang, B., Chan, J. C., & Cross, J. L. (2020). Stochastic volatility models with ARMA innovations: An application to G7 inflation forecasts. International Journal of Forecasting, 36(4), 1318-1328.
+
 
 \chapter*{Appendix}
 \section{The Stochastic Volatility Model}
