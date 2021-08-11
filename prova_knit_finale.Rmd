@@ -3,12 +3,13 @@ title: |
  \Huge State-Space Models and Particle Filters
 
 author:
-  - Edoardo Marcelli
-  - Roberto Colarieti
-  - Alexei Verkhovtsev
   - Michele Bolla
-  - Gabriele Romano
   - Benedetta Bruni
+  - Roberto Colarieti
+  - Edoardo Marcelli
+  - Gabriele Romano
+  - Alexei Verkhovtsev
+  
 
 documentclass: book
 
