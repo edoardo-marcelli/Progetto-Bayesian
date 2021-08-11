@@ -244,7 +244,7 @@ Y_t &= B_tX_t + V_t.
 Note that  $X_t\mid X_{t-1}$ and $Y_t\mid X_t$ are both normally distributed. 
 \
 \begin{lemma}\label{kalman-filter}
-  Let $X\thicksim\N(m_0,C_0)$ and $Y\mid X\thicksim\N(BX,\Lambda)$, where $R$ and $Q_0$ are positive semi-definite matrices. 
+  Let $X\thicksim\N(m_0,C_0)$ and $Y\mid X\thicksim\N(BX,\Lambda)$, where $C_0$ and $\Lambda$ are positive semi-definite matrices. 
   Then, it holds that
   \begin{align}
     X\mid Y=y&\thicksim\N(m_1,C_1),\\
