@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021/W32TeX) (preloaded format=xelatex 2021.8.7)  11 AUG 2021 02:29
+This is XeTeX, Version 3.141592653-2.6-0.999993 (TeX Live 2021/W32TeX) (preloaded format=xelatex 2021.8.7)  11 AUG 2021 09:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1200,6 +1200,9 @@ Underfull \hbox (badness 10000) in paragraph at lines 835--846
  []
 
 
+LaTeX Warning: Reference `pf_intro' on page 22 undefined on input line 850.
+
+
 Underfull \hbox (badness 10000) in paragraph at lines 847--862
 
  []
@@ -1505,10 +1508,10 @@ Package rerunfilecheck Info: File `Real-Dataset-SV.out' has not changed.
 (rerunfilecheck)             Checksum: F8A4B0ACD156BC6665CA8652E866FD04;1662.
  ) 
 Here is how much of TeX's memory you used:
- 18705 strings out of 478475
- 346373 string characters out of 5857114
+ 18706 strings out of 478475
+ 346383 string characters out of 5857114
  822964 words of memory out of 5000000
- 38693 multiletter control sequences out of 15000+600000
+ 38694 multiletter control sequences out of 15000+600000
  410019 words of font info for 85 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  87i,14n,120p,1139b,433s stack positions out of 5000i,500n,10000p,200000b,80000s

@@ -2737,7 +2737,7 @@ In the specification used by the LW filter, we have $\gamma=0$ and $\pi=0.99$, a
 
 We now offer a preliminary comparison of the various filtering methods, based on a visual analysis of graphs representing, for each index, the time-varying volatility of the observations, obtained through the application of the different filtering techniques explored in the theoretical analysis. Plots that are compared represent the sequence of percentage log returns for a given index (the observations, in gray) and the sequence of filtered volatilities calculated using filtered states (in red) obtained through a specific filtering technique indicated in the caption of the plot.\footnote{Such filtered volatilities are obtained as follows. For each $t$, let us denote by $\mu_t$ the mean of the generated particles; the filtered volatility is then defined as $e^{\mu_t/2}$. Note that the number of particles was set at 10000 for each filter: the conclusion of the next section will come back to such a choice.} \
 
-```{r echo=FALSE, fig.align='center', fig.cap="Observations and filtered volatility, 3 indices", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
+```{r echo=FALSE, fig.align='center', fig.cap="Observations and filtered volatility, 3 indices", fig.height=7, fig.pos='H', fig.width=10, message=FALSE, warning=FALSE, results=F}
 
 # Filtered Volatility Plots
 
@@ -2845,8 +2845,9 @@ plotobs11<-Filtplot2(dfsv11,"Always Resampling STOXX50E",sv_bapf2)
 plotobs12<-Filtplot2(dfsv12,"No Resampling STOXX50E",sv_sis2)
 
 ggarrange(plotobs7,plotobs8)
-ggarrange(plotobs9,plotobs10)
-ggarrange(plotobs11,plotobs12)
+ggarrange(plotobs9,plotobs11)
+plotobs10
+plotobs12
 
 realdatasetDJI<-read.xlsx("Dataset 17-21.xlsx", sheet = 3)
 y3<-realdatasetDJI[,2]
@@ -3134,7 +3135,7 @@ Nevertheless, we shall not indulge into forgetting the inherent limitations of u
 
 In order to evaluate the different filters according to the evaluation tool represented by the realized volatility, we start once more from the visual inspection of the plots. For any of the three indices, below graphs are shown including both the filtered volatility obtained from the filtered states (for any of the Sequential MC methods described in the theoretical section) and the corresponding rescaled realised volatility series.\footnote{For simplicity,troughout the rest of this section we will omit "rescaled" when refering to the rescaled realised volatility.} As compared to the visual analysis we conducted in section \ref{Comparing the filters}, we can now use such a proxy to determine the relative performance of the competing filters.\
 
-Once more, most algorithms used (aside from SIS and Liu-West) seem to provide indistinguishable results. The SIS algorithm appears completely inadequate to describe the "true" volatility process: as we argued in section XX, the degeneracy of its weights on the particles prevents it from delivering a good enough approximation of the target distribution (\textit{check whether this is the correct intuition}). On top of that, it does not seem the case that the SIS algorithm, by falling short of the SV target distribution, ends up fitting the proxy better.\footnote{As we will now see, this seems instead to be the case for our preferred algorithms, namely those adopting adaptive resampling rules: a better approximation of the SV target filtering distribution yields slightly higher RMSEs and MAEs than those resulting from less accurate MC approximations.}\
+Once more, most algorithms used (aside from SIS and Liu-West) seem to provide indistinguishable results. The SIS algorithm appears completely inadequate to describe the "true" volatility process: as we argued in section \ref{pf_intro}, the diverging variance of its weights on the particles prevents it from delivering a good enough approximation of the target distribution. On top of that, it does not seem the case that the SIS algorithm, by falling short of the SV target distribution, ends up fitting the proxy better.\footnote{As we will now see, this seems instead to be the case for our preferred algorithms, namely those adopting adaptive resampling rules: a better approximation of the SV target filtering distribution yields slightly higher RMSEs and MAEs than those resulting from less accurate MC approximations.}\
 On the other hand, the Liu and West filter offers the best performance among all filters, at least visually. This suggests that, since the Liu and West particle filter is built on a different underlying model than the other filters considered, this model may offer a better representation of the data analyzed. Once more, these considerations hold for all of the three indices.\
 
 ```{r echo=FALSE, fig.align='center', fig.cap="Filtered volatility and realised volatility", fig.height=4, fig.pos='H', fig.width=8, message=FALSE, warning=FALSE, results=F}
