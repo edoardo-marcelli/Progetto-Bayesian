@@ -150,8 +150,8 @@ Let $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ and $(\mathcal{Y}, \mathcal{B}(\ma
 \begin{definition}
 A function $P(x,dy): (\mathcal{X}, \mathcal{B}(\mathcal{X}))\rightarrow [0,1]$ such that 
 \begin{itemize}
-    \item for all $x\in\mathcal{X}, P(x,\cdot)$ is a probability measure on $(\mathcal{Y}, \mathcal{B}(\mathcal{Y})$, and 
-    \item for all subsets $A\in\mathcal{B}(\mathcal{Y}),$ the map $x\mapsto P(x,A)$ is measurable in $\mathcal{B}(\mathcal{X})),$
+    \item for all $x\in\mathcal{X}, P(x,\cdot)$ is a probability measure on $(\mathcal{Y}, \mathcal{B}(\mathcal{Y}))$, and 
+    \item for all subsets $A\in\mathcal{B}(\mathcal{Y}),$ the map $x\mapsto P(x,A)$ is measurable in $\mathcal{B}(\mathcal{X}),$
 \end{itemize}
 is defined a probability kernel from $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ to $(\mathcal{Y}, \mathcal{B}(\mathcal{Y})).$
 \end{definition}
@@ -202,7 +202,7 @@ This means that the marginal distribution of $X_{0:t}$ with respect to $\P_T$ is
 
 \section{State-Space Models}\label{sec_state_space}
 We now define \textit{State-Space models} as Markov processes that are partially observed. Let $X_t\in\X$ and $Y_t\in\Y$ and let $\{(X_t,Y_t)\}$ be a stochastic process. To help intuition, suppose that $\{Y_t\}$ is observable, i.e., coincides with a sequence of observations, while $\{X_t\}$ is latent. Consider the initial distribution $\P_0(dx_0)$ and the probability kernels
-$P_t(x_{t-1},dx_t)$ and $F_t(x_t,d_t)$, where $t=1,2,\dots$.
+$P_t(x_{t-1},dx_t)$ and $F_t(x_t,dy_t)$, where $t=1,2,\dots$.
 \
 \begin{definition}\label{state-space-def}
 The process $\{(X_t,Y_t)\}$ is a State-Space model if the joint distribution of $(X_{0:T},Y_{0:T})$ is 
