@@ -290,7 +290,7 @@ by the linearity of the Gaussian distribution, we have that the predictive distr
 \end{equation}
 Letting $R_T=A_tC_{t-1}A_t'+\Sigma_t,$ and applying lemma \ref{kalman-filter}, it follows that the filtering distribution is 
 \begin{align*}
-  \P_{t}(X_t\in dx_{t}\mid Y_{1:t-1}&=y_{1:t-1})=\N(m_t,C_t), \text{ where} \\ C_t&=R_t[I_{d_x} - B_t'(B_tR_tB_t'+\Lambda_t)^{-1} B_tR_t] \\
+  \P_{t}(X_t\in dx_{t}\mid Y_{1:t}&=y_{1:t})=\N(m_t,C_t), \text{ where} \\ C_t&=R_t[I_{d_x} - B_t'(B_tR_tB_t'+\Lambda_t)^{-1} B_tR_t] \\
   m_t &= [I_{d_x} - R_tB_t'(B_tR_tB_t'+\Lambda_t)^{-1} B_t]A_tm_{t-1}+R_tB_t'(B_tR_tB_t'+\Lambda_t)^{-1}y_t.
 \end{align*}
 
