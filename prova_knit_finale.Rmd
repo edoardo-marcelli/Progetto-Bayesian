@@ -3694,9 +3694,8 @@ kbl(ErrorvolSPX, align="c", longtable = T, booktabs = T, caption="RMSE and MAE, 
 }\
 Rather, what this exercise highlights (under its assumptions) is a need for more flexibility and variability in the basic SV model: the underlying SV model of the LW filter meets this request, but clearly other solutions are possible, and have been argued for in the field of financial econometrics and mathematical finance, as we noted in the literary review section.
 
-\newpage
 
-\section*{Bibliography}\
+\chapter*{Bibliography}\
 
 Allen, D. E., & McAleer, M. (2020). Do we need stochastic volatility and generalised autoregressive conditional heteroscedasticity? Comparing squared end-of-day returns on FTSE. Risks, 8(1), 12.\
 
