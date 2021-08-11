@@ -3792,7 +3792,7 @@ Zhang, B., Chan, J. C., & Cross, J. L. (2020). Stochastic volatility models with
 
 
 \chapter*{Appendix}
-\section{The Stochastic Volatility Model}
+\section*{The Stochastic Volatility Model}
 
 We decide to organise this Appendix as an R package. All the R functions described in this Appendix take as reference a basic specification of Stochastic Volatility Model.\footnote{Actually, the function SVLWfun considers a SV model with an additional hierarchical level, as specified in section XX.}
 \begin{align*}
