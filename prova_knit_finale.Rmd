@@ -2903,7 +2903,7 @@ ggarrange(plotobs17,plotobs18)
 
 ```
 
-First, a general point is that the sequence of percentage log returns are different across the three indices. The reasons why this holds can be associated with the index-construction method and the characteristics of the economy and industrial setting it represents. In particular, as previously noticed, there are extensive similarities between the DOW JONES Index and the S&P500, which can be visualized when looking at the percentage of log returns in the corresponding plots, since both are describing the US Economy. However, the STOXX50E differs quite extensively, especially in the different sensitivity to the Covid-19 Crisis and its consequences,  representing the European Economy. Aside from this note, the considerations expressed below on the sequences "filtered volatilities" for the various techniques hold almost uniformly for all the three indices. Therefore, in the next paragraph we will be referring to the set of plots pertaining to one specific index (which could be any of the three).\
+First, a general point is that the sequences of percentage log returns are different across the three indices. The reasons why this holds can be associated with the index-construction method and the characteristics of the economy and industrial setting it represents. In particular, as previously noticed, there are extensive similarities between the DOW JONES Index and the S&P500, which can be visualized when looking at the percentage of log returns in the corresponding plots, since both are describing the US Economy. However, the STOXX50E differs quite extensively, especially in the different sensitivity to the Covid-19 Crisis and its consequences,  representing the European Economy. Aside from this note, the considerations expressed below on the sequences "filtered volatilities" for the various techniques hold almost uniformly for all the three indices. Therefore, in the next paragraph we will be referring to the set of plots pertaining to one specific index (which could be any of the three).\
 
 Generally speaking, note that, the sequence of "filtered volatilities" obtained from any of the filtering techniques follows roughly similar paths across all the plots. Unsurprisingly, the filtered volatility appears wider in periods corresponding to wider fluctuations of the percentage log returns and lower in periods corresponding to smaller such fluctuations. For example, all sequences of filtered volatilities show peaks corresponding to the higher fluctuations due to the 2020 Covid-19 Crisis outbreak and the consequent increases in uncertainty for the later periods.\
 
@@ -3430,7 +3430,7 @@ GPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     
     xprev<-x
     x<-rnorm(N,alpha+beta*x+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x))-2),tau)
-    w1<-w*dnorm(data[t],0,exp(x/2))*dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
+    w1<-w*dnorm(data[t],0,exp(x/2))* dnorm(x,alpha+beta*xprev,tau)/dnorm(x,mean=alpha+beta*xprev+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*xprev))-2),tau)
     
     w = w1/sum(w1)
     ESS  = 1/sum(w^2)
@@ -4020,7 +4020,8 @@ SVAPFoptfun<-function(data,N,m0,C0,alpha,beta,tau,r){
     
     if(ESS<(N/r)){
       epsilon=alpha+beta*x+((tau^2)/4)*((data[t]^2)*exp(-alpha-beta*x)-2)
-      weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x)^2)-((data[t]^2)/2)*exp(-alpha-beta*x)*(1+alpha+beta*x))
+      weight = w*exp((1/(2*tau^2))*((epsilon)^2-(alpha+beta*x)^2)-((data[t]^2)/2)*
+      exp(-alpha-beta*x)*(1+alpha+beta*x))
       k   = sample(1:N,size=N,replace=TRUE,prob=weight)
       x1   = rnorm(N,alpha+beta*x[k]+(tau^2)/4*((data[t]^2)*exp(-(alpha+beta*x[k]))-2),tau)
       w   = rep(1/N,N)
