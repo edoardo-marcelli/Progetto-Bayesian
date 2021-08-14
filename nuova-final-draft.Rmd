@@ -115,7 +115,7 @@ RMSE<-function(x,xhat){sqrt(mean((x - xhat)^2))}
 
 \section{Notation}
 Let us fix the basic notation that will be employed henceforth. Upper case letters, e.g. $X_t, Y_t,$ denote random variables, while lower case letters 
-denote the realizations. Finite sequences are made compact using the semi-colon notation, e.g. $x_{0:t}=(x_0, x_1, \dots, x_t)$ for some $t \geq 0.$ The sets of outcomes are denoted by upper case calligraphic letters, e.g. $\mathcal{X}, \mathcal{Y}.$  The $\sigma$-algebra
+denote the realizations. Finite sequences are made compact using the semi-colon notation, e.g. $x_{0:t}=(x_0, x_1, \dots, x_t)$ for some $t \geq 0.$ The sets of outcomes are denoted by upper case calligraphic letters, e.g. $\mathcal{X}, \mathcal{Y}.$  A generic $\sigma$-algebra
 of a set $\mathcal{X}$ reads $\mathcal{B}(\mathcal{X}).$ The pair $(\mathcal{X}, \mathcal{B}(\mathcal{X}))$ is a measurable space.
 The densities are represented with lower case cursive letters. For example, the density of $X_t$ in $x_t$ is $p_t^\theta(x_t),$ where $\theta\in\Theta$ is some (eventually known) vector, while the density 
 of $X_t$ in $x_t,$ given that $X_{t-1}$ has previously taken value $x_{t-1},$ is $p_t^\theta(x_t\mid x_{t-1}).$  Note that $p_t^\theta(x_t\mid x_{t-1})$ is a member of the parametric family with parameters $(\theta, x_{t-1})$.
