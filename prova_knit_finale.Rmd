@@ -2075,7 +2075,7 @@ $$
 where the asymptotic variances are defined recursively, with $ \hat{\mathcal{V}}_0(\varphi):=Var_{\M_0}(\varphi) $,
 \begin{equation*}
     \begin{split}
-        \hat{\mathcal{V}}_t(\varphi)&:=\mathcal{V}_{t-1}(\E_{M_t}(\varphi))+Var_{\Q_{t-1}M_t}(\varphi) \text{ }\forall t\geq1, \\
+        \hat{\mathcal{V}}_t(\varphi)&:=\mathcal{V}_{t-1}(M_t\varphi)+Var_{\Q_{t-1}M_t}(\varphi) \text{ }\forall t\geq1, \\
         \mathcal{V}_t(\varphi)&:=\hat{\mathcal{V}}_{t}\big( \bar{G}_t(\varphi-\E_{\Q_t}(\varphi)) \big) \text{ }\forall t\geq0.
     \end{split}
 \end{equation*}
@@ -2092,7 +2092,7 @@ Instead, to get an intuition of the variance $\hat{\mathcal{V}}_t(\varphi),$ not
         &+\frac{1}{N}\E\Bigg[Var\bigg[\varphi(X_t^1) \Big| \sigma(X_{t-1}^{1:N})\bigg]\Bigg].
     \end{split}
 \end{equation*}
-The notation $\mid \sigma(X_{t-1}^{1:N})$ means conditioning on having sampled (from the multinomial distribution) $X_{t-1}^{1:N}$. Conditional on multinomial sampling, the $X_{t-1}^n$ are i.i.d., with distribution  $\sum\limits_{n=1}^N W_{t-1}^n M_t(X_{t-1}^n, dx_t)$, that should converge to $\Q_{t-1}M_t$. So, it is natural to think that the second element of the sum converges to the variance of $\varphi$ with respect to the distribution $\Q_{t-1}M_t$. 
+The notation $\mid \sigma(X_{t-1}^{1:N})$ means conditioning on having sampled (from the multinomial distribution) $X_{t-1}^{1:N}$. Conditional on multinomial sampling, the $X_{t}^n$ are i.i.d., with distribution  $\sum\limits_{n=1}^N W_{t-1}^n M_t(X_{t-1}^n, dx_t)$, that should converge to $\Q_{t-1}M_t$. So, it is natural to think that the second element of the sum converges to the variance of $\varphi$ with respect to the distribution $\Q_{t-1}M_t$. 
 These results are of practical use because they provide a way to explicitly compute the asymptotic variance of the PF estimates.
 
 \section{Implementations for Stochastic Volatility Models}\label{Simulated SV data}
