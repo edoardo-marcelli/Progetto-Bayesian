@@ -2091,7 +2091,7 @@ Instead, to get an intuition of the variance $\hat{\mathcal{V}}_t(\varphi),$ not
         &= Var\bigg[\sum\limits_{n=1}^N W_{t-1}^n (M_t\varphi)(X_{t-1}^n)\bigg] \\
         &+\frac{1}{N}\E\Bigg[Var\bigg[\varphi(X_t^1) \Big| \sigma(X_{t-1}^{1:N})\bigg]\Bigg].
     \end{split}
-\end{equation*}
+\end{equation*} 
 The notation $\mid \sigma(X_{t-1}^{1:N})$ means conditioning on having sampled (from the multinomial distribution) $X_{t-1}^{1:N}$. Conditional on multinomial sampling, the $X_{t}^n$ are i.i.d., with distribution  $\sum\limits_{n=1}^N W_{t-1}^n M_t(X_{t-1}^n, dx_t)$, that should converge to $\Q_{t-1}M_t$. So, it is natural to think that the second element of the sum converges to the variance of $\varphi$ with respect to the distribution $\Q_{t-1}M_t$. 
 These results are of practical use because they provide a way to explicitly compute the asymptotic variance of the PF estimates.
 
